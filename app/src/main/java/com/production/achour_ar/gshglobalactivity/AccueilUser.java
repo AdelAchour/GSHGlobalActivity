@@ -37,6 +37,7 @@ public class AccueilUser extends AppCompatActivity {
     TextView welcomeView;
     Button ticketButton, rendementButton;
     String session_token, nameUser, idUser, firstnameUser;
+    static String nbCount ;
     ProgressBar progressBar;
     RequestQueue queue;
     String titreTicket, slaTicket, demandeurTicket, technicienTicket, categorieTicket, urgenceTicket, etatTicket, dateDebutTicket,
@@ -69,7 +70,13 @@ public class AccueilUser extends AppCompatActivity {
        ticketButton.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-
+               Intent i = new Intent(getApplicationContext(), ListTickets.class);
+               i.putExtra("session",session_token);
+               i.putExtra("nom",nameUser);
+               i.putExtra("prenom",firstnameUser);
+               i.putExtra("id",idUser);
+               i.putExtra("nb",nbCount);
+               startActivity(i);
            }
        });
 
@@ -107,23 +114,12 @@ public class AccueilUser extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONArray Jdata = response.getJSONArray("data");
-                            for (int i=0; i < Jdata.length(); i++)
-                            {
-                                try {
-                                    JSONObject oneTicket = Jdata.getJSONObject(i);
-                                    // Pulling items from the array
-                                     titreTicket = oneTicket.getString("1");
-                                     slaTicket = oneTicket.getString("30");
-                                } catch (JSONException e) {
-                                    // Oops
-                                }
-                            }
+                            nbCount = response.getString("totalcount");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
-                        System.out.println("Titre = "+titreTicket +"\n SLA = "+slaTicket);
+                        //System.out.println("Titre = "+titreTicket +"\n SLA = "+slaTicket);
                     }
                 },
                 new Response.ErrorListener()
