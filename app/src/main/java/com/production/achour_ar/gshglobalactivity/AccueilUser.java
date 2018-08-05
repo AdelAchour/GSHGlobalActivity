@@ -40,8 +40,7 @@ public class AccueilUser extends AppCompatActivity {
     static String nbCount ;
     ProgressBar progressBar;
     RequestQueue queue;
-    String titreTicket, slaTicket, demandeurTicket, technicienTicket, categorieTicket, urgenceTicket, etatTicket, dateDebutTicket,
-    dateEchanceTicket, descriptionTicket, lieuTicket;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

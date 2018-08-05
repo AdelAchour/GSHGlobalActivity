@@ -7,6 +7,12 @@ public class TicketModel {
 
     String UrgenceTicket;
 
+    boolean ticketEnRetard;
+
+
+
+    String TempsRestantTicket;
+
     public TicketModel(String titreTicket, String slaTicket, String dateTicket) {
         this.titreTicket = titreTicket;
         this.slaTicket = slaTicket;
@@ -31,5 +37,21 @@ public class TicketModel {
 
     public void setUrgenceTicket(String urgenceTicket) {
         UrgenceTicket = urgenceTicket;
+    }
+
+    public void setTempsRestantTicket(String tempsRestantTicket) {
+        TempsRestantTicket = tempsRestantTicket;
+    }
+
+    public String getTempsRestantTicket() {
+        return TempsRestantTicket;
+    }
+
+    public boolean isTicketEnRetard() {
+        return ticketEnRetard;
+    }
+
+    public void setTicketEnRetard(boolean ticketEnRetard) {
+        this.ticketEnRetard = ticketEnRetard;
     }
 }

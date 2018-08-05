@@ -1,6 +1,8 @@
 package com.production.achour_ar.gshglobalactivity;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 
@@ -24,9 +27,11 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
     private static class ViewHolder {
         TextView txtName;
         TextView txtType;
+        TextView txtTempsRestant;
         TextView txtDate;
         TextView txtSLA;
         ImageView info;
+        RelativeLayout layout;
     }
 
 
@@ -55,7 +60,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
             case R.id.item_info:
 
-                Snackbar.make(v, "Urgence : " +TicketModel.getUrgenceTicket(), Snackbar.LENGTH_LONG)
+                Snackbar.make(v, "Temps restant : " +TicketModel.isTicketEnRetard(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
 
                 break;
@@ -86,7 +91,9 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.titreTV);
             viewHolder.txtDate = (TextView) convertView.findViewById(R.id.dateTV);
             viewHolder.txtSLA = (TextView) convertView.findViewById(R.id.slaTV);
+            viewHolder.txtTempsRestant = (TextView) convertView.findViewById(R.id.SLARestantTV);
             viewHolder.info = (ImageView) convertView.findViewById(R.id.item_info);
+            viewHolder.layout = (RelativeLayout) convertView.findViewById(R.id.backgroundRow);
 
             result=convertView;
 
@@ -104,12 +111,28 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         viewHolder.txtName.setText(TicketModel.getTitreTicket());
         viewHolder.txtDate.setText(TicketModel.getDateTicket());
         viewHolder.txtSLA.setText(TicketModel.getSlaTicket());
+        viewHolder.txtTempsRestant.setText(TicketModel.getTempsRestantTicket());
         viewHolder.info.setImageResource(getIconUrgence(TicketModel.getUrgenceTicket()));
+        viewHolder.layout.setBackgroundColor(getColorBG(TicketModel.isTicketEnRetard()));
         viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);
         // Return the completed view to render on screen
         return convertView;
     }
+
+    private int getColorBG(boolean ticketEnRetard) {
+        int color;
+
+        if (ticketEnRetard){
+            color = Color.parseColor("#6f970000");
+        }
+        else{
+            color = Color.parseColor("#ffffff");
+        }
+        return color;
+    }
+
+
 
     private int getIconUrgence(String urgenceTicket) {
         int icon;

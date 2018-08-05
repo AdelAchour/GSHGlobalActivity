@@ -1,0 +1,230 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+
+        <RelativeLayout
+            android:id="@+id/RelativeBigBoss"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/f"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="35dp"
+                    android:text="Détail du ticket"
+                    android:layout_gravity="center"
+                    android:textAlignment="center">
+
+                </TextView>
+
+
+            <LinearLayout
+                android:id="@+id/LinearOfTwo"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+
+
+            <LinearLayout
+                android:id="@+id/LinearLabels"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/TitreLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Titre"></TextView>
+
+                <TextView
+                    android:id="@+id/DemandeurLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Demandeur"></TextView>
+
+                <TextView
+                    android:id="@+id/CategorieLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Catégorie"></TextView>
+
+                <TextView
+                    android:id="@+id/UrgenceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Urgence"></TextView>
+
+                <TextView
+                    android:id="@+id/EtatLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Etat"></TextView>
+
+                <TextView
+                    android:id="@+id/DateLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Date début"></TextView>
+
+                <TextView
+                    android:id="@+id/DateEchLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Date échéance"></TextView>
+
+                <TextView
+                    android:id="@+id/dateClosLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Date clôture"></TextView>
+
+                <TextView
+                    android:id="@+id/SLALabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="SLA"></TextView>
+
+                <TextView
+                    android:id="@+id/LieuLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Lieu"></TextView>
+
+                <TextView
+                    android:id="@+id/DescriptionLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dip"
+                    android:text="Description"></TextView>
+
+            </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/LinearAnswers"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/TitreAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:layout_margin="20dip"
+                        android:text="Titre"></TextView>
+
+                    <TextView
+                        android:id="@+id/DemandeurAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dip"
+                        android:textColor="@android:color/black"
+                        android:text="Demandeur"></TextView>
+
+                    <TextView
+                        android:id="@+id/CategorieAnswer"
+                        android:layout_width="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dip"
+                        android:text="Catégorie"></TextView>
+
+                    <TextView
+                        android:id="@+id/UrgenceAnswer"
+                        android:layout_width="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dip"
+                        android:text="Urgence"></TextView>
+
+                    <TextView
+                        android:id="@+id/EtatAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:layout_margin="20dip"
+                        android:text="Etat"></TextView>
+
+                    <TextView
+                        android:id="@+id/DateAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dip"
+                        android:textColor="@android:color/black"
+                        android:text="Date début"></TextView>
+
+                    <TextView
+                        android:id="@+id/DateEchAnswer"
+                        android:textColor="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dip"
+                        android:text="Date échéance"></TextView>
+
+                    <TextView
+                        android:id="@+id/dateClosAnswer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dip"
+                        android:text="Date échéance"
+                        android:textColor="@android:color/black"></TextView>
+
+                    <TextView
+                        android:id="@+id/SLAAnswer"
+                        android:textColor="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dip"
+                        android:text="SLA"></TextView>
+
+                    <TextView
+                        android:id="@+id/LieuAnswer"
+                        android:textColor="@android:color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dip"
+                        android:text="Lieu"></TextView>
+
+                    <TextView
+                        android:id="@+id/DescriptionAnswer"
+                        android:layout_width="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dip"
+                        android:text="Description"></TextView>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+
+</ScrollView>

@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ListTickets extends AppCompatActivity {
 
@@ -35,8 +37,16 @@ public class ListTickets extends AppCompatActivity {
     private static TicketAdapter adapter;
     String session_token, nameUser, idUser, firstnameUser, nbTicket;
     RequestQueue queue;
-    String titreTicket, slaTicket, dateTicket, urgenceTicket;
+    String titreTicket, slaTicket, urgenceTicket,
+    demandeurTicket, categorieTicket, etatTicket, dateDebutTicket,
+            dateEchanceTicket, dateClotureTicket, descriptionTicket, lieuTicket;
+    boolean ticketEnretard;
+
+    public static int nbTicketTab = 6;
+    public static int nbInfoTicket = 12;
+
     public static String[][] ticketTab ;
+    public static String[][] infoTicket ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +66,8 @@ public class ListTickets extends AppCompatActivity {
 
 
         TicketModels = new ArrayList<>();
-        ticketTab = new String[Integer.valueOf(nbTicket)][3];
+        ticketTab = new String[Integer.valueOf(nbTicket)][nbTicketTab];
+        infoTicket = new String[Integer.valueOf(nbTicket)][nbInfoTicket];
 
 
         String url = FirstEverActivity.GLPI_URL+"search/Ticket";
@@ -75,8 +86,11 @@ public class ListTickets extends AppCompatActivity {
         params.add(new KeyValuePair("forcedisplay[5]","30"));
         params.add(new KeyValuePair("forcedisplay[6]","18"));
         params.add(new KeyValuePair("forcedisplay[7]","21"));
+        params.add(new KeyValuePair("forcedisplay[8]","83"));
+        params.add(new KeyValuePair("forcedisplay[9]","82"));
+        params.add(new KeyValuePair("forcedisplay[10]","16"));
 
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -86,41 +100,107 @@ public class ListTickets extends AppCompatActivity {
                             for (int i=0; i < Jdata.length(); i++) {
                                     try {
                                         JSONObject oneTicket = Jdata.getJSONObject(i);
-                                        // Pulling items from the array
+                                        // Récupération des items pour le row_item
                                         titreTicket = oneTicket.getString("1");
                                         slaTicket = oneTicket.getString("30");
-                                        dateTicket = oneTicket.getString("15");
+                                        dateDebutTicket = oneTicket.getString("15");
                                         urgenceTicket = oneTicket.getString("10");
 
+                                        //Récupération du reste
+                                        demandeurTicket = oneTicket.getString("4");
+                                        categorieTicket = oneTicket.getString("7");
+                                        etatTicket = oneTicket.getString("12");
+                                        dateEchanceTicket = oneTicket.getString("18");
+                                        descriptionTicket = oneTicket.getString("21");
 
-                                        System.out.println("Titre = " + titreTicket + "\n SLA = " + slaTicket + "\n Date = " + dateTicket);
+                                        lieuTicket = oneTicket.getString("83");
+                                        dateClotureTicket = oneTicket.getString("16");
+                                        ticketEnretard = getBooleanFromSt(oneTicket.getString("82"));
+
+
+                                        System.out.println("Direct = " + oneTicket.getString("82") + "\n After f(x) = " + getBooleanFromSt(oneTicket.getString("82")));
                                     } catch (JSONException e) {
-                                        Log.e("Error JSONArray : ", e.getMessage());
+                                        Log.e("Nb of data: "+Jdata.length()+" || "+"Error JSONArray at "+i+" : ", e.getMessage());
                                     }
-
                                     // ------------------------
 
-                                TicketModel ticket = new TicketModel(titreTicket, slaTicket, dateTicket);
-                                    ticket.setUrgenceTicket(urgenceText(urgenceTicket));
+                                //TicketModel ticket = new TicketModel(titreTicket, slaTicket, dateTicket);
+                                    //ticket.setUrgenceTicket(urgenceText(urgenceTicket));
 
-                                TicketModels.add(ticket);
-                                adapter = new TicketAdapter(TicketModels,getApplicationContext());
+                                /* Remplissage du tableau des tickets pour le row item */
+                                ticketTab[i][0] = titreTicket; ticketTab[i][1] = slaTicket; ticketTab[i][2] = dateDebutTicket; ticketTab[i][3] = urgenceText(urgenceTicket);
+                                ticketTab[i][4] = calculTempsRestant(slaTicket);
+                                ticketTab[i][5] = String.valueOf(ticketEnretard);
 
-                                listView.setAdapter(adapter);
-                                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                                        TicketModel TicketModel= TicketModels.get(position);
 
-                                        Snackbar.make(view, TicketModel.getTitreTicket()+"\n"+TicketModel.getSlaTicket(), Snackbar.LENGTH_LONG)
-                                                .setAction("No action", null).show();
-                                    }
-                                });
+                                /* Remplissage du tableau des tickets pour tout */
+                                infoTicket[i][0] = demandeurTicket;
+                                infoTicket[i][1] = urgenceText(urgenceTicket);
+                                infoTicket[i][2] = categorieTicket;
+                                infoTicket[i][3] = etatText(etatTicket);
+                                infoTicket[i][4] = dateDebutTicket;
+                                infoTicket[i][5] = slaTicket;
+                                infoTicket[i][6] = dateEchanceTicket;
+                                infoTicket[i][7] = titreTicket;
+                                infoTicket[i][8] = descriptionTicket;
+                                infoTicket[i][9] = lieuTicket;
+                                infoTicket[i][10] = calculTempsRestant(slaTicket);
+                                infoTicket[i][11] = dateClotureTicket;
+
+                                System.out.println("SLA = "+slaTicket);
+                                System.out.println("Between : "+getBetweenBrackets(slaTicket));
+                                System.out.println("Minimum : "+getMinTemps(slaTicket));
+                                System.out.println("Maximim : "+getMaxTemps(slaTicket));
 
                                 // -----------------------------
 
                             }
+
+//                            AfficheTab(ticketTab);
+//                            System.out.println("*** Après tri ***");
+//                            triTableauTicket(ticketTab);
+//                            AfficheTab(ticketTab);
+
+                            //triTableauTicketParUrgence(ticketTab);
+                            //triInfoTicketParUrgence(infoTicket);
+
+
+
+                            System.out.println("*** Tab Ticket ***");
+                            System.out.println("isLate: "+ticketTab[0][5]);
+                            System.out.println("\n\n*** Info Ticket ***");
+                            System.out.println("Titre: "+infoTicket[0][7]);
+
+                            //triInfoTicket(infoTicket);
+                            addModelsFromTab(ticketTab);
+                            adapter = new TicketAdapter(TicketModels,getApplicationContext());
+
+                            listView.setAdapter(adapter);
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                    TicketModel TicketModel= TicketModels.get(position);
+
+                                    Snackbar.make(view, "Index = "+position, Snackbar.LENGTH_LONG)
+                                            .setAction("No action", null).show();
+
+                                    Intent i = new Intent(getApplicationContext(), InfoTicket.class);
+                                    i.putExtra("session",session_token);
+                                    i.putExtra("nom",nameUser);
+                                    i.putExtra("prenom",firstnameUser);
+                                    i.putExtra("id",idUser);
+                                    i.putExtra("infoTicket", infoTicket[position]);
+
+                                    startActivity(i);
+
+
+
+                                }
+                            });
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -153,6 +233,96 @@ public class ListTickets extends AppCompatActivity {
 
     }
 
+    private boolean getBooleanFromSt(String string) {
+        boolean bool = false;
+        if(string.equals("0")){
+            bool = false;
+        }
+        else if (string.equals("1")){
+            bool = true;
+        }
+        return bool;
+    }
+
+    private String getBetweenBrackets(String slaTicket) {
+        String between = "";
+
+        Pattern pattern = Pattern.compile("\\((.*?)\\)");
+        Matcher matcher = pattern.matcher(slaTicket);
+        while (matcher.find()){
+            between = matcher.group();
+        }
+
+        return between;
+    }
+
+    private String getDigit(String text) {
+        String digit = "";
+
+        Pattern pattern = Pattern.compile("([\\d]+)");
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()){
+            digit = matcher.group();
+        }
+
+        return digit;
+    }
+
+    private String getMinTemps(String slaTicket) {
+        String between = getBetweenBrackets(slaTicket);
+        String minTemps = "";
+
+        Pattern pattern = Pattern.compile("^(.*?)\\/");
+        Matcher matcher = pattern.matcher(between);
+        while (matcher.find()){
+            minTemps = matcher.group();
+        }
+
+        return getDigit(minTemps);
+    }
+
+    private String getMaxTemps(String slaTicket) {
+        String between = getBetweenBrackets(slaTicket);
+        String maxTemps = "";
+
+        Pattern pattern = Pattern.compile("([\\d]+)(?=[^\\/]*$)");
+        Matcher matcher = pattern.matcher(between);
+        while (matcher.find()){
+            maxTemps = matcher.group();
+        }
+
+
+        return maxTemps;
+    }
+
+    private String calculTempsRestant(String slaTicket) {
+        String minTemps = getMinTemps(slaTicket);
+        String maxTemps = getMaxTemps(slaTicket);
+
+
+        return "";
+    }
+
+    private void addModelsFromTab(String[][] ticketTab) {
+        for (int i = 0; i < ticketTab.length; i++){
+                TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2]);
+                ticket.setUrgenceTicket(ticketTab[i][3]);
+                ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
+
+                TicketModels.add(ticket);
+        }
+    }
+
+    private void AfficheTab(String[][] ticketTab) {
+        System.out.println("\n --- Tableau de ticket --- \n");
+        for (int i = 0; i < ticketTab.length; i++){
+            for(int j = 0; j<ticketTab[0].length; j++){
+                System.out.print(ticketTab[i][j]+" ");
+            }
+            System.out.println("\n");
+        }
+    }
+
     private String urgenceText(String urgenceTicket) {
         String urgence = "";
         int urg = Integer.valueOf(urgenceTicket);
@@ -170,11 +340,38 @@ public class ListTickets extends AppCompatActivity {
                 urgence = "Haute";
                 break;
             case 5:
-                urgence = "Très basse";
+                urgence = "Très haute";
                 break;
         }
 
         return urgence;
+    }
+
+    private String etatText(String etatTicket) {
+        String etat = "";
+        int et = Integer.valueOf(etatTicket);
+        switch (et){
+            case 1:
+                etat = "Nouveau";
+                break;
+            case 2:
+                etat = "En cours (Attribué)";
+                break;
+            case 3:
+                etat = "En cours (Planifié)";
+                break;
+            case 4:
+                etat = "En attente";
+                break;
+            case 5:
+                etat = "Résolu";
+                break;
+            case 6:
+                etat = "Clos";
+                break;
+        }
+
+        return etat;
     }
 
 
@@ -194,6 +391,100 @@ public class ListTickets extends AppCompatActivity {
         return baseUrl;
     }
 
+    public static void triTableauTicketParUrgence(String tableau[][]) {
+        int longueur = tableau.length;
+        boolean foundHaute = false;
+        boolean foundMoyenne = false;
+
+            // ---- Tri des urgences hautes/très hautes ---
+            for (int i = 0; i < longueur; i++) {
+                if ((!tableau[i][3].equals("Haute"))||(!tableau[i][3].equals("Très haute"))) {
+                    for (int k = i+1; k< longueur; k++){
+                        if (((tableau[k][3].equals("Haute"))||(tableau[k][3].equals("Très haute")))&&(!foundHaute)){
+                            foundHaute = true;
+                            permuter(k,i,tableau);
+                        }
+                    }
+                    foundHaute = false;
+                }
+            }
+
+            // ---- Tri des urgences moyennes ---
+        for (int i = nbHauteUrgences(tableau); i < longueur; i++) {
+            if (!tableau[i][3].equals("Moyenne")) {
+                for (int k = i+1; k< longueur; k++){
+                    if ((tableau[k][3].equals("Moyenne"))&&(!foundMoyenne)){
+                        foundMoyenne = true;
+                        permuter(k,i,tableau);
+                    }
+                }
+                foundMoyenne = false;
+            }
+        }
+    }
+
+    public static void triInfoTicketParUrgence(String tableau[][]) {
+        int longueur = tableau.length;
+        boolean foundHaute = false;
+        boolean foundMoyenne = false;
+
+        // ---- Tri des urgences hautes/très hautes ---
+        for (int i = 0; i < longueur; i++) {
+            if ((!tableau[i][1].equals("Haute"))||(!tableau[i][1].equals("Très haute"))) {
+                for (int k = i+1; k< longueur; k++){
+                    if (((tableau[k][1].equals("Haute"))||(tableau[k][1].equals("Très haute")))&&(!foundHaute)){
+                        foundHaute = true;
+                        permuter(k,i,tableau);
+                    }
+                }
+                foundHaute = false;
+            }
+        }
+
+        // ---- Tri des urgences moyennes ---
+        for (int i = nbHauteUrgences(tableau); i < longueur; i++) {
+            if (!tableau[i][1].equals("Moyenne")) {
+                for (int k = i+1; k< longueur; k++){
+                    if ((tableau[k][1].equals("Moyenne"))&&(!foundMoyenne)){
+                        foundMoyenne = true;
+                        permuter(k,i,tableau);
+                    }
+                }
+                foundMoyenne = false;
+            }
+        }
+    }
+
+    private static int nbHauteUrgences(String[][] tableau) {
+        int nbTickets = 0;
+        for(int i = 0; i < tableau.length; i++){
+            if ((tableau[i][3].equals("Haute"))||(tableau[i][3].equals("Très haute"))){
+                nbTickets++;
+            }
+        }
+
+        return nbTickets;
+    }
+
+    private static void permuter(int k, int i, String[][] tableau) {
+        String[] tampon = new String[4] ;
+
+        tampon[0] = tableau[k][0]; tampon[1] = tableau[k][1]; tampon[2] = tableau[k][2]; tampon[3] = tableau[k][3];
+
+        tableau[k][0] = tableau[i][0]; tableau[k][1] = tableau[i][1]; tableau[k][2] = tableau[i][2]; tableau[k][3] = tableau[i][3];
+
+        tableau[i][0] = tampon[0]; tableau[i][1] = tampon[1]; tableau[i][2] = tampon[2]; tableau[i][3] = tampon[3];
+    }
+
+    private static void permuterInfo(int k, int i, String[][] tableau) {
+        String[] tampon = new String[10] ;
+
+        tampon[0] = tableau[k][0]; tampon[1] = tableau[k][1]; tampon[2] = tableau[k][2]; tampon[3] = tableau[k][3]; tampon[4] = tableau[k][4]; tampon[5] = tableau[k][5]; tampon[6] = tableau[k][6]; tampon[7] = tableau[k][7]; tampon[8] = tableau[k][8]; tampon[9] = tableau[k][9];
+
+        tableau[k][0] = tableau[i][0]; tableau[k][1] = tableau[i][1]; tableau[k][2] = tableau[i][2]; tableau[k][3] = tableau[i][3]; //ajouter until 9
+
+        tableau[i][0] = tampon[0]; tableau[i][1] = tampon[1]; tableau[i][2] = tampon[2]; tableau[i][3] = tampon[3]; //ajouter till 9
+    }
 
 
 }
