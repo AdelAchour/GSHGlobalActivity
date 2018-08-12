@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".AccueilUser">
 
+
+
+
     <TextView
         android:id="@+id/welcomeTextView"
         android:layout_width="wrap_content"

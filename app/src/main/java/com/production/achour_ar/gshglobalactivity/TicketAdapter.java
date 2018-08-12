@@ -15,6 +15,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 
 import com.production.achour_ar.gshglobalactivity.DataModel.TicketModel;
 
@@ -32,6 +36,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         TextView txtSLA;
         ImageView info;
         RelativeLayout layout;
+
     }
 
 
@@ -46,44 +51,38 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
     @Override
     public void onClick(View v) {
-
-
         int position=(Integer) v.getTag();
         Object object= getItem(position);
         TicketModel TicketModel=(TicketModel)object;
 
-
-
-
         switch (v.getId())
         {
-
             case R.id.item_info:
 
-                Snackbar.make(v, "Temps restant : " +TicketModel.isTicketEnRetard(), Snackbar.LENGTH_LONG)
+                Snackbar.make(v, "is Late? : " +TicketModel.isTicketEnRetard(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
-
                 break;
-
-
         }
-
-
     }
 
     private int lastPosition = -1;
+    long timeLeftMS = Long.valueOf(TicketModel.getTempsRestantTicket());
+    CountDownTimer countDownTimer;
+    static Handler handlerTic ;
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+
+
         // Get the data item for this position
         TicketModel TicketModel = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
-        ViewHolder viewHolder; // view lookup cache stored in tag
+        final ViewHolder viewHolder; // view lookup cache stored in tag
 
         final View result;
 
         if (convertView == null) {
-
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -106,25 +105,60 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
         result.startAnimation(animation);
         lastPosition = position;
+        System.out.println("I'm in getView ndor !");
+
+        countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
+            @Override
+            public void onTick(long l) {
+                System.out.println("I'm in onTick !");
+                timeLeftMS = l;
+                handlerTic.sendEmptyMessage(0);
+            }
+
+            @Override
+            public void onFinish() {
+                //handlerFinish.sendEmptyMessage(0);
+            }
+        }.start();
 
 
         viewHolder.txtName.setText(TicketModel.getTitreTicket());
         viewHolder.txtDate.setText(TicketModel.getDateTicket());
         viewHolder.txtSLA.setText(TicketModel.getSlaTicket());
-        viewHolder.txtTempsRestant.setText(TicketModel.getTempsRestantTicket());
+        //viewHolder.txtTempsRestant.setText(TicketModel.getTempsRestantTicket());
         viewHolder.info.setImageResource(getIconUrgence(TicketModel.getUrgenceTicket()));
         viewHolder.layout.setBackgroundColor(getColorBG(TicketModel.isTicketEnRetard()));
         viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);
+
+        handlerTic = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                System.out.println("I'm in Handler !");
+                int minute = (int)timeLeftMS / 60000;
+                int seconde = (int)timeLeftMS % 60000 / 1000;
+
+                String timeLeftText;
+
+                timeLeftText = "" + minute;
+                timeLeftText += ":";
+                if (seconde<10) timeLeftText += "0";
+                timeLeftText += seconde;
+
+                viewHolder.txtTempsRestant.setText(timeLeftText);
+            }
+        };
+
         // Return the completed view to render on screen
         return convertView;
     }
+
 
     private int getColorBG(boolean ticketEnRetard) {
         int color;
 
         if (ticketEnRetard){
-            color = Color.parseColor("#6f970000");
+            color = Color.parseColor("#3caa0000");
         }
         else{
             color = Color.parseColor("#ffffff");

@@ -11,7 +11,7 @@ public class TicketModel {
 
 
 
-    String TempsRestantTicket;
+    static String TempsRestantTicket;
 
     public TicketModel(String titreTicket, String slaTicket, String dateTicket) {
         this.titreTicket = titreTicket;
@@ -43,7 +43,7 @@ public class TicketModel {
         TempsRestantTicket = tempsRestantTicket;
     }
 
-    public String getTempsRestantTicket() {
+    public static String getTempsRestantTicket() {
         return TempsRestantTicket;
     }
 

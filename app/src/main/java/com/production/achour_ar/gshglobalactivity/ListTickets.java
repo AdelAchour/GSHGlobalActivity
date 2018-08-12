@@ -23,7 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,12 +127,13 @@ public class ListTickets extends AppCompatActivity {
                                     }
                                     // ------------------------
 
-                                //TicketModel ticket = new TicketModel(titreTicket, slaTicket, dateTicket);
-                                    //ticket.setUrgenceTicket(urgenceText(urgenceTicket));
 
                                 /* Remplissage du tableau des tickets pour le row item */
-                                ticketTab[i][0] = titreTicket; ticketTab[i][1] = slaTicket; ticketTab[i][2] = dateDebutTicket; ticketTab[i][3] = urgenceText(urgenceTicket);
-                                ticketTab[i][4] = calculTempsRestant(slaTicket);
+                                ticketTab[i][0] = titreTicket;
+                                ticketTab[i][1] = slaTicket;
+                                ticketTab[i][2] = dateDebutTicket;
+                                ticketTab[i][3] = urgenceText(urgenceTicket);
+                                ticketTab[i][4] = calculTempsRestant(dateDebutTicket, slaTicket);
                                 ticketTab[i][5] = String.valueOf(ticketEnretard);
 
 
@@ -145,9 +149,10 @@ public class ListTickets extends AppCompatActivity {
                                 infoTicket[i][7] = titreTicket;
                                 infoTicket[i][8] = descriptionTicket;
                                 infoTicket[i][9] = lieuTicket;
-                                infoTicket[i][10] = calculTempsRestant(slaTicket);
+                                infoTicket[i][10] = calculTempsRestant(dateDebutTicket, slaTicket);
                                 infoTicket[i][11] = dateClotureTicket;
 
+                                System.out.println("Temps restant = "+calculTempsRestant(dateDebutTicket, slaTicket));
                                 System.out.println("SLA = "+slaTicket);
                                 System.out.println("Between : "+getBetweenBrackets(slaTicket));
                                 System.out.println("Minimum : "+getMinTemps(slaTicket));
@@ -295,12 +300,46 @@ public class ListTickets extends AppCompatActivity {
         return maxTemps;
     }
 
-    private String calculTempsRestant(String slaTicket) {
+    private String calculTempsRestant(String dateDebutTicket, String slaTicket) {
         String minTemps = getMinTemps(slaTicket);
         String maxTemps = getMaxTemps(slaTicket);
 
+        long dateDebutMS = getDateDebutMS(dateDebutTicket);
+        long currentTimeMS = CurrentTimeMS();
 
-        return "";
+        long minTempsMS = hourToMSConvert(minTemps);
+
+        long differenceCurrentDebut = currentTimeMS - dateDebutMS;
+
+        long tempsRestant = minTempsMS - differenceCurrentDebut;
+
+        return String.valueOf(tempsRestant);
+    }
+
+    private long hourToMSConvert(String minTemps) {
+        long time = Long.valueOf(minTemps)*3600000;
+        return time;
+    }
+
+    private long CurrentTimeMS() {
+        long time = System.currentTimeMillis();
+        return time;
+    }
+
+    private long getDateDebutMS(String dateDebutTicket) {
+        long dateDebutMS = 0;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //"2018-07-17 11:58:47
+        formatter.setLenient(false);
+
+        String oldTime = dateDebutTicket;
+        Date oldDate = null;
+        try {
+            oldDate = formatter.parse(oldTime);
+        } catch (ParseException e) { e.printStackTrace(); }
+        dateDebutMS = oldDate.getTime();
+
+        return dateDebutMS;
     }
 
     private void addModelsFromTab(String[][] ticketTab) {
@@ -308,6 +347,7 @@ public class ListTickets extends AppCompatActivity {
                 TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2]);
                 ticket.setUrgenceTicket(ticketTab[i][3]);
                 ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
+                ticket.setTempsRestantTicket(ticketTab[i][4]);
 
                 TicketModels.add(ticket);
         }
