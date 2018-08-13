@@ -179,6 +179,7 @@ public class ListTickets extends AppCompatActivity {
 
                             //triInfoTicket(infoTicket);
                             addModelsFromTab(ticketTab);
+
                             adapter = new TicketAdapter(TicketModels,getApplicationContext());
 
                             listView.setAdapter(adapter);
@@ -199,8 +200,6 @@ public class ListTickets extends AppCompatActivity {
                                     i.putExtra("infoTicket", infoTicket[position]);
 
                                     startActivity(i);
-
-
 
                                 }
                             });

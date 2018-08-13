@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
     private ArrayList<TicketModel> dataSet;
     Context mContext;
-    long timeLeftMS ;
+
 
     // View lookup cache
     private class ViewHolder {
@@ -37,11 +38,15 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         TextView txtSLA;
         ImageView info;
         RelativeLayout layout;
+        boolean isSLAlate = false;
 
         Handler handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 System.out.println("handler");
+
+                Bundle bundle = msg.getData();
+                long timeLeftMS = bundle.getLong("time");
 
                 int hour = (int) ((timeLeftMS / (1000*60*60)) % 24);
                 int minute = (int) ((timeLeftMS / (60000)) % 60);
@@ -59,9 +64,65 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 timeLeftText += seconde;
 
                 txtTempsRestant.setText(timeLeftText);
+
+                if (timeLeftMS <= getMSfromTime("00:10:00")){
+                    txtTempsRestant.setTextColor(Color.parseColor("#ca1f1f"));
+                }
+
             }
         };
 
+        Handler handlerLate = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                txtTempsRestant.setText("En retard");
+                txtTempsRestant.setTextColor(Color.parseColor("#434343"));
+                layout.setBackgroundColor(Color.parseColor("#3caa0000"));
+            }
+        };
+
+        public void startTimer(long timeLeftMS) {
+            if (timeLeftMS<0){
+                handlerLate.sendEmptyMessage(0);
+            }
+            else{
+                CountDownTimer countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
+
+                    @Override
+                    public void onTick(long l) {
+                        Bundle bundle = new Bundle();
+                        bundle.putLong("time", l);
+                        Message message = new Message();
+                        message.setData(bundle);
+                        handler.sendMessage(message);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        handlerLate.sendEmptyMessage(0);
+                    }
+                }.start();
+            }
+        }
+
+    }
+
+    private long getMSfromTime(String timeLeftText) {
+        long timeMS = 0;
+
+        //"00:01:21"
+        String hours = timeLeftText.substring(0, 2);
+        String minutes = timeLeftText.substring(3, 5);
+        String seconds = timeLeftText.substring(6, 8);
+
+        //System.out.println("hours = "+hours+" | minutes = "+minutes+" | seconds = "+seconds);
+
+        long hoursMS = 3600000*Long.valueOf(hours);
+        long minutesMS = 60000*Long.valueOf(minutes);
+        long secondsMS = 1000*Long.parseLong(seconds);
+        timeMS = hoursMS + minutesMS + secondsMS;
+
+        return timeMS;
     }
 
 
@@ -115,7 +176,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
 
             result=convertView;
-
+            viewHolder.startTimer(Long.valueOf(TicketModel.getTempsRestantTicket()));
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -132,67 +193,38 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         //viewHolder.txtTempsRestant.setText(TicketModel.getTempsRestantTicket());
         viewHolder.info.setImageResource(getIconUrgence(TicketModel.getUrgenceTicket()));
         viewHolder.layout.setBackgroundColor(getColorBG(TicketModel.isTicketEnRetard()));
+        /*if (TicketModel.isTicketEnRetard()){
+            viewHolder.txtTempsRestant.setText("En retard !");
+        }*/
         viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);
 
-        System.out.println("Here : "+TicketModel.getTitreTicket());
-        System.out.println("Time = "+TicketModel.getTempsRestantTicket());
-        timeLeftMS = Long.valueOf(TicketModel.getTempsRestantTicket());
-
-
-        startTimer(viewHolder.handler);
-
-
+        System.out.println("Here : "+TicketModel.getTitreTicket()); //getting each item's name
+        System.out.println("Time = "+TicketModel.getTempsRestantTicket()); //getting each item's time left and it's correct
+        System.out.println("Rebours = "+calculRebours(Long.valueOf(TicketModel.getTempsRestantTicket())));
 
         // Return the completed view to render on screen
         return convertView;
     }
 
-    private void startTimer(final Handler handler) {
-        CountDownTimer countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
+    private String calculRebours(long timeLeftMS) {
+        int hour = (int) ((timeLeftMS / (1000*60*60)) % 24);
+        int minute = (int) ((timeLeftMS / (60000)) % 60);
+        int seconde = (int)timeLeftMS % 60000 / 1000;
 
-            @Override
-            public void onTick(long l) {
-                timeLeftMS = l;
-                handler.sendEmptyMessage(0);
-            }
+        String timeLeftText = "";
 
-            @Override
-            public void onFinish() {
+        if (hour<10) timeLeftText += "0";
+        timeLeftText += hour;
+        timeLeftText += ":";
+        if (minute<10) timeLeftText += "0";
+        timeLeftText += minute;
+        timeLeftText += ":";
+        if (seconde<10) timeLeftText += "0";
+        timeLeftText += seconde;
 
-            }
-        }.start();
+        return timeLeftText;
     }
-
-
-    /*Handler handlerTic = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            System.out.println("handler");
-
-            int hour = (int) ((timeLeftMS / (1000*60*60)) % 24);
-            int minute = (int) ((timeLeftMS / (60000)) % 60);
-            int seconde = (int)timeLeftMS % 60000 / 1000;
-
-            String timeLeftText = "";
-
-            if (hour<10) timeLeftText += "0";
-            timeLeftText += hour;
-            timeLeftText += ":";
-            if (minute<10) timeLeftText += "0";
-            timeLeftText += minute;
-            timeLeftText += ":";
-            if (seconde<10) timeLeftText += "0";
-            timeLeftText += seconde;
-
-            //txtTempsRestant.setText(timeLeftText);
-            System.out.println(timeLeftText);
-
-            //timeRemaining.setText("Hey done!");
-        }
-    };*/
-
-
 
     private int getColorBG(boolean ticketEnRetard) {
         int color;
