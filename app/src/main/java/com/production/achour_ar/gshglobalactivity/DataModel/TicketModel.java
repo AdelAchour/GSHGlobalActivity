@@ -9,14 +9,13 @@ public class TicketModel {
 
     boolean ticketEnRetard;
 
+    String TempsRestantTicket;
 
-
-    static String TempsRestantTicket;
-
-    public TicketModel(String titreTicket, String slaTicket, String dateTicket) {
+    public TicketModel(String titreTicket, String slaTicket, String dateTicket, String tempsRestantTicket) {
         this.titreTicket = titreTicket;
         this.slaTicket = slaTicket;
         DateTicket = dateTicket;
+        TempsRestantTicket = tempsRestantTicket;
     }
 
     public String getTitreTicket() {
@@ -43,7 +42,7 @@ public class TicketModel {
         TempsRestantTicket = tempsRestantTicket;
     }
 
-    public static String getTempsRestantTicket() {
+    public String getTempsRestantTicket() {
         return TempsRestantTicket;
     }
 

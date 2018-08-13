@@ -26,21 +26,41 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
     private ArrayList<TicketModel> dataSet;
     Context mContext;
-    static long timeLeftMS = Long.valueOf(TicketModel.getTempsRestantTicket());
-
-
+    long timeLeftMS ;
 
     // View lookup cache
-    private static class ViewHolder {
+    private class ViewHolder {
         TextView txtName;
         TextView txtType;
-        static TextView txtTempsRestant;
+        TextView txtTempsRestant;
         TextView txtDate;
         TextView txtSLA;
         ImageView info;
         RelativeLayout layout;
 
-        Handler handlerTic;
+        Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                System.out.println("handler");
+
+                int hour = (int) ((timeLeftMS / (1000*60*60)) % 24);
+                int minute = (int) ((timeLeftMS / (60000)) % 60);
+                int seconde = (int)timeLeftMS % 60000 / 1000;
+
+                String timeLeftText = "";
+
+                if (hour<10) timeLeftText += "0";
+                timeLeftText += hour;
+                timeLeftText += ":";
+                if (minute<10) timeLeftText += "0";
+                timeLeftText += minute;
+                timeLeftText += ":";
+                if (seconde<10) timeLeftText += "0";
+                timeLeftText += seconde;
+
+                txtTempsRestant.setText(timeLeftText);
+            }
+        };
 
     }
 
@@ -51,22 +71,6 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         this.mContext=context;
         //startUpdateTimer();
     }
-
-    /*private void startUpdateTimer() {
-        countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
-            @Override
-            public void onTick(long l) {
-                timeLeftMS = l;
-                handlerTic.sendEmptyMessage(0);
-            }
-
-            @Override
-            public void onFinish() {
-                //handlerFinish.sendEmptyMessage(0);
-            }
-        }.start();
-    }*/
-
 
 
     @Override
@@ -110,8 +114,6 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             viewHolder.layout = (RelativeLayout) convertView.findViewById(R.id.backgroundRow);
 
 
-
-
             result=convertView;
 
             convertView.setTag(viewHolder);
@@ -123,11 +125,6 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
         result.startAnimation(animation);
         lastPosition = position;
-        System.out.println("I'm in getView ndor !");
-        System.out.println("Time from = "+timeLeftMS);
-        startTimer();
-
-
 
         viewHolder.txtName.setText(TicketModel.getTitreTicket());
         viewHolder.txtDate.setText(TicketModel.getDateTicket());
@@ -138,22 +135,26 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);
 
+        System.out.println("Here : "+TicketModel.getTitreTicket());
+        System.out.println("Time = "+TicketModel.getTempsRestantTicket());
+        timeLeftMS = Long.valueOf(TicketModel.getTempsRestantTicket());
+
+
+        startTimer(viewHolder.handler);
+
 
 
         // Return the completed view to render on screen
         return convertView;
     }
 
-    private void startTimer() {
-        System.out.println("I'm in startTimer !");
-
+    private void startTimer(final Handler handler) {
         CountDownTimer countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
+
             @Override
             public void onTick(long l) {
-                System.out.println("I'm in TIC !");
                 timeLeftMS = l;
-                handlerTic.sendEmptyMessage(0);
-                //System.out.println("restant : "+timeLeftMS);
+                handler.sendEmptyMessage(0);
             }
 
             @Override
@@ -164,7 +165,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
     }
 
 
-    Handler handlerTic = new Handler(){
+    /*Handler handlerTic = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             System.out.println("handler");
@@ -189,7 +190,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
             //timeRemaining.setText("Hey done!");
         }
-    };
+    };*/
 
 
 

@@ -344,10 +344,10 @@ public class ListTickets extends AppCompatActivity {
 
     private void addModelsFromTab(String[][] ticketTab) {
         for (int i = 0; i < ticketTab.length; i++){
-                TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2]);
+                TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4]);
                 ticket.setUrgenceTicket(ticketTab[i][3]);
                 ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
-                ticket.setTempsRestantTicket(ticketTab[i][4]);
+                //ticket.setTempsRestantTicket(ticketTab[i][4]);
 
                 TicketModels.add(ticket);
         }
