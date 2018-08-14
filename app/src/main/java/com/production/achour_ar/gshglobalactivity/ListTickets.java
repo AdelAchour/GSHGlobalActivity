@@ -5,10 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -40,21 +44,23 @@ public class ListTickets extends AppCompatActivity {
     private static TicketAdapter adapter;
     String session_token, nameUser, idUser, firstnameUser, nbTicket;
     RequestQueue queue;
-    String titreTicket, slaTicket, urgenceTicket,
-    demandeurTicket, categorieTicket, etatTicket, dateDebutTicket,
+    String titreTicket, slaTicket, urgenceTicket, idTicket,
+    demandeurTicket, categorieTicket, etatTicket, dateDebutTicket, statutTicket,
             dateEchanceTicket, dateClotureTicket, descriptionTicket, lieuTicket;
     boolean ticketEnretard;
 
-    public static int nbTicketTab = 6;
-    public static int nbInfoTicket = 12;
+    String nbClos;
 
-    public static String[][] ticketTab ;
-    public static String[][] infoTicket ;
+    public int nbTicketTab = 8;
+
+    public String[][] ticketTab ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_tickets);
+
+        getSupportActionBar().setTitle("Tickets en cours");
 
         queue = Volley.newRequestQueue(this);
 
@@ -70,8 +76,6 @@ public class ListTickets extends AppCompatActivity {
 
         TicketModels = new ArrayList<>();
         ticketTab = new String[Integer.valueOf(nbTicket)][nbTicketTab];
-        infoTicket = new String[Integer.valueOf(nbTicket)][nbInfoTicket];
-
 
         String url = FirstEverActivity.GLPI_URL+"search/Ticket";
 
@@ -81,6 +85,10 @@ public class ListTickets extends AppCompatActivity {
         params.add(new KeyValuePair("criteria[0][field]","5"));
         params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
         params.add(new KeyValuePair("criteria[0][value]",idUser));
+//        params.add(new KeyValuePair("criteria[1][link]","AND"));
+//        params.add(new KeyValuePair("criteria[1][field]","12"));
+//        params.add(new KeyValuePair("criteria[1][searchtype]","notequals"));
+//        params.add(new KeyValuePair("criteria[1][value]","6"));
         params.add(new KeyValuePair("forcedisplay[0]","4"));
         params.add(new KeyValuePair("forcedisplay[1]","10"));
         params.add(new KeyValuePair("forcedisplay[2]","7"));
@@ -92,6 +100,7 @@ public class ListTickets extends AppCompatActivity {
         params.add(new KeyValuePair("forcedisplay[8]","83"));
         params.add(new KeyValuePair("forcedisplay[9]","82"));
         params.add(new KeyValuePair("forcedisplay[10]","16"));
+        params.add(new KeyValuePair("forcedisplay[11]","2"));
 
         final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
@@ -108,6 +117,8 @@ public class ListTickets extends AppCompatActivity {
                                         slaTicket = oneTicket.getString("30");
                                         dateDebutTicket = oneTicket.getString("15");
                                         urgenceTicket = oneTicket.getString("10");
+                                        statutTicket = oneTicket.getString("12");
+                                        idTicket = oneTicket.getString("2");
 
                                         //Récupération du reste
                                         demandeurTicket = oneTicket.getString("4");
@@ -133,49 +144,15 @@ public class ListTickets extends AppCompatActivity {
                                 ticketTab[i][1] = slaTicket;
                                 ticketTab[i][2] = dateDebutTicket;
                                 ticketTab[i][3] = urgenceText(urgenceTicket);
-                                ticketTab[i][4] = calculTempsRestant(dateDebutTicket, slaTicket);
+                                ticketTab[i][4] = calculTempsRestant(dateDebutTicket, slaTicket, dateEchanceTicket);
                                 ticketTab[i][5] = String.valueOf(ticketEnretard);
-
-
-
-                                /* Remplissage du tableau des tickets pour tout */
-                                infoTicket[i][0] = demandeurTicket;
-                                infoTicket[i][1] = urgenceText(urgenceTicket);
-                                infoTicket[i][2] = categorieTicket;
-                                infoTicket[i][3] = etatText(etatTicket);
-                                infoTicket[i][4] = dateDebutTicket;
-                                infoTicket[i][5] = slaTicket;
-                                infoTicket[i][6] = dateEchanceTicket;
-                                infoTicket[i][7] = titreTicket;
-                                infoTicket[i][8] = descriptionTicket;
-                                infoTicket[i][9] = lieuTicket;
-                                infoTicket[i][10] = calculTempsRestant(dateDebutTicket, slaTicket);
-                                infoTicket[i][11] = dateClotureTicket;
-
-                                System.out.println("Temps restant = "+calculTempsRestant(dateDebutTicket, slaTicket));
-                                System.out.println("SLA = "+slaTicket);
-                                System.out.println("Between : "+getBetweenBrackets(slaTicket));
-                                System.out.println("Minimum : "+getMinTemps(slaTicket));
-                                System.out.println("Maximim : "+getMaxTemps(slaTicket));
+                                ticketTab[i][6] = statutTicket;
+                                ticketTab[i][7] = idTicket;
 
                                 // -----------------------------
 
                             }
 
-//                            AfficheTab(ticketTab);
-//                            System.out.println("*** Après tri ***");
-//                            triTableauTicket(ticketTab);
-//                            AfficheTab(ticketTab);
-
-                            //triTableauTicketParUrgence(ticketTab);
-                            //triInfoTicketParUrgence(infoTicket);
-
-
-
-                            System.out.println("*** Tab Ticket ***");
-                            System.out.println("isLate: "+ticketTab[0][5]);
-                            System.out.println("\n\n*** Info Ticket ***");
-                            System.out.println("Titre: "+infoTicket[0][7]);
 
                             //triInfoTicket(infoTicket);
                             addModelsFromTab(ticketTab);
@@ -189,7 +166,7 @@ public class ListTickets extends AppCompatActivity {
 
                                     TicketModel TicketModel= TicketModels.get(position);
 
-                                    Snackbar.make(view, "Index = "+position, Snackbar.LENGTH_LONG)
+                                    Snackbar.make(view, "id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
                                             .setAction("No action", null).show();
 
                                     Intent i = new Intent(getApplicationContext(), InfoTicket.class);
@@ -197,7 +174,7 @@ public class ListTickets extends AppCompatActivity {
                                     i.putExtra("nom",nameUser);
                                     i.putExtra("prenom",firstnameUser);
                                     i.putExtra("id",idUser);
-                                    i.putExtra("infoTicket", infoTicket[position]);
+                                    i.putExtra("idTicket", TicketModel.getIdTicket());
 
                                     startActivity(i);
 
@@ -299,20 +276,26 @@ public class ListTickets extends AppCompatActivity {
         return maxTemps;
     }
 
-    private String calculTempsRestant(String dateDebutTicket, String slaTicket) {
+    private String calculTempsRestant(String dateDebutTicket, String slaTicket, String dateEcheance) {
         String minTemps = getMinTemps(slaTicket);
         String maxTemps = getMaxTemps(slaTicket);
 
         long dateDebutMS = getDateDebutMS(dateDebutTicket);
+        long dateEcheanceMS = getDateDebutMS(dateEcheance);
+
         long currentTimeMS = CurrentTimeMS();
 
+        long differenceEcheanceCurrent = dateEcheanceMS - currentTimeMS;
+
         long minTempsMS = hourToMSConvert(minTemps);
+        long maxTempsMS = hourToMSConvert(maxTemps);
 
         long differenceCurrentDebut = currentTimeMS - dateDebutMS;
 
-        long tempsRestant = minTempsMS - differenceCurrentDebut;
+        long tempsRestant = maxTempsMS - differenceCurrentDebut;
 
-        return String.valueOf(tempsRestant);
+        return String.valueOf(differenceEcheanceCurrent);
+
     }
 
     private long hourToMSConvert(String minTemps) {
@@ -343,12 +326,14 @@ public class ListTickets extends AppCompatActivity {
 
     private void addModelsFromTab(String[][] ticketTab) {
         for (int i = 0; i < ticketTab.length; i++){
-                TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4]);
+            if (!ticketTab[i][6].equals("6")) {
+                TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4], ticketTab[i][7]);
                 ticket.setUrgenceTicket(ticketTab[i][3]);
                 ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
                 //ticket.setTempsRestantTicket(ticketTab[i][4]);
 
                 TicketModels.add(ticket);
+            }
         }
     }
 
@@ -525,5 +510,97 @@ public class ListTickets extends AppCompatActivity {
         tableau[i][0] = tampon[0]; tableau[i][1] = tampon[1]; tableau[i][2] = tampon[2]; tableau[i][3] = tampon[3]; //ajouter till 9
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.itemRetard:
+                //Toast.makeText(getApplicationContext(), "Retard Selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.itemClos:
+                //Toast.makeText(getApplicationContext(), "Clos Selected", Toast.LENGTH_SHORT).show();
+                getnbClos(session_token, idUser);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void ToTicketsClos(String session_token, String idUser, String nbClos) {
+        Intent i = new Intent(getApplicationContext(), ListTicketsClos.class);
+        i.putExtra("session",session_token);
+        i.putExtra("id",idUser);
+        i.putExtra("nb",nbClos);
+        startActivity(i);
+    }
+
+    private void getnbClos(final String session_token, final String idUser) {
+
+        RequestQueue queuenb = Volley.newRequestQueue(this);
+
+        String url = FirstEverActivity.GLPI_URL+"search/Ticket";
+
+        List<KeyValuePair> params = new ArrayList<>();
+        params.add(new KeyValuePair("criteria[0][field]","5"));
+        params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+        params.add(new KeyValuePair("criteria[0][value]",idUser));
+        params.add(new KeyValuePair("criteria[1][link]","AND"));
+        params.add(new KeyValuePair("criteria[1][field]","12"));
+        params.add(new KeyValuePair("criteria[1][searchtype]","equals"));
+        params.add(new KeyValuePair("criteria[1][value]","6"));
+        params.add(new KeyValuePair("forcedisplay[0]","4"));
+
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                           String ns = response.getString("totalcount");
+                           ToTicketsClos(session_token, idUser, ns);
+
+                        } catch (JSONException e) {
+                            Log.e("No response ",e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //progressBar.setVisibility(View.GONE);
+                        Log.e("Error.Response", error.toString());
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("Session-Token",session_token);
+                return params;
+            }
+
+        };
+
+        // add it to the RequestQueue
+        queuenb.add(getRequest);
+
+    }
+
+    public String getNbClos() {
+        return nbClos;
+    }
+
+    public void setNbClos(String nbClos) {
+        this.nbClos = nbClos;
+    }
 }
+

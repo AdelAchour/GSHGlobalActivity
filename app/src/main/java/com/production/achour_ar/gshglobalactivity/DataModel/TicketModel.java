@@ -10,12 +10,14 @@ public class TicketModel {
     boolean ticketEnRetard;
 
     String TempsRestantTicket;
+    String idTicket;
 
-    public TicketModel(String titreTicket, String slaTicket, String dateTicket, String tempsRestantTicket) {
+    public TicketModel(String titreTicket, String slaTicket, String dateTicket, String tempsRestantTicket, String idticket) {
         this.titreTicket = titreTicket;
         this.slaTicket = slaTicket;
         DateTicket = dateTicket;
         TempsRestantTicket = tempsRestantTicket;
+        idTicket = idticket;
     }
 
     public String getTitreTicket() {
@@ -52,5 +54,9 @@ public class TicketModel {
 
     public void setTicketEnRetard(boolean ticketEnRetard) {
         this.ticketEnRetard = ticketEnRetard;
+    }
+
+    public String getIdTicket() {
+        return idTicket;
     }
 }

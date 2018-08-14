@@ -48,12 +48,16 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 Bundle bundle = msg.getData();
                 long timeLeftMS = bundle.getLong("time");
 
+                int day = (int) ((timeLeftMS / (24*3600000)));
                 int hour = (int) ((timeLeftMS / (1000*60*60)) % 24);
                 int minute = (int) ((timeLeftMS / (60000)) % 60);
                 int seconde = (int)timeLeftMS % 60000 / 1000;
 
                 String timeLeftText = "";
 
+                if (day<10) timeLeftText += "0";
+                timeLeftText += day;
+                timeLeftText += ":";
                 if (hour<10) timeLeftText += "0";
                 timeLeftText += hour;
                 timeLeftText += ":";
@@ -104,6 +108,13 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 }.start();
             }
         }
+
+        //statut
+        public void isEnAttente(String getTicketStatut) {
+
+            if (getTicketStatut)
+
+            }
 
     }
 
@@ -177,6 +188,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
             result=convertView;
             viewHolder.startTimer(Long.valueOf(TicketModel.getTempsRestantTicket()));
+            viewHolder.isEnAttente(TicketModel.getStatutTicket());
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

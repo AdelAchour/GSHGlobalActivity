@@ -32,8 +32,9 @@ public class InfoTicket extends Activity {
     String session_token, nameUser, idUser, firstnameUser;
 
     String titreTicket, slaTicket, urgenceTicket,
-            demandeurTicket, categorieTicket, etatTicket, dateDebutTicket,
-            dateEchanceTicket, descriptionTicket, lieuTicket, tempsRestantTicket, dateClotureTicket;
+            categorieTicket, etatTicket, dateDebutTicket, idTicket,
+            dateEchanceTicket, descriptionTicket, lieuTicket, dateClotureTicket;
+    String demandeurTicket;
 
     String usernameDemandeur, emailDemandeur, telephoneDemandeur, prenomDemandeur, nomDemandeur, lieuDemandeur;
 
@@ -42,10 +43,6 @@ public class InfoTicket extends Activity {
             dateEchanceTV, descriptionTV, lieuTV, dateClotureTicketTV;
 
     RequestQueue queue;
-
-
-
-    public static String[] infoTicket = new String[ListTickets.nbInfoTicket];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,69 +64,163 @@ public class InfoTicket extends Activity {
         dateClotureTicketTV = (TextView)findViewById(R.id.dateClosAnswer);
 
 
-
         Intent i = getIntent();
         session_token = i.getStringExtra("session");
         nameUser = i.getStringExtra("nom");
         firstnameUser = i.getStringExtra("prenom");
         idUser = i.getStringExtra("id");
 
-        infoTicket = i.getStringArrayExtra("infoTicket");
+        idTicket = i.getStringExtra("idTicket");
 
-        demandeurTicket = infoTicket[0];
-        urgenceTicket = infoTicket[1];
-        categorieTicket = infoTicket[2];
-        etatTicket = infoTicket[3];
-        dateDebutTicket = infoTicket[4];
-        slaTicket = infoTicket[5];
-        dateEchanceTicket = infoTicket[6];
-        titreTicket = infoTicket[7];
-        descriptionTicket = infoTicket[8];
-        lieuTicket = infoTicket[9];
-        tempsRestantTicket = infoTicket[10];
-        dateClotureTicket = infoTicket[11];
+        System.out.println("id t = "+idTicket);
+
+        //Récupération du ticket
+        List<KeyValuePair> paramsTicket = new ArrayList<>();
+        paramsTicket.add(new KeyValuePair("criteria[0][field]","2"));
+        paramsTicket.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+        paramsTicket.add(new KeyValuePair("criteria[0][value]",idTicket));
+
+        paramsTicket.add(new KeyValuePair("forcedisplay[0]","4"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[1]","10"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[2]","7"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[3]","12"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[4]","15"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[5]","30"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[6]","18"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[7]","21"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[8]","83"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[9]","82"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[10]","16"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[11]","12"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[12]","2"));
 
 
+        String urlTicket = FirstEverActivity.GLPI_URL+"search/Ticket";
 
-        //Récupération des informations du demandeur
-        String url = FirstEverActivity.GLPI_URL+"search/User";
-
-
-
-        List<KeyValuePair> params = new ArrayList<>();
-        params.add(new KeyValuePair("criteria[0][field]","2"));
-        params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
-        params.add(new KeyValuePair("criteria[0][value]",demandeurTicket));
-        params.add(new KeyValuePair("forcedisplay[0]","9"));
-        params.add(new KeyValuePair("forcedisplay[1]","34"));
-        params.add(new KeyValuePair("forcedisplay[2]","5"));
-        params.add(new KeyValuePair("forcedisplay[3]","6"));
-
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequestTicket = new JsonObjectRequest(Request.Method.GET, generateUrl(urlTicket, paramsTicket), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONArray Jdata = response.getJSONArray("data");
-                                try {
-                                    JSONObject userInfo = Jdata.getJSONObject(0);
-                                    // Récupération des données du demandeur
-                                    usernameDemandeur = userInfo.getString("1");
-                                    emailDemandeur = userInfo.getString("5");
-                                    telephoneDemandeur = userInfo.getString("6");
-                                    prenomDemandeur = userInfo.getString("9");
-                                    nomDemandeur = userInfo.getString("34");
-                                    lieuDemandeur = userInfo.getString("80");
+                            String iddemandeur = "";
 
-                                    //System.out.println("Titre = " + titreTicket + "\n SLA = " + slaTicket + "\n Date = " + dateTicket);
+                            JSONArray Jdata = response.getJSONArray("data");
+                            for (int i=0; i < Jdata.length(); i++) {
+                                try {
+                                    JSONObject oneTicket = Jdata.getJSONObject(i);
+                                    titreTicket = oneTicket.getString("1");
+                                    slaTicket = oneTicket.getString("30");
+                                    dateDebutTicket = oneTicket.getString("15");
+                                    urgenceTicket = oneTicket.getString("10");
+                                    idTicket = oneTicket.getString("2");
+
+                                    iddemandeur = oneTicket.getString("4");
+                                    categorieTicket = oneTicket.getString("7");
+                                    etatTicket = oneTicket.getString("12");
+                                    dateEchanceTicket = oneTicket.getString("18");
+                                    descriptionTicket = oneTicket.getString("21");
+
+                                    lieuTicket = oneTicket.getString("83");
+                                    dateClotureTicket = oneTicket.getString("16");
+
                                 } catch (JSONException e) {
-                                    Log.e("Error JSONArray : ", e.getMessage());
+                                    Log.e("Error ticket ", e.getMessage());
                                 }
+
+                            }
+
+                            titreTV.setText(titreTicket);
+                            urgenceTV.setText(urgenceTicket);
+                            categorieTV.setText(categorieTicket);
+                            etatTV.setText(etatTicket);
+                            dateDebutTV.setText(dateDebutTicket);
+                            slaTV.setText(slaTicket);
+                            dateEchanceTV.setText(dateEchanceTicket);
+                            titreTV.setText(titreTicket);
+                            descriptionTV.setText(descriptionTicket);
+                            lieuTV.setText(lieuTicket);
+                            dateClotureTicketTV.setText(dateClotureTicket);
+                            setDemandeurTicket(iddemandeur);
+                            getDemandeurInfo(iddemandeur);
+
+                        } catch (JSONException e) {
+                            Log.e("Error ticket ",e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //progressBar.setVisibility(View.GONE);
+                        Log.e("Eeeeeh ticket ", error.toString());
+                    }
+
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("Session-Token",session_token);
+                return params;
+            }
+
+        };
+        queue.add(getRequestTicket);
+
+
+    }
+
+    private void getDemandeurInfo(String iddemandeur) {
+        //Récupération des informations du demandeur
+        String urlDemandeur = FirstEverActivity.GLPI_URL+"search/User";
+
+        List<KeyValuePair> paramsDemandeur = new ArrayList<>();
+        paramsDemandeur.add(new KeyValuePair("criteria[0][field]","2"));
+        paramsDemandeur.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+        paramsDemandeur.add(new KeyValuePair("criteria[0][value]",iddemandeur));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[0]","9"));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[1]","34"));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[2]","5"));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[3]","6"));
+
+        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlDemandeur, paramsDemandeur), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("dans response demandeur");
+                        try {
+                            JSONArray Jdata = response.getJSONArray("data");
+                            try {
+                                JSONObject userInfo = Jdata.getJSONObject(0);
+                                // Récupération des données du demandeur
+                                usernameDemandeur = userInfo.getString("1");
+                                emailDemandeur = userInfo.getString("5");
+                                telephoneDemandeur = userInfo.getString("6");
+                                prenomDemandeur = userInfo.getString("9");
+                                nomDemandeur = userInfo.getString("34");
+                                lieuDemandeur = userInfo.getString("80");
+
+                            } catch (JSONException e) {
+                                Log.e("Error JSONArray : ", e.getMessage());
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
+                        demandeurTV.setText(nomDemandeur+" "+prenomDemandeur);
+
+                        demandeurTV.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        });
+
                     }
                 },
                 new Response.ErrorListener()
@@ -152,25 +243,9 @@ public class InfoTicket extends Activity {
 
         };
 
-        // add it to the RequestQueue
-        queue.add(getRequest);
-
-
-        //Set text
-        demandeurTV.setText(nomDemandeur+" "+prenomDemandeur);
-        urgenceTV.setText(urgenceTicket);
-        categorieTV.setText(categorieTicket);
-        etatTV.setText(etatTicket);
-        dateDebutTV.setText(dateDebutTicket);
-        slaTV.setText(slaTicket);
-        dateEchanceTV.setText(dateEchanceTicket);
-        titreTV.setText(titreTicket);
-        descriptionTV.setText(descriptionTicket);
-        lieuTV.setText(lieuTicket);
-        dateClotureTicketTV.setText(dateClotureTicket);
-
-
+        queue.add(getRequestDemandeur);
     }
+
 
     public static String generateUrl(String baseUrl, List<KeyValuePair> params) {
         if (params.size() > 0) {
@@ -188,4 +263,11 @@ public class InfoTicket extends Activity {
         return baseUrl;
     }
 
+    public String getDemandeurTicket() {
+        return demandeurTicket;
+    }
+
+    public void setDemandeurTicket(String demandeurTicket) {
+        this.demandeurTicket = demandeurTicket;
+    }
 }

@@ -47,8 +47,6 @@ public class AccueilUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.accueil_user);
 
-        
-
         queue = Volley.newRequestQueue(this);
 
         welcomeView = (TextView)findViewById(R.id.welcomeTextView);
@@ -91,8 +89,6 @@ public class AccueilUser extends AppCompatActivity {
 
     private void getTicketsByTechnicien(final String idUser) {
         String url = FirstEverActivity.GLPI_URL+"search/Ticket";
-
-
 
         List<KeyValuePair> params = new ArrayList<>();
             params.add(new KeyValuePair("criteria[0][field]","5"));
