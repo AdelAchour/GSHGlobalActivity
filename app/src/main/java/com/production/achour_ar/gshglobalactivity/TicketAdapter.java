@@ -85,36 +85,44 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             }
         };
 
-        public void startTimer(long timeLeftMS) {
-            if (timeLeftMS<0){
-                handlerLate.sendEmptyMessage(0);
+        Handler handlerAttente = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+             txtTempsRestant.setText("En attente...");
+                txtTempsRestant.setTextColor(Color.parseColor("#434343"));
+             layout.setBackgroundColor(Color.parseColor("#949494"));
+            }
+        };
+
+        public void startTimer(long timeLeftMS, String statut) {
+            if(statut.equals("4")){
+                handlerAttente.sendEmptyMessage(0);
             }
             else{
-                CountDownTimer countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
+                if (timeLeftMS<0){
+                    handlerLate.sendEmptyMessage(0);
+                }
+                else{
+                    CountDownTimer countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
 
-                    @Override
-                    public void onTick(long l) {
-                        Bundle bundle = new Bundle();
-                        bundle.putLong("time", l);
-                        Message message = new Message();
-                        message.setData(bundle);
-                        handler.sendMessage(message);
-                    }
+                        @Override
+                        public void onTick(long l) {
+                            Bundle bundle = new Bundle();
+                            bundle.putLong("time", l);
+                            Message message = new Message();
+                            message.setData(bundle);
+                            handler.sendMessage(message);
+                        }
 
-                    @Override
-                    public void onFinish() {
-                        handlerLate.sendEmptyMessage(0);
-                    }
-                }.start();
+                        @Override
+                        public void onFinish() {
+                            handlerLate.sendEmptyMessage(0);
+                        }
+                    }.start();
+                }
             }
+
         }
-
-        //statut
-        public void isEnAttente(String getTicketStatut) {
-
-            if (getTicketStatut)
-
-            }
 
     }
 
@@ -186,9 +194,11 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             viewHolder.layout = (RelativeLayout) convertView.findViewById(R.id.backgroundRow);
 
 
+            long timeLeft = Long.valueOf(TicketModel.getTempsRestantTicket());
+            String Statut = TicketModel.getStatut();
             result=convertView;
-            viewHolder.startTimer(Long.valueOf(TicketModel.getTempsRestantTicket()));
-            viewHolder.isEnAttente(TicketModel.getStatutTicket());
+            //viewHolder.startTimer(Long.valueOf(TicketModel.getTempsRestantTicket()));
+            viewHolder.startTimer(timeLeft, Statut);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

@@ -11,13 +11,15 @@ public class TicketModel {
 
     String TempsRestantTicket;
     String idTicket;
+    String Statut;
 
-    public TicketModel(String titreTicket, String slaTicket, String dateTicket, String tempsRestantTicket, String idticket) {
+    public TicketModel(String titreTicket, String slaTicket, String dateTicket, String tempsRestantTicket, String idticket, String statut) {
         this.titreTicket = titreTicket;
         this.slaTicket = slaTicket;
         DateTicket = dateTicket;
         TempsRestantTicket = tempsRestantTicket;
         idTicket = idticket;
+        Statut = statut;
     }
 
     public String getTitreTicket() {
@@ -40,9 +42,7 @@ public class TicketModel {
         UrgenceTicket = urgenceTicket;
     }
 
-    public void setTempsRestantTicket(String tempsRestantTicket) {
-        TempsRestantTicket = tempsRestantTicket;
-    }
+    public void setTempsRestantTicket(String tempsRestantTicket) { TempsRestantTicket = tempsRestantTicket; }
 
     public String getTempsRestantTicket() {
         return TempsRestantTicket;
@@ -56,7 +56,7 @@ public class TicketModel {
         this.ticketEnRetard = ticketEnRetard;
     }
 
-    public String getIdTicket() {
-        return idTicket;
-    }
+    public String getIdTicket() { return idTicket; }
+
+    public String getStatut() { return Statut; }
 }
