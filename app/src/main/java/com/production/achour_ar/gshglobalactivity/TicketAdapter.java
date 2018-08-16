@@ -1,11 +1,20 @@
 package com.production.achour_ar.gshglobalactivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.Random;
+
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
@@ -38,15 +49,19 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         TextView txtSLA;
         ImageView info;
         RelativeLayout layout;
-        boolean isSLAlate = false;
+        boolean notification1 = false;
+        boolean notification2 = false;
+        int cpt = 0;
 
         Handler handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                System.out.println("handler");
+                //Log.d("I'm here ",String.valueOf(System.currentTimeMillis()));
 
                 Bundle bundle = msg.getData();
                 long timeLeftMS = bundle.getLong("time");
+                String Nom = bundle.getString("name");
+                String idTicket = bundle.getString("id");
 
                 int day = (int) ((timeLeftMS / (24*3600000)));
                 int hour = (int) ((timeLeftMS / (1000*60*60)) % 24);
@@ -69,9 +84,74 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
                 txtTempsRestant.setText(timeLeftText);
 
-                if (timeLeftMS <= getMSfromTime("00:10:00")){
-                    txtTempsRestant.setTextColor(Color.parseColor("#ca1f1f"));
+                String timeNotif2Jours = "02:00:00:00";
+                String timeNotif1Jour = "01:00:00:00";
+                String timeNotif2Heures = "00:02:00:00";
+                String timeNotif1Heure = "00:01:00:00";
+                String timeNotif30Min = "00:00:30:00";
+                String timeNotif10Min = "02:19:18:45";
+
+                if (timeLeftText.equals(timeNotif2Jours)){
+                    int idNotif = Integer.valueOf(idTicket) + 000000001 ;
+                    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                            R.mipmap.moyennepriorite);
+
+                        NotifyUser("Urgence moyenne", ""+Nom+" : Il vous reste 2 jours avant l'expiration du ticket", bitmap, idNotif);
+
                 }
+
+                if (timeLeftText.equals(timeNotif1Jour)){
+                    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                            R.mipmap.moyennepriorite);
+                    int idNotif = Integer.valueOf(idTicket) + 000000002 ;
+
+                        NotifyUser("Urgence moyenne", ""+Nom+" : vous reste 1 journée avant l'expiration du ticket", bitmap, idNotif);
+
+                }
+
+                if (timeLeftText.equals(timeNotif2Heures)){
+                    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                            R.mipmap.hautepriorite);
+                    int idNotif = Integer.valueOf(idTicket) + 000000003 ;
+
+                        NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus que 2 heures avant l'expiration du ticket", bitmap, idNotif);
+
+                }
+
+                if (timeLeftText.equals(timeNotif1Heure)){
+                    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                            R.mipmap.fire);
+                    int idNotif = Integer.valueOf(idTicket) + 000000004 ;
+
+                        txtTempsRestant.setTextColor(Color.parseColor("#ca1f1f"));
+                        NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus qu'1 heure avant l'expiration du ticket", bitmap, idNotif);
+
+                }
+
+                if (timeLeftText.equals(timeNotif30Min)){
+                    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                            R.mipmap.timeexpire);
+                    int idNotif = Integer.valueOf(idTicket) + 000000005 ;
+
+                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus que 30 minutes avant l'expiration du ticket", bitmap, idNotif);
+
+                }
+
+                if (timeLeftText.equals(timeNotif10Min)){
+                    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                            R.mipmap.timeexpire);
+                    int idNotif = Integer.valueOf(idTicket) + 000000006 ;
+
+                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus qu'1 heure avant l'expiration du ticket", bitmap, idNotif);
+
+                }
+
+
+                System.out.println("Titre "+Nom+ " | "+timeLeftMS+ " | "+txtTempsRestant.getText() );
+
+
+                info.setImageResource(getIconUrgence(timeLeftMS));
+
 
             }
         };
@@ -82,6 +162,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 txtTempsRestant.setText("En retard");
                 txtTempsRestant.setTextColor(Color.parseColor("#434343"));
                 layout.setBackgroundColor(Color.parseColor("#3caa0000"));
+                info.setImageResource(R.drawable.haute);
             }
         };
 
@@ -91,10 +172,11 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
              txtTempsRestant.setText("En attente...");
                 txtTempsRestant.setTextColor(Color.parseColor("#434343"));
              layout.setBackgroundColor(Color.parseColor("#949494"));
+                info.setImageResource(R.drawable.enattente);
             }
         };
 
-        public void startTimer(long timeLeftMS, String statut) {
+        public void startTimer(long timeLeftMS, String statut, final String Nom, final String idTicket) {
             if(statut.equals("4")){
                 handlerAttente.sendEmptyMessage(0);
             }
@@ -109,6 +191,8 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                         public void onTick(long l) {
                             Bundle bundle = new Bundle();
                             bundle.putLong("time", l);
+                            bundle.putString("name", Nom);
+                            bundle.putString("id", idTicket);
                             Message message = new Message();
                             message.setData(bundle);
                             handler.sendMessage(message);
@@ -126,20 +210,58 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
     }
 
+    private boolean TimeLeftBetween(long timeLeftMS, String min, String max) {
+        boolean isOkay = false ;
+        if ((timeLeftMS >= getMSfromTime(min))&&(timeLeftMS <= getMSfromTime(max))){
+            isOkay = true;
+        }
+
+        return isOkay;
+    }
+
+    private void NotifyUser(String title, String content, Bitmap largeIcon, int idNotif) {
+        Uri uriSoundNotif = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Random random = new Random();
+        int ID_NOTIF = idNotif;
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext(),  "")
+                .setSmallIcon(R.drawable.sablier)
+                .setLargeIcon(largeIcon)
+                .setContentTitle(title)
+                .setContentText(content).setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(content))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        //Vibration
+        mBuilder.setVibrate(new long[] { 0, 1000, 1000, 1000, 1000 });
+
+        //LED
+        mBuilder.setLights(Color.RED, 3000, 3000);
+
+        //Ton
+        mBuilder.setSound(uriSoundNotif);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+
+        notificationManager.notify(ID_NOTIF, mBuilder.build());
+    }
+
     private long getMSfromTime(String timeLeftText) {
         long timeMS = 0;
 
         //"00:01:21"
-        String hours = timeLeftText.substring(0, 2);
-        String minutes = timeLeftText.substring(3, 5);
-        String seconds = timeLeftText.substring(6, 8);
+
+        String days = timeLeftText.substring(0, 2);
+        String hours = timeLeftText.substring(3, 5);
+        String minutes = timeLeftText.substring(6, 8);
+        String seconds = timeLeftText.substring(9, 11);
 
         //System.out.println("hours = "+hours+" | minutes = "+minutes+" | seconds = "+seconds);
 
+        long daysMS = 24*60*60*1000*Long.valueOf(days);
         long hoursMS = 3600000*Long.valueOf(hours);
         long minutesMS = 60000*Long.valueOf(minutes);
         long secondsMS = 1000*Long.parseLong(seconds);
-        timeMS = hoursMS + minutesMS + secondsMS;
+        timeMS = daysMS + hoursMS + minutesMS + secondsMS;
 
         return timeMS;
     }
@@ -174,6 +296,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         // Get the data item for this position
         TicketModel TicketModel = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
@@ -196,14 +319,22 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
             long timeLeft = Long.valueOf(TicketModel.getTempsRestantTicket());
             String Statut = TicketModel.getStatut();
+            String Nom = TicketModel.getTitreTicket();
+            String idTicket = TicketModel.getIdTicket();
+
+
             result=convertView;
             //viewHolder.startTimer(Long.valueOf(TicketModel.getTempsRestantTicket()));
-            viewHolder.startTimer(timeLeft, Statut);
+
+
+            viewHolder.startTimer(timeLeft, Statut, Nom, idTicket);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
             result=convertView;
         }
+
 
         Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
         result.startAnimation(animation);
@@ -212,30 +343,39 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         viewHolder.txtName.setText(TicketModel.getTitreTicket());
         viewHolder.txtDate.setText(TicketModel.getDateTicket());
         viewHolder.txtSLA.setText(TicketModel.getSlaTicket());
+        if (Long.valueOf(TicketModel.getTempsRestantTicket())<0){
+            viewHolder.txtTempsRestant.setText("En retard");
+        }
         //viewHolder.txtTempsRestant.setText(TicketModel.getTempsRestantTicket());
-        viewHolder.info.setImageResource(getIconUrgence(TicketModel.getUrgenceTicket()));
+        //viewHolder.info.setImageResource(getIconUrgence(TicketModel.getUrgenceTicket()));
+        //viewHolder.info.setImageResource(getIconUrgence(TicketModel.getUrgenceTicket()));
         viewHolder.layout.setBackgroundColor(getColorBG(TicketModel.isTicketEnRetard()));
-        /*if (TicketModel.isTicketEnRetard()){
-            viewHolder.txtTempsRestant.setText("En retard !");
-        }*/
         viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);
 
-        System.out.println("Here : "+TicketModel.getTitreTicket()); //getting each item's name
-        System.out.println("Time = "+TicketModel.getTempsRestantTicket()); //getting each item's time left and it's correct
-        System.out.println("Rebours = "+calculRebours(Long.valueOf(TicketModel.getTempsRestantTicket())));
+        System.out.println("getView");
+
+//        System.out.println("Titre : "+TicketModel.getTitreTicket()); //getting each item's name
+//        System.out.println("Time = "+TicketModel.getTempsRestantTicket()); //getting each item's time left and it's correct
+//        System.out.println("Rebours = "+calculRebours(Long.valueOf(TicketModel.getTempsRestantTicket())));
 
         // Return the completed view to render on screen
         return convertView;
     }
 
+
+
     private String calculRebours(long timeLeftMS) {
+        int day = (int) ((timeLeftMS / (24*3600000)));
         int hour = (int) ((timeLeftMS / (1000*60*60)) % 24);
         int minute = (int) ((timeLeftMS / (60000)) % 60);
         int seconde = (int)timeLeftMS % 60000 / 1000;
 
         String timeLeftText = "";
 
+        if (day<10) timeLeftText += "0";
+        timeLeftText += day;
+        timeLeftText += ":";
         if (hour<10) timeLeftText += "0";
         timeLeftText += hour;
         timeLeftText += ":";
@@ -262,10 +402,10 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
 
 
-    private int getIconUrgence(String urgenceTicket) {
-        int icon;
+    private int getIconUrgence(long timeLeftMS) {
+        int icon = 0;
 
-        if((urgenceTicket.equals("Très basse"))||(urgenceTicket.equals("Basse"))){
+        /*if((urgenceTicket.equals("Très basse"))||(urgenceTicket.equals("Basse"))){
             icon = R.drawable.basse;
         }
         else if((urgenceTicket.equals("Haute"))||(urgenceTicket.equals("Très haute"))){
@@ -273,6 +413,19 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         }
         else {
             icon = R.drawable.moyenne;
+        }*/
+
+        String limite = "00:02:00:00";
+        String aLaise = "03:00:00:00";
+
+        if (timeLeftMS <= getMSfromTime(limite)){
+            icon = R.drawable.haute;
+        }
+        else if ((timeLeftMS > getMSfromTime(limite))&&((timeLeftMS <= getMSfromTime(aLaise)))){
+            icon = R.drawable.moyenne;
+        }
+        else if(timeLeftMS > getMSfromTime(aLaise)) {
+            icon = R.drawable.basse;
         }
 
         return icon;

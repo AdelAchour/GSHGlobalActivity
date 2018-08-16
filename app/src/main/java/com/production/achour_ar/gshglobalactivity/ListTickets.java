@@ -1,16 +1,23 @@
 package com.production.achour_ar.gshglobalactivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -49,6 +56,7 @@ public class ListTickets extends AppCompatActivity {
             dateEchanceTicket, dateClotureTicket, descriptionTicket, lieuTicket;
     boolean ticketEnretard;
 
+
     String nbClos;
 
     public int nbTicketTab = 8;
@@ -60,7 +68,18 @@ public class ListTickets extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_tickets);
 
-        getSupportActionBar().setTitle("Tickets en cours");
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setTitle("Tickets en cours");
+        //actionBar.setIcon(R.drawable.ic_action_search);
+
+        LayoutInflater inflator = (LayoutInflater) this .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.setupactionbar, null);
+
+        actionBar.setCustomView(v);
+
 
         queue = Volley.newRequestQueue(this);
 
@@ -77,18 +96,44 @@ public class ListTickets extends AppCompatActivity {
         TicketModels = new ArrayList<>();
         ticketTab = new String[Integer.valueOf(nbTicket)][nbTicketTab];
 
+
+        getTicketsHTTP();
+
+        final Handler handlerRefresh = new Handler();
+
+       /* Runnable refresh = new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Actualisation", Toast.LENGTH_SHORT).show();
+                adapter.clear();
+                getTicketsHTTP();
+                handlerRefresh.postDelayed(this, 120 * 1000);
+            }
+        };
+
+        handlerRefresh.postDelayed(refresh, 120 * 1000);*/
+
+
+        ImageView refreshIcon ;
+        refreshIcon = (ImageView)findViewById(R.id.refreshIconID);
+        refreshIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.clear();
+                getTicketsHTTP();
+            }
+        });
+
+
+    }
+
+    private void getTicketsHTTP() {
         String url = FirstEverActivity.GLPI_URL+"search/Ticket";
-
-
 
         List<KeyValuePair> params = new ArrayList<>();
         params.add(new KeyValuePair("criteria[0][field]","5"));
         params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
         params.add(new KeyValuePair("criteria[0][value]",idUser));
-//        params.add(new KeyValuePair("criteria[1][link]","AND"));
-//        params.add(new KeyValuePair("criteria[1][field]","12"));
-//        params.add(new KeyValuePair("criteria[1][searchtype]","notequals"));
-//        params.add(new KeyValuePair("criteria[1][value]","6"));
         params.add(new KeyValuePair("forcedisplay[0]","4"));
         params.add(new KeyValuePair("forcedisplay[1]","10"));
         params.add(new KeyValuePair("forcedisplay[2]","7"));
@@ -110,33 +155,31 @@ public class ListTickets extends AppCompatActivity {
                         try {
                             JSONArray Jdata = response.getJSONArray("data");
                             for (int i=0; i < Jdata.length(); i++) {
-                                    try {
-                                        JSONObject oneTicket = Jdata.getJSONObject(i);
-                                        // Récupération des items pour le row_item
-                                        titreTicket = oneTicket.getString("1");
-                                        slaTicket = oneTicket.getString("30");
-                                        dateDebutTicket = oneTicket.getString("15");
-                                        urgenceTicket = oneTicket.getString("10");
-                                        statutTicket = oneTicket.getString("12");
-                                        idTicket = oneTicket.getString("2");
+                                try {
+                                    JSONObject oneTicket = Jdata.getJSONObject(i);
+                                    // Récupération des items pour le row_item
+                                    titreTicket = oneTicket.getString("1");
+                                    slaTicket = oneTicket.getString("30");
+                                    dateDebutTicket = oneTicket.getString("15");
+                                    urgenceTicket = oneTicket.getString("10");
+                                    statutTicket = oneTicket.getString("12");
+                                    idTicket = oneTicket.getString("2");
 
-                                        //Récupération du reste
-                                        demandeurTicket = oneTicket.getString("4");
-                                        categorieTicket = oneTicket.getString("7");
-                                        etatTicket = oneTicket.getString("12");
-                                        dateEchanceTicket = oneTicket.getString("18");
-                                        descriptionTicket = oneTicket.getString("21");
+                                    //Récupération du reste
+                                    demandeurTicket = oneTicket.getString("4");
+                                    categorieTicket = oneTicket.getString("7");
+                                    etatTicket = oneTicket.getString("12");
+                                    dateEchanceTicket = oneTicket.getString("18");
+                                    descriptionTicket = oneTicket.getString("21");
 
-                                        lieuTicket = oneTicket.getString("83");
-                                        dateClotureTicket = oneTicket.getString("16");
-                                        ticketEnretard = getBooleanFromSt(oneTicket.getString("82"));
+                                    lieuTicket = oneTicket.getString("83");
+                                    dateClotureTicket = oneTicket.getString("16");
+                                    ticketEnretard = getBooleanFromSt(oneTicket.getString("82"));
 
-
-                                        System.out.println("Direct = " + oneTicket.getString("82") + "\n After f(x) = " + getBooleanFromSt(oneTicket.getString("82")));
-                                    } catch (JSONException e) {
-                                        Log.e("Nb of data: "+Jdata.length()+" || "+"Error JSONArray at "+i+" : ", e.getMessage());
-                                    }
-                                    // ------------------------
+                                } catch (JSONException e) {
+                                    Log.e("Nb of data: "+Jdata.length()+" || "+"Error JSONArray at "+i+" : ", e.getMessage());
+                                }
+                                // ------------------------
 
 
                                 /* Remplissage du tableau des tickets pour le row item */
@@ -153,16 +196,17 @@ public class ListTickets extends AppCompatActivity {
 
                             }
 
-
-                            //triInfoTicket(infoTicket);
                             addModelsFromTab(ticketTab);
 
                             adapter = new TicketAdapter(TicketModels,getApplicationContext());
 
                             listView.setAdapter(adapter);
+
+
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
 
                                     TicketModel TicketModel= TicketModels.get(position);
 
@@ -177,6 +221,17 @@ public class ListTickets extends AppCompatActivity {
                                     i.putExtra("idTicket", TicketModel.getIdTicket());
 
                                     startActivity(i);
+
+
+                                        /*NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(),  "")
+                                                .setSmallIcon(R.drawable.refreshicon)
+                                                .setContentTitle("Urgent")
+                                                .setContentText("Faut faire vite tu sais")
+                                                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+
+                                        notificationManager.notify(0, mBuilder.build());*/
+
 
                                 }
                             });
@@ -212,6 +267,18 @@ public class ListTickets extends AppCompatActivity {
         // add it to the RequestQueue
         queue.add(getRequest);
 
+    }
+
+
+    public void notifyUser(String Nom, String timeLeftText, Context context) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,  "")
+                .setSmallIcon(R.drawable.refreshicon)
+                .setContentTitle("Urgent")
+                .setContentText("Ticket "+Nom+" expire dans : "+timeLeftText)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+        notificationManager.notify(0, mBuilder.build());
     }
 
     private boolean getBooleanFromSt(String string) {
