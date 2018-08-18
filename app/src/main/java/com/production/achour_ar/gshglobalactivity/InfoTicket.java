@@ -1,12 +1,17 @@
 package com.production.achour_ar.gshglobalactivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -36,7 +41,7 @@ public class InfoTicket extends Activity {
             dateEchanceTicket, descriptionTicket, lieuTicket, dateClotureTicket;
     String demandeurTicket;
 
-    String usernameDemandeur, emailDemandeur, telephoneDemandeur, prenomDemandeur, nomDemandeur, lieuDemandeur;
+    String usernameDemandeur, emailDemandeur, telephoneDemandeur, prenomDemandeur, nomDemandeur, lieuDemandeur,posteDemandeur;
 
     TextView titreTV, slaTV, urgenceTV,
             demandeurTV, categorieTV, etatTV, dateDebutTV,
@@ -44,24 +49,35 @@ public class InfoTicket extends Activity {
 
     RequestQueue queue;
 
+    ProgressBar progressBarInfo;
+    ProgressDialog pd;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info_ticket);
 
+        progressBarInfo = (ProgressBar)findViewById(R.id.progressBarInfo);
+        //progressBarInfo.setVisibility(View.VISIBLE);
+
+        pd = new ProgressDialog(InfoTicket.this);
+        pd.setMessage("Chargement...");
+        pd.show();
+
         queue = Volley.newRequestQueue(this);
 
-        titreTV = (TextView)findViewById(R.id.TitreAnswer);
+        titreTV = (TextView)findViewById(R.id.titreAnswer);
         slaTV = (TextView)findViewById(R.id.SLAAnswer);
         descriptionTV = (TextView)findViewById(R.id.DescriptionAnswer);
-        urgenceTV = (TextView)findViewById(R.id.UrgenceAnswer);
-        demandeurTV = (TextView)findViewById(R.id.DemandeurAnswer);
-        categorieTV = (TextView)findViewById(R.id.CategorieAnswer);
-        etatTV = (TextView)findViewById(R.id.EtatAnswer);
-        dateDebutTV = (TextView)findViewById(R.id.DateAnswer);
-        dateEchanceTV = (TextView)findViewById(R.id.DateEchAnswer);
+        //urgenceTV = (TextView)findViewById(R.id.UrgenceAnswer);
+        demandeurTV = (TextView)findViewById(R.id.demandeurAnswer);
+        categorieTV = (TextView)findViewById(R.id.categorieAnswer);
+        etatTV = (TextView)findViewById(R.id.StatutAnswer);
+        dateDebutTV = (TextView)findViewById(R.id.DebutAnswer);
+        dateEchanceTV = (TextView)findViewById(R.id.EcheanceAnswer);
         lieuTV = (TextView)findViewById(R.id.LieuAnswer);
-        dateClotureTicketTV = (TextView)findViewById(R.id.dateClosAnswer);
+        dateClotureTicketTV = (TextView)findViewById(R.id.ClotureAnswer);
 
 
         Intent i = getIntent();
@@ -131,18 +147,21 @@ public class InfoTicket extends Activity {
                             }
 
                             titreTV.setText(titreTicket);
-                            urgenceTV.setText(urgenceTicket);
+                            //urgenceTV.setText(urgenceTicket);
                             categorieTV.setText(categorieTicket);
-                            etatTV.setText(etatTicket);
+                            etatTV.setText(StatutTexte(etatTicket));
                             dateDebutTV.setText(dateDebutTicket);
                             slaTV.setText(slaTicket);
                             dateEchanceTV.setText(dateEchanceTicket);
                             titreTV.setText(titreTicket);
                             descriptionTV.setText(descriptionTicket);
                             lieuTV.setText(lieuTicket);
-                            dateClotureTicketTV.setText(dateClotureTicket);
+                            dateClotureTicketTV.setText(ClotureText(dateClotureTicket));
                             setDemandeurTicket(iddemandeur);
                             getDemandeurInfo(iddemandeur);
+                            if (dateClotureTicket.equals("null")){
+                                dateClotureTicketTV.setTypeface(dateClotureTicketTV.getTypeface(), Typeface.ITALIC);
+                            }
 
                         } catch (JSONException e) {
                             Log.e("Error ticket ",e.getMessage());
@@ -173,6 +192,42 @@ public class InfoTicket extends Activity {
 
     }
 
+    private String ClotureText(String dateClotureTicket) {
+        if (dateClotureTicket.equals("null")){
+            return "Non clos pour l'instant";
+        }
+        else{
+            return dateClotureTicket;
+        }
+    }
+
+    private String StatutTexte(String etatTicket) {
+        String etat = "";
+        int et = Integer.valueOf(etatTicket);
+        switch (et){
+            case 1:
+                etat = "Nouveau";
+                break;
+            case 2:
+                etat = "En cours (Attribué)";
+                break;
+            case 3:
+                etat = "En cours (Planifié)";
+                break;
+            case 4:
+                etat = "En attente";
+                break;
+            case 5:
+                etat = "Résolu";
+                break;
+            case 6:
+                etat = "Clos";
+                break;
+        }
+
+        return etat;
+    }
+
     private void getDemandeurInfo(String iddemandeur) {
         //Récupération des informations du demandeur
         String urlDemandeur = FirstEverActivity.GLPI_URL+"search/User";
@@ -185,6 +240,7 @@ public class InfoTicket extends Activity {
         paramsDemandeur.add(new KeyValuePair("forcedisplay[1]","34"));
         paramsDemandeur.add(new KeyValuePair("forcedisplay[2]","5"));
         paramsDemandeur.add(new KeyValuePair("forcedisplay[3]","6"));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[4]","81"));
 
         final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlDemandeur, paramsDemandeur), null,
                 new Response.Listener<JSONObject>()
@@ -203,6 +259,7 @@ public class InfoTicket extends Activity {
                                 prenomDemandeur = userInfo.getString("9");
                                 nomDemandeur = userInfo.getString("34");
                                 lieuDemandeur = userInfo.getString("80");
+                                posteDemandeur = userInfo.getString("81");
 
                             } catch (JSONException e) {
                                 Log.e("Error JSONArray : ", e.getMessage());
@@ -212,12 +269,18 @@ public class InfoTicket extends Activity {
                             e.printStackTrace();
                         }
 
-                        demandeurTV.setText(nomDemandeur+" "+prenomDemandeur);
+                        final String NomPrenomAsker = nomDemandeur+" "+prenomDemandeur;
+                        demandeurTV.setText(NomPrenomAsker);
+                        demandeurTV.setPaintFlags(demandeurTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        //progressBarInfo.setVisibility(View.GONE);
+                        pd.dismiss();
+
 
                         demandeurTV.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-
+                                DialogDemandeur alert = new DialogDemandeur();
+                                alert.showDialog(InfoTicket.this, NomPrenomAsker, emailDemandeur, telephoneDemandeur, lieuDemandeur, posteDemandeur);
                             }
                         });
 

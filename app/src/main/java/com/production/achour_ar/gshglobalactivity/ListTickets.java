@@ -55,6 +55,7 @@ public class ListTickets extends AppCompatActivity {
     demandeurTicket, categorieTicket, etatTicket, dateDebutTicket, statutTicket,
             dateEchanceTicket, dateClotureTicket, descriptionTicket, lieuTicket;
     boolean ticketEnretard;
+    String nbCount;
 
 
     String nbClos;
@@ -85,7 +86,7 @@ public class ListTickets extends AppCompatActivity {
 
         Intent i = getIntent();
         session_token = i.getStringExtra("session");
-        nbTicket = i.getStringExtra("nb");
+        //nbTicket = i.getStringExtra("nb");
         nameUser = i.getStringExtra("nom");
         firstnameUser = i.getStringExtra("prenom");
         idUser = i.getStringExtra("id");
@@ -94,7 +95,7 @@ public class ListTickets extends AppCompatActivity {
 
 
         TicketModels = new ArrayList<>();
-        ticketTab = new String[Integer.valueOf(nbTicket)][nbTicketTab];
+
 
 
         getTicketsHTTP();
@@ -153,6 +154,9 @@ public class ListTickets extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            nbCount = response.getString("totalcount");
+                            System.out.println("nb t = "+nbCount);
+                            ticketTab = new String[Integer.valueOf(nbCount)][nbTicketTab];
                             JSONArray Jdata = response.getJSONArray("data");
                             for (int i=0; i < Jdata.length(); i++) {
                                 try {
@@ -182,6 +186,7 @@ public class ListTickets extends AppCompatActivity {
                                 // ------------------------
 
 
+
                                 /* Remplissage du tableau des tickets pour le row item */
                                 ticketTab[i][0] = titreTicket;
                                 ticketTab[i][1] = slaTicket;
@@ -196,6 +201,8 @@ public class ListTickets extends AppCompatActivity {
 
                             }
 
+                            triTableauTicketParUrgence(ticketTab);
+                            AfficheTab(ticketTab);
                             addModelsFromTab(ticketTab);
 
                             adapter = new TicketAdapter(TicketModels,getApplicationContext());
@@ -484,67 +491,54 @@ public class ListTickets extends AppCompatActivity {
 
     public static void triTableauTicketParUrgence(String tableau[][]) {
         int longueur = tableau.length;
-        boolean foundHaute = false;
-        boolean foundMoyenne = false;
+        boolean foundRetard = false;
+        boolean foundTemps = false;
 
-            // ---- Tri des urgences hautes/très hautes ---
+            // ---- Tri par retard ---
             for (int i = 0; i < longueur; i++) {
-                if ((!tableau[i][3].equals("Haute"))||(!tableau[i][3].equals("Très haute"))) {
+                if (Long.valueOf(tableau[i][4]) >= 0) {
                     for (int k = i+1; k< longueur; k++){
-                        if (((tableau[k][3].equals("Haute"))||(tableau[k][3].equals("Très haute")))&&(!foundHaute)){
-                            foundHaute = true;
+                        if ((Long.valueOf(tableau[k][4]) < 0)){
+                            foundRetard = true;
                             permuter(k,i,tableau);
                         }
                     }
-                    foundHaute = false;
+                    foundRetard = false;
                 }
             }
 
-            // ---- Tri des urgences moyennes ---
-        for (int i = nbHauteUrgences(tableau); i < longueur; i++) {
-            if (!tableau[i][3].equals("Moyenne")) {
-                for (int k = i+1; k< longueur; k++){
-                    if ((tableau[k][3].equals("Moyenne"))&&(!foundMoyenne)){
-                        foundMoyenne = true;
-                        permuter(k,i,tableau);
-                    }
+            // ---- Tri par temps min ---
+
+
+        int tampon = 0;
+        boolean permut;
+
+        do {
+            // hypothèse : le tableau est trié
+            permut = false;
+            for (int i = nbRetard(tableau); i < longueur - 1; i++) {
+                // Teste si 2 éléments successifs sont dans le bon ordre ou non
+                if (Long.valueOf(tableau[i][4]) > Long.valueOf(tableau[i + 1][4])) {
+                    // s'ils ne le sont pas, on échange leurs positions
+                    permuter(i, i+1, tableau);
+                    permut = true;
                 }
-                foundMoyenne = false;
             }
-        }
+        } while (permut);
+
     }
 
-    public static void triInfoTicketParUrgence(String tableau[][]) {
-        int longueur = tableau.length;
-        boolean foundHaute = false;
-        boolean foundMoyenne = false;
-
-        // ---- Tri des urgences hautes/très hautes ---
-        for (int i = 0; i < longueur; i++) {
-            if ((!tableau[i][1].equals("Haute"))||(!tableau[i][1].equals("Très haute"))) {
-                for (int k = i+1; k< longueur; k++){
-                    if (((tableau[k][1].equals("Haute"))||(tableau[k][1].equals("Très haute")))&&(!foundHaute)){
-                        foundHaute = true;
-                        permuter(k,i,tableau);
-                    }
-                }
-                foundHaute = false;
+    private static int nbRetard(String[][] tableau) {
+        int nbTickets = 0;
+        for(int i = 0; i < tableau.length; i++){
+            if (Long.valueOf(tableau[i][4]) < 0){
+                nbTickets++;
             }
         }
 
-        // ---- Tri des urgences moyennes ---
-        for (int i = nbHauteUrgences(tableau); i < longueur; i++) {
-            if (!tableau[i][1].equals("Moyenne")) {
-                for (int k = i+1; k< longueur; k++){
-                    if ((tableau[k][1].equals("Moyenne"))&&(!foundMoyenne)){
-                        foundMoyenne = true;
-                        permuter(k,i,tableau);
-                    }
-                }
-                foundMoyenne = false;
-            }
-        }
+        return nbTickets;
     }
+
 
     private static int nbHauteUrgences(String[][] tableau) {
         int nbTickets = 0;
@@ -558,24 +552,38 @@ public class ListTickets extends AppCompatActivity {
     }
 
     private static void permuter(int k, int i, String[][] tableau) {
-        String[] tampon = new String[4] ;
+        String[] tampon = new String[8] ;
 
-        tampon[0] = tableau[k][0]; tampon[1] = tableau[k][1]; tampon[2] = tableau[k][2]; tampon[3] = tableau[k][3];
+        tampon[0] = tableau[k][0];
+        tampon[1] = tableau[k][1];
+        tampon[2] = tableau[k][2];
+        tampon[3] = tableau[k][3];
+        tampon[4] = tableau[k][4];
+        tampon[5] = tableau[k][5];
+        tampon[6] = tableau[k][6];
+        tampon[7] = tableau[k][7];
 
-        tableau[k][0] = tableau[i][0]; tableau[k][1] = tableau[i][1]; tableau[k][2] = tableau[i][2]; tableau[k][3] = tableau[i][3];
 
-        tableau[i][0] = tampon[0]; tableau[i][1] = tampon[1]; tableau[i][2] = tampon[2]; tableau[i][3] = tampon[3];
+        tableau[k][0] = tableau[i][0];
+        tableau[k][1] = tableau[i][1];
+        tableau[k][2] = tableau[i][2];
+        tableau[k][3] = tableau[i][3];
+        tableau[k][4] = tableau[i][4];
+        tableau[k][5] = tableau[i][5];
+        tableau[k][6] = tableau[i][6];
+        tableau[k][7] = tableau[i][7];
+
+
+        tableau[i][0] = tampon[0];
+        tableau[i][1] = tampon[1];
+        tableau[i][2] = tampon[2];
+        tableau[i][3] = tampon[3];
+        tableau[i][4] = tampon[4];
+        tableau[i][5] = tampon[5];
+        tableau[i][6] = tampon[6];
+        tableau[i][7] = tampon[7];
     }
 
-    private static void permuterInfo(int k, int i, String[][] tableau) {
-        String[] tampon = new String[10] ;
-
-        tampon[0] = tableau[k][0]; tampon[1] = tableau[k][1]; tampon[2] = tableau[k][2]; tampon[3] = tableau[k][3]; tampon[4] = tableau[k][4]; tampon[5] = tableau[k][5]; tampon[6] = tableau[k][6]; tampon[7] = tableau[k][7]; tampon[8] = tableau[k][8]; tampon[9] = tableau[k][9];
-
-        tableau[k][0] = tableau[i][0]; tableau[k][1] = tableau[i][1]; tableau[k][2] = tableau[i][2]; tableau[k][3] = tableau[i][3]; //ajouter until 9
-
-        tableau[i][0] = tampon[0]; tableau[i][1] = tampon[1]; tableau[i][2] = tampon[2]; tableau[i][3] = tampon[3]; //ajouter till 9
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

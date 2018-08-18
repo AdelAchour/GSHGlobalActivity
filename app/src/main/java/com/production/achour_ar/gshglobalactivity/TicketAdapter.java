@@ -89,14 +89,14 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 String timeNotif2Heures = "00:02:00:00";
                 String timeNotif1Heure = "00:01:00:00";
                 String timeNotif30Min = "00:00:30:00";
-                String timeNotif10Min = "02:19:18:45";
+                String timeNotif10Min = "00:00:10:00";
 
                 if (timeLeftText.equals(timeNotif2Jours)){
                     int idNotif = Integer.valueOf(idTicket) + 000000001 ;
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
                             R.mipmap.moyennepriorite);
 
-                        NotifyUser("Urgence moyenne", ""+Nom+" : Il vous reste 2 jours avant l'expiration du ticket", bitmap, idNotif);
+                    NotifyUser("Urgence moyenne", ""+Nom+" : Il vous reste 2 jours avant l'expiration du ticket", bitmap, idNotif);
 
                 }
 
@@ -105,7 +105,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                             R.mipmap.moyennepriorite);
                     int idNotif = Integer.valueOf(idTicket) + 000000002 ;
 
-                        NotifyUser("Urgence moyenne", ""+Nom+" : vous reste 1 journée avant l'expiration du ticket", bitmap, idNotif);
+                    NotifyUser("Urgence moyenne", ""+Nom+" : Il vous reste 1 journée avant l'expiration du ticket", bitmap, idNotif);
 
                 }
 
@@ -114,7 +114,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                             R.mipmap.hautepriorite);
                     int idNotif = Integer.valueOf(idTicket) + 000000003 ;
 
-                        NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus que 2 heures avant l'expiration du ticket", bitmap, idNotif);
+                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus que 2 heures avant l'expiration du ticket", bitmap, idNotif);
 
                 }
 
@@ -123,14 +123,14 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                             R.mipmap.fire);
                     int idNotif = Integer.valueOf(idTicket) + 000000004 ;
 
-                        txtTempsRestant.setTextColor(Color.parseColor("#ca1f1f"));
-                        NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus qu'1 heure avant l'expiration du ticket", bitmap, idNotif);
+                    txtTempsRestant.setTextColor(Color.parseColor("#ca1f1f"));
+                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus qu'1 heure avant l'expiration du ticket", bitmap, idNotif);
 
                 }
 
                 if (timeLeftText.equals(timeNotif30Min)){
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.mipmap.timeexpire);
+                            R.mipmap.timefinal);
                     int idNotif = Integer.valueOf(idTicket) + 000000005 ;
 
                     NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus que 30 minutes avant l'expiration du ticket", bitmap, idNotif);
@@ -139,10 +139,10 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
                 if (timeLeftText.equals(timeNotif10Min)){
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.mipmap.timeexpire);
+                            R.mipmap.timefinal);
                     int idNotif = Integer.valueOf(idTicket) + 000000006 ;
 
-                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus qu'1 heure avant l'expiration du ticket", bitmap, idNotif);
+                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus que 10 minutes avant l'expiration du ticket", bitmap, idNotif);
 
                 }
 
@@ -166,12 +166,32 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             }
         };
 
+        Handler handlerFinishLate = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                Bundle bundle = msg.getData();
+                String Nom = bundle.getString("name");
+                String idTicket = bundle.getString("id");
+
+                txtTempsRestant.setText("En retard");
+                txtTempsRestant.setTextColor(Color.parseColor("#434343"));
+                layout.setBackgroundColor(Color.parseColor("#3caa0000"));
+                info.setImageResource(R.drawable.haute);
+
+                Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                        R.mipmap.timeexpire);
+                int idNotif = Integer.valueOf(idTicket) + 000000007 ;
+
+                NotifyUser("Temps expiré", ""+Nom+" : Le ticket n'a pas été résolu à temps et est en retard", bitmap, idNotif);
+            }
+        };
+
         Handler handlerAttente = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-             txtTempsRestant.setText("En attente...");
+                txtTempsRestant.setText("En attente...");
                 txtTempsRestant.setTextColor(Color.parseColor("#434343"));
-             layout.setBackgroundColor(Color.parseColor("#949494"));
+                layout.setBackgroundColor(Color.parseColor("#949494"));
                 info.setImageResource(R.drawable.enattente);
             }
         };
@@ -200,7 +220,12 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
                         @Override
                         public void onFinish() {
-                            handlerLate.sendEmptyMessage(0);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("name", Nom);
+                            bundle.putString("id", idTicket);
+                            Message message = new Message();
+                            message.setData(bundle);
+                            handlerFinishLate.sendMessage(message);
                         }
                     }.start();
                 }
@@ -303,7 +328,10 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         final ViewHolder viewHolder; // view lookup cache stored in tag
 
         final View result;
-
+        long timeLeft;
+        String Statut;
+        String Nom;
+        String idTicket;
         if (convertView == null) {
 
             viewHolder = new ViewHolder();
@@ -317,10 +345,10 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             viewHolder.layout = (RelativeLayout) convertView.findViewById(R.id.backgroundRow);
 
 
-            long timeLeft = Long.valueOf(TicketModel.getTempsRestantTicket());
-            String Statut = TicketModel.getStatut();
-            String Nom = TicketModel.getTitreTicket();
-            String idTicket = TicketModel.getIdTicket();
+            timeLeft = Long.valueOf(TicketModel.getTempsRestantTicket());
+            Statut = TicketModel.getStatut();
+            Nom = TicketModel.getTitreTicket();
+            idTicket = TicketModel.getIdTicket();
 
 
             result=convertView;
@@ -330,14 +358,27 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             viewHolder.startTimer(timeLeft, Statut, Nom, idTicket);
 
             convertView.setTag(viewHolder);
+
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
             result=convertView;
         }
+        //convertView.setHasTransientState(true);
+        viewHolder.txtName = (TextView) convertView.findViewById(R.id.titreTV);
+        viewHolder.txtDate = (TextView) convertView.findViewById(R.id.dateTV);
+        viewHolder.txtSLA = (TextView) convertView.findViewById(R.id.slaTV);
+        viewHolder.txtTempsRestant = (TextView) convertView.findViewById(R.id.SLARestantTV);
+        viewHolder.info = (ImageView) convertView.findViewById(R.id.item_info);
+        viewHolder.layout = (RelativeLayout) convertView.findViewById(R.id.backgroundRow);
+
+        timeLeft = Long.valueOf(TicketModel.getTempsRestantTicket());
+        Statut = TicketModel.getStatut();
+        Nom = TicketModel.getTitreTicket();
+        idTicket = TicketModel.getIdTicket();
 
 
-        Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        result.startAnimation(animation);
+        //Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+        //result.startAnimation(animation);
         lastPosition = position;
 
         viewHolder.txtName.setText(TicketModel.getTitreTicket());
