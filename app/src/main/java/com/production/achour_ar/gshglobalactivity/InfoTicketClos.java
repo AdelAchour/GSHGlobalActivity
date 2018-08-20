@@ -4,13 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.icu.text.IDNA;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.app.Activity;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,48 +18,49 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.production.achour_ar.gshglobalactivity.DataModel.TicketModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InfoTicket extends Activity {
+public class InfoTicketClos extends AppCompatActivity {
+
 
     String session_token, nameUser, idUser, firstnameUser;
 
     String titreTicket, slaTicket, urgenceTicket,
-            categorieTicket, etatTicket, dateDebutTicket, idTicket,
-            dateEchanceTicket, dateResolutionTicket, descriptionTicket, lieuTicket, dateClotureTicket;
-    String observateur;
+            categorieTicket, etatTicket, dateDebutTicket, idTicket, tempsResolution, tempsRetard,
+            dateEchanceTicket, descriptionTicket, lieuTicket, dateClotureTicket;
+    boolean ticketEnretard;
 
     String usernameDemandeur, emailDemandeur, telephoneDemandeur, prenomDemandeur, nomDemandeur, lieuDemandeur,posteDemandeur;
-
     String usernameObservateur, emailObservateur, telephoneObservateur, prenomObservateur, nomObservateur, lieuObservateur,posteObservateur;
 
-    TextView titreTV, slaTV, infoRetardTV,
+    TextView titreTV, slaTV, detailtempsTV,
             demandeurTV, categorieTV, etatTV, dateDebutTV, ObservateurTV,
-            dateEchanceTV, descriptionTV, lieuTV, dateClotureTicketTV, dateResolutionTicketTV;
+            dateEchanceTV, descriptionTV, lieuTV, dateClotureTicketTV;
 
     RequestQueue queue;
+    String observateur;
 
     ProgressBar progressBarInfo;
     ProgressDialog pd;
-    boolean ticketEnretard;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.info_ticket);
+        setContentView(R.layout.info_ticket_clos);
 
-
-        pd = new ProgressDialog(InfoTicket.this);
+        pd = new ProgressDialog(InfoTicketClos.this);
         pd.setMessage("Chargement...");
         pd.show();
 
@@ -77,12 +75,10 @@ public class InfoTicket extends Activity {
         etatTV = (TextView)findViewById(R.id.StatutAnswer);
         dateDebutTV = (TextView)findViewById(R.id.DebutAnswer);
         dateEchanceTV = (TextView)findViewById(R.id.EcheanceAnswer);
-        dateResolutionTicketTV = (TextView)findViewById(R.id.ResolutionAnswer);
         lieuTV = (TextView)findViewById(R.id.LieuAnswer);
         dateClotureTicketTV = (TextView)findViewById(R.id.ClotureAnswer);
-        infoRetardTV = (TextView)findViewById(R.id.retardtimerAnswer);
+        detailtempsTV = (TextView)findViewById(R.id.DetailTimeAnswer);
 
-        infoRetardTV.setVisibility(View.GONE);
 
         Intent i = getIntent();
         session_token = i.getStringExtra("session");
@@ -114,7 +110,6 @@ public class InfoTicket extends Activity {
         paramsTicket.add(new KeyValuePair("forcedisplay[11]","12"));
         paramsTicket.add(new KeyValuePair("forcedisplay[12]","2"));
         paramsTicket.add(new KeyValuePair("forcedisplay[13]","66"));
-        paramsTicket.add(new KeyValuePair("forcedisplay[14]","17"));
 
 
         String urlTicket = FirstEverActivity.GLPI_URL+"search/Ticket";
@@ -145,7 +140,6 @@ public class InfoTicket extends Activity {
 
                                     lieuTicket = oneTicket.getString("83");
                                     dateClotureTicket = oneTicket.getString("16");
-                                    dateResolutionTicket = oneTicket.getString("17");
                                     ticketEnretard = getBooleanFromSt(oneTicket.getString("82"));
                                     observateur = oneTicket.getString("66");
 
@@ -154,6 +148,9 @@ public class InfoTicket extends Activity {
                                 }
 
                             }
+
+                            tempsResolution = calculTempsResolution(dateClotureTicket, dateDebutTicket);
+                            tempsRetard = calculTempsRetard(dateEchanceTicket, dateClotureTicket);
 
                             titreTV.setText(titreTicket);
                             categorieTV.setText(categorieTicket);
@@ -165,7 +162,22 @@ public class InfoTicket extends Activity {
                             descriptionTV.setText(descriptionTicket);
                             lieuTV.setText(lieuTicket);
                             dateClotureTicketTV.setText(ClotureText(dateClotureTicket));
-                            dateResolutionTicketTV.setText(ResolutionText(dateResolutionTicket));
+
+                            detailtempsTV.setPaintFlags(detailtempsTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                            detailtempsTV.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if(ticketEnretard){
+                                        DialogTemps alert = new DialogTemps();
+                                        alert.showDialog(InfoTicketClos.this, "Ticket clos en retard", tempsResolution, tempsRetard, true);
+                                    }
+                                    else{
+                                        DialogTemps alert = new DialogTemps();
+                                        alert.showDialog(InfoTicketClos.this, "Ticket clos à temps", tempsResolution, tempsRetard, false);
+                                    }
+
+                                }
+                            });
 
                             getObservateurInfo(observateur);
                             getDemandeurInfo(iddemandeur);
@@ -173,25 +185,6 @@ public class InfoTicket extends Activity {
                             if (dateClotureTicket.equals("null")){
                                 dateClotureTicketTV.setTypeface(dateClotureTicketTV.getTypeface(), Typeface.ITALIC);
                             }
-                            if (dateResolutionTicket.equals("null")){
-                                dateResolutionTicketTV.setTypeface(dateResolutionTicketTV.getTypeface(), Typeface.ITALIC);
-                            }
-
-                            infoRetardTV.setPaintFlags(infoRetardTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                            infoRetardTV.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    if(ticketEnretard){
-                                        DialogTimerRetard alert = new DialogTimerRetard();
-                                        alert.showDialog(InfoTicket.this, dateEchanceTicket, true);
-                                    }
-                                    else{
-                                        DialogTimerRetard alert = new DialogTimerRetard();
-                                        alert.showDialog(InfoTicket.this, dateEchanceTicket, false);
-                                    }
-                                }
-                            });
-
 
                         } catch (JSONException e) {
                             Log.e("Error ticket ",e.getMessage());
@@ -264,7 +257,6 @@ public class InfoTicket extends Activity {
                         }
 
                         final String NomPrenomObs = nomObservateur+" "+prenomObservateur;
-                        System.out.println("nom obs "+nomObservateur);
                         if (nomObservateur == null){
                             ObservateurTV.setText("Aucun observateur");
                         }
@@ -277,11 +269,10 @@ public class InfoTicket extends Activity {
                                 @Override
                                 public void onClick(View view) {
                                     DialogDemandeur alert = new DialogDemandeur();
-                                    alert.showDialog(InfoTicket.this, NomPrenomObs, emailObservateur, telephoneObservateur, lieuObservateur, posteObservateur);
+                                    alert.showDialog(InfoTicketClos.this, NomPrenomObs, emailObservateur, telephoneObservateur, lieuObservateur, posteObservateur);
                                 }
                             });
                         }
-
 
                     }
                 },
@@ -319,21 +310,44 @@ public class InfoTicket extends Activity {
         return bool;
     }
 
+    private String calculTempsRetard(String dateEchanceTicket, String dateClotureTicket) {
+        long echeance = getDateDebutMS(dateEchanceTicket);
+        long cloture = getDateDebutMS(dateClotureTicket);
+
+        long tmps = cloture - echeance;
+        return String.valueOf(tmps);
+    }
+
+    private long getDateDebutMS(String dateDebutTicket) {
+        long dateDebutMS = 0;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //"2018-07-17 11:58:47
+        formatter.setLenient(false);
+
+        String oldTime = dateDebutTicket;
+        Date oldDate = null;
+        try {
+            oldDate = formatter.parse(oldTime);
+        } catch (ParseException e) { e.printStackTrace(); }
+        dateDebutMS = oldDate.getTime();
+
+        return dateDebutMS;
+    }
+
+    private String calculTempsResolution(String dateClotureTicket, String dateDebutTicket) {
+        long debut = getDateDebutMS(dateDebutTicket);
+        long cloture = getDateDebutMS(dateClotureTicket);
+
+        long tmps = cloture - debut;
+        return String.valueOf(tmps);
+    }
+
     private String ClotureText(String dateClotureTicket) {
         if (dateClotureTicket.equals("null")){
             return "Non clos pour l'instant";
         }
         else{
             return dateClotureTicket;
-        }
-    }
-
-    private String ResolutionText(String dateResolutionTicket) {
-        if (dateResolutionTicket.equals("null")){
-            return "Non résolu pour l'instant";
-        }
-        else{
-            return dateResolutionTicket;
         }
     }
 
@@ -416,7 +430,7 @@ public class InfoTicket extends Activity {
                             @Override
                             public void onClick(View view) {
                                 DialogDemandeur alert = new DialogDemandeur();
-                                alert.showDialog(InfoTicket.this, NomPrenomAsker, emailDemandeur, telephoneDemandeur, lieuDemandeur, posteDemandeur);
+                                alert.showDialog(InfoTicketClos.this, NomPrenomAsker, emailDemandeur, telephoneDemandeur, lieuDemandeur, posteDemandeur);
                             }
                         });
 
@@ -461,5 +475,4 @@ public class InfoTicket extends Activity {
         }
         return baseUrl;
     }
-
 }

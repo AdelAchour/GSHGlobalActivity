@@ -1,28 +1,16 @@
 package com.production.achour_ar.gshglobalactivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -47,27 +35,23 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ListTickets extends Fragment {
+public class ListTicketsResolu extends Fragment {
 
     ArrayList<TicketModel> TicketModels;
     ListView listView;
-    private static TicketAdapter adapter;
+    private static TicketResoluAdapter adapter;
     String session_token, nameUser, idUser, firstnameUser;
     RequestQueue queue;
-
-    String titreTicket, slaTicket, urgenceTicket, idTicket, demandeurTicket,
-            categorieTicket, etatTicket, dateDebutTicket, statutTicket,
+    String titreTicket, slaTicket, urgenceTicket, idTicket,
+            demandeurTicket, categorieTicket, dateDebutTicket, statutTicket,
             dateEchanceTicket, dateClotureTicket, dateResolutionTicket, descriptionTicket, lieuTicket;
-
-    String nbCount;
-
-    String nbClos;
-
     boolean ticketEnretard;
 
     public int nbTicketTab = 8;
 
-    public String[][] ticketTab;
+    String nbCount;
+
+    public String[][] ticketTab ;
 
     SwipeRefreshLayout swipeLayout;
 
@@ -75,60 +59,40 @@ public class ListTickets extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
 
+        queue = Volley.newRequestQueue(getActivity());
+
         swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_container);
-        swipeLayout.setColorScheme(android.R.color.holo_blue_dark,
-                android.R.color.holo_green_light);
+        swipeLayout.setColorScheme(android.R.color.holo_green_light,
+                android.R.color.holo_blue_dark);
+
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.clear();
-                getTicketsHTTP();
+                if (!TicketModels.isEmpty()){
+                    adapter.clear();
+                    getTicketsHTTP();
+                }
+                else{
+                    if (swipeLayout.isRefreshing()){
+                        swipeLayout.setRefreshing(false);
+                    }
+                }
+
             }
         });
-
-
-        queue = Volley.newRequestQueue(getActivity());
 
         session_token = getArguments().getString("session");
         nameUser = getArguments().getString("nom");
         firstnameUser = getArguments().getString("prenom");
         idUser = getArguments().getString("id");
 
-        listView = (ListView) view.findViewById(R.id.list);
 
+        listView=(ListView)view.findViewById(R.id.list);
 
         TicketModels = new ArrayList<>();
 
-
-
         getTicketsHTTP();
-
-        /*final Handler handlerRefresh = new Handler();
-
-        Runnable refresh = new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), "Actualisation", Toast.LENGTH_SHORT).show();
-                adapter.clear();
-                getTicketsHTTP();
-                handlerRefresh.postDelayed(this, 120 * 1000);
-            }
-        };
-
-        handlerRefresh.postDelayed(refresh, 120 * 1000);*/
-
-
-       /* ImageView refreshIcon ;
-        refreshIcon = (ImageView)view.findViewById(R.id.refreshIconID);
-        refreshIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                adapter.clear();
-                getTicketsHTTP();
-            }
-        });*/
-
 
         return view;
     }
@@ -140,6 +104,10 @@ public class ListTickets extends Fragment {
         params.add(new KeyValuePair("criteria[0][field]","5"));
         params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
         params.add(new KeyValuePair("criteria[0][value]",idUser));
+        params.add(new KeyValuePair("criteria[1][link]","AND"));
+        params.add(new KeyValuePair("criteria[1][field]","12"));
+        params.add(new KeyValuePair("criteria[1][searchtype]","equals"));
+        params.add(new KeyValuePair("criteria[1][value]","5"));
         params.add(new KeyValuePair("forcedisplay[0]","4"));
         params.add(new KeyValuePair("forcedisplay[1]","10"));
         params.add(new KeyValuePair("forcedisplay[2]","7"));
@@ -161,10 +129,12 @@ public class ListTickets extends Fragment {
                     public void onResponse(JSONObject response) {
                         try {
                             nbCount = response.getString("totalcount");
-                            System.out.println("nb t = "+nbCount);
                             ticketTab = new String[Integer.valueOf(nbCount)][nbTicketTab];
 
                             JSONArray Jdata = response.getJSONArray("data");
+                            if (Jdata.length()==0){
+                                System.out.println("pas de data");
+                            }
                             for (int i=0; i < Jdata.length(); i++) {
                                 try {
                                     JSONObject oneTicket = Jdata.getJSONObject(i);
@@ -173,69 +143,63 @@ public class ListTickets extends Fragment {
                                     slaTicket = oneTicket.getString("30");
                                     dateDebutTicket = oneTicket.getString("15");
                                     urgenceTicket = oneTicket.getString("10");
-                                    statutTicket = oneTicket.getString("12");
                                     idTicket = oneTicket.getString("2");
 
-                                    //Récupération du reste
                                     demandeurTicket = oneTicket.getString("4");
                                     categorieTicket = oneTicket.getString("7");
-                                    etatTicket = oneTicket.getString("12");
+                                    statutTicket = oneTicket.getString("12");
                                     dateEchanceTicket = oneTicket.getString("18");
                                     descriptionTicket = oneTicket.getString("21");
 
                                     lieuTicket = oneTicket.getString("83");
                                     dateClotureTicket = oneTicket.getString("16");
-                                    dateResolutionTicket = oneTicket.getString("17");
                                     ticketEnretard = getBooleanFromSt(oneTicket.getString("82"));
+
 
                                 } catch (JSONException e) {
                                     Log.e("Nb of data: "+Jdata.length()+" || "+"Error JSONArray at "+i+" : ", e.getMessage());
                                 }
                                 // ------------------------
 
-
-
                                 /* Remplissage du tableau des tickets pour le row item */
                                 ticketTab[i][0] = titreTicket;
                                 ticketTab[i][1] = slaTicket;
                                 ticketTab[i][2] = dateDebutTicket;
                                 ticketTab[i][3] = urgenceText(urgenceTicket);
-                                ticketTab[i][4] = calculTempsRestant(dateDebutTicket, slaTicket, dateEchanceTicket);
+                                ticketTab[i][4] = calculTempsRestant(dateDebutTicket, slaTicket);
                                 ticketTab[i][5] = String.valueOf(ticketEnretard);
                                 ticketTab[i][6] = statutTicket;
                                 ticketTab[i][7] = idTicket;
 
-                                // -----------------------------
-
                             }
 
-                            triTableauTicketParUrgence(ticketTab);
-                            AfficheTab(ticketTab);
                             addModelsFromTab(ticketTab);
 
-                            adapter = new TicketAdapter(TicketModels,getActivity());
+
+                            adapter = new TicketResoluAdapter(TicketModels,getActivity());
 
                             listView.setAdapter(adapter);
+
                             if(swipeLayout.isRefreshing()){
                                 swipeLayout.setRefreshing(false);
                             }
+
 
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
                                     TicketModel TicketModel= TicketModels.get(position);
 
-                                    Snackbar.make(view, "id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
-                                            .setAction("No action", null).show();
+                                   /* Snackbar.make(view, "Id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
+                                            .setAction("No action", null).show();*/
 
                                     Intent i = new Intent(getActivity(), InfoTicket.class);
                                     i.putExtra("session",session_token);
                                     i.putExtra("nom",nameUser);
                                     i.putExtra("prenom",firstnameUser);
                                     i.putExtra("id",idUser);
-                                    i.putExtra("idTicket", TicketModel.getIdTicket());
+                                    i.putExtra("idTicket",TicketModel.getIdTicket());
 
                                     startActivity(i);
 
@@ -246,7 +210,6 @@ public class ListTickets extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
 
                     }
                 },
@@ -273,18 +236,23 @@ public class ListTickets extends Fragment {
         // add it to the RequestQueue
         queue.add(getRequest);
 
+
     }
 
+    private String calculTempsRetard(String dateEchanceTicket, String dateClotureTicket) {
+        long echeance = getDateDebutMS(dateEchanceTicket);
+        long cloture = getDateDebutMS(dateClotureTicket);
 
-    public void notifyUser(String Nom, String timeLeftText, Context context) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity(),  "")
-                .setSmallIcon(R.drawable.refreshicon)
-                .setContentTitle("Urgent")
-                .setContentText("Ticket "+Nom+" expire dans : "+timeLeftText)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        long tmps = cloture - echeance;
+        return String.valueOf(tmps);
+    }
 
-        notificationManager.notify(0, mBuilder.build());
+    private String calculTempsResolution(String dateClotureTicket, String dateDebutTicket) {
+        long debut = getDateDebutMS(dateDebutTicket);
+        long cloture = getDateDebutMS(dateClotureTicket);
+
+        long tmps = cloture - debut;
+        return String.valueOf(tmps);
     }
 
     private boolean getBooleanFromSt(String string) {
@@ -349,26 +317,20 @@ public class ListTickets extends Fragment {
         return maxTemps;
     }
 
-    private String calculTempsRestant(String dateDebutTicket, String slaTicket, String dateEcheance) {
+    private String calculTempsRestant(String dateDebutTicket, String slaTicket) {
         String minTemps = getMinTemps(slaTicket);
         String maxTemps = getMaxTemps(slaTicket);
 
         long dateDebutMS = getDateDebutMS(dateDebutTicket);
-        long dateEcheanceMS = getDateDebutMS(dateEcheance);
-
         long currentTimeMS = CurrentTimeMS();
 
-        long differenceEcheanceCurrent = dateEcheanceMS - currentTimeMS;
-
         long minTempsMS = hourToMSConvert(minTemps);
-        long maxTempsMS = hourToMSConvert(maxTemps);
 
         long differenceCurrentDebut = currentTimeMS - dateDebutMS;
 
-        long tempsRestant = maxTempsMS - differenceCurrentDebut;
+        long tempsRestant = minTempsMS - differenceCurrentDebut;
 
-        return String.valueOf(differenceEcheanceCurrent);
-
+        return String.valueOf(tempsRestant);
     }
 
     private long hourToMSConvert(String minTemps) {
@@ -392,21 +354,24 @@ public class ListTickets extends Fragment {
         try {
             oldDate = formatter.parse(oldTime);
         } catch (ParseException e) { e.printStackTrace(); }
-        dateDebutMS = oldDate.getTime();
+
+
+        try {
+            dateDebutMS = oldDate.getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return dateDebutMS;
     }
 
     private void addModelsFromTab(String[][] ticketTab) {
         for (int i = 0; i < ticketTab.length; i++){
-            if ((!ticketTab[i][6].equals("6"))&&(!ticketTab[i][6].equals("5"))) {
-                TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4], ticketTab[i][7], ticketTab[i][6]);
-                ticket.setUrgenceTicket(ticketTab[i][3]);
-                ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
-                //ticket.setTempsRestantTicket(ticketTab[i][4]);
+            TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4], ticketTab[i][7], ticketTab[i][6]);
+            ticket.setUrgenceTicket(ticketTab[i][3]);
+            ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
 
-                TicketModels.add(ticket);
-            }
+            TicketModels.add(ticket);
         }
     }
 
@@ -426,7 +391,7 @@ public class ListTickets extends Fragment {
         switch (urg){
             case 1:
                 urgence = "Très basse";
-            break;
+                break;
             case 2:
                 urgence = "Basse";
                 break;
@@ -442,33 +407,6 @@ public class ListTickets extends Fragment {
         }
 
         return urgence;
-    }
-
-    private String etatText(String etatTicket) {
-        String etat = "";
-        int et = Integer.valueOf(etatTicket);
-        switch (et){
-            case 1:
-                etat = "Nouveau";
-                break;
-            case 2:
-                etat = "En cours (Attribué)";
-                break;
-            case 3:
-                etat = "En cours (Planifié)";
-                break;
-            case 4:
-                etat = "En attente";
-                break;
-            case 5:
-                etat = "Résolu";
-                break;
-            case 6:
-                etat = "Clos";
-                break;
-        }
-
-        return etat;
     }
 
 
@@ -488,99 +426,5 @@ public class ListTickets extends Fragment {
         return baseUrl;
     }
 
-    public static void triTableauTicketParUrgence(String tableau[][]) {
-        int longueur = tableau.length;
-        boolean foundRetard = false;
-
-            // ---- Tri par retard ---
-            for (int i = 0; i < longueur; i++) {
-                if (Long.valueOf(tableau[i][4]) >= 0) {
-                    for (int k = i+1; k< longueur; k++){
-                        if ((Long.valueOf(tableau[k][4]) < 0)){
-                            foundRetard = true;
-                            permuter(k,i,tableau);
-                        }
-                    }
-                    foundRetard = false;
-                }
-            }
-
-            // ---- Tri par temps min ---
-
-
-        int tampon = 0;
-        boolean permut;
-
-        do {
-            // hypothèse : le tableau est trié
-            permut = false;
-            for (int i = nbRetard(tableau); i < longueur - 1; i++) {
-                // Teste si 2 éléments successifs sont dans le bon ordre ou non
-                if (Long.valueOf(tableau[i][4]) > Long.valueOf(tableau[i + 1][4])) {
-                    // s'ils ne le sont pas, on échange leurs positions
-                    permuter(i, i+1, tableau);
-                    permut = true;
-                }
-            }
-        } while (permut);
-
-    }
-
-    private static int nbRetard(String[][] tableau) {
-        int nbTickets = 0;
-        for(int i = 0; i < tableau.length; i++){
-            if (Long.valueOf(tableau[i][4]) < 0){
-                nbTickets++;
-            }
-        }
-
-        return nbTickets;
-    }
-
-
-    private static int nbHauteUrgences(String[][] tableau) {
-        int nbTickets = 0;
-        for(int i = 0; i < tableau.length; i++){
-            if ((tableau[i][3].equals("Haute"))||(tableau[i][3].equals("Très haute"))){
-                nbTickets++;
-            }
-        }
-
-        return nbTickets;
-    }
-
-    private static void permuter(int k, int i, String[][] tableau) {
-        String[] tampon = new String[8] ;
-
-        tampon[0] = tableau[k][0];
-        tampon[1] = tableau[k][1];
-        tampon[2] = tableau[k][2];
-        tampon[3] = tableau[k][3];
-        tampon[4] = tableau[k][4];
-        tampon[5] = tableau[k][5];
-        tampon[6] = tableau[k][6];
-        tampon[7] = tableau[k][7];
-
-
-        tableau[k][0] = tableau[i][0];
-        tableau[k][1] = tableau[i][1];
-        tableau[k][2] = tableau[i][2];
-        tableau[k][3] = tableau[i][3];
-        tableau[k][4] = tableau[i][4];
-        tableau[k][5] = tableau[i][5];
-        tableau[k][6] = tableau[i][6];
-        tableau[k][7] = tableau[i][7];
-
-
-        tableau[i][0] = tampon[0];
-        tableau[i][1] = tampon[1];
-        tableau[i][2] = tampon[2];
-        tableau[i][3] = tampon[3];
-        tableau[i][4] = tampon[4];
-        tableau[i][5] = tampon[5];
-        tableau[i][6] = tampon[6];
-        tableau[i][7] = tampon[7];
-    }
 
 }
-

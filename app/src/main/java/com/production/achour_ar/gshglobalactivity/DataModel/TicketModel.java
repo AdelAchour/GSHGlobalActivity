@@ -12,6 +12,10 @@ public class TicketModel {
     String TempsRestantTicket;
     String idTicket;
     String Statut;
+    String TempsResolution;
+
+
+    String TempsRetard;
 
     public TicketModel(String titreTicket, String slaTicket, String dateTicket, String tempsRestantTicket, String idticket, String statut) {
         this.titreTicket = titreTicket;
@@ -59,4 +63,21 @@ public class TicketModel {
     public String getIdTicket() { return idTicket; }
 
     public String getStatut() { return Statut; }
+
+    public String getTempsResolution() {
+        return TempsResolution;
+    }
+
+    public void setTempsResolution(String tempsResolution) {
+        TempsResolution = tempsResolution;
+    }
+
+    public String getTempsRetard() {
+        return TempsRetard;
+    }
+
+    public void setTempsRetard(String tempsRetard) {
+        TempsRetard = tempsRetard;
+    }
+
 }

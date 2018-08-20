@@ -67,7 +67,7 @@ public class AccueilUser extends AppCompatActivity {
        ticketButton.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               Intent i = new Intent(getApplicationContext(), ListTickets.class);
+               Intent i = new Intent(getApplicationContext(), TabLayoutActivity.class);
                i.putExtra("session",session_token);
                i.putExtra("nom",nameUser);
                i.putExtra("prenom",firstnameUser);

@@ -49,9 +49,6 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         TextView txtSLA;
         ImageView info;
         RelativeLayout layout;
-        boolean notification1 = false;
-        boolean notification2 = false;
-        int cpt = 0;
 
         Handler handler = new Handler(){
             @Override
@@ -310,7 +307,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         {
             case R.id.item_info:
 
-                Snackbar.make(v, "is Late? : " +TicketModel.isTicketEnRetard(), Snackbar.LENGTH_LONG)
+                Snackbar.make(v, "En retard? : " +TicketModel.isTicketEnRetard(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
                 break;
         }
