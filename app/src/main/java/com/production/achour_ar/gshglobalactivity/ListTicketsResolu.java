@@ -1,5 +1,6 @@
 package com.production.achour_ar.gshglobalactivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -55,9 +56,15 @@ public class ListTicketsResolu extends Fragment {
 
     SwipeRefreshLayout swipeLayout;
 
+    ProgressDialog pd;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
+
+        pd = new ProgressDialog(getActivity());
+        pd.setMessage("Chargement des tickets résolu...");
+        pd.show();
 
         queue = Volley.newRequestQueue(getActivity());
 
@@ -121,6 +128,7 @@ public class ListTicketsResolu extends Fragment {
         params.add(new KeyValuePair("forcedisplay[10]","16"));
         params.add(new KeyValuePair("forcedisplay[11]","2"));
         params.add(new KeyValuePair("forcedisplay[12]","17"));
+        params.add(new KeyValuePair("range","0-3000"));
 
         final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
@@ -128,7 +136,7 @@ public class ListTicketsResolu extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            nbCount = response.getString("totalcount");
+                            nbCount = response.getString("count");
                             ticketTab = new String[Integer.valueOf(nbCount)][nbTicketTab];
 
                             JSONArray Jdata = response.getJSONArray("data");
@@ -179,6 +187,7 @@ public class ListTicketsResolu extends Fragment {
                             adapter = new TicketResoluAdapter(TicketModels,getActivity());
 
                             listView.setAdapter(adapter);
+                            pd.dismiss();
 
                             if(swipeLayout.isRefreshing()){
                                 swipeLayout.setRefreshing(false);
@@ -318,6 +327,9 @@ public class ListTicketsResolu extends Fragment {
     }
 
     private String calculTempsRestant(String dateDebutTicket, String slaTicket) {
+        if (slaTicket.equals("null")){
+            return "-1";
+        }
         String minTemps = getMinTemps(slaTicket);
         String maxTemps = getMaxTemps(slaTicket);
 

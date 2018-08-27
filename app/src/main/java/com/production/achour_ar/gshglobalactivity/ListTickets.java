@@ -1,5 +1,6 @@
 package com.production.achour_ar.gshglobalactivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -71,9 +72,15 @@ public class ListTickets extends Fragment {
 
     SwipeRefreshLayout swipeLayout;
 
+    ProgressDialog pd;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
+
+        pd = new ProgressDialog(getActivity());
+        pd.setMessage("Chargement des tickets...");
+        pd.show();
 
         swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_blue_dark,
@@ -153,6 +160,7 @@ public class ListTickets extends Fragment {
         params.add(new KeyValuePair("forcedisplay[10]","16"));
         params.add(new KeyValuePair("forcedisplay[11]","2"));
         params.add(new KeyValuePair("forcedisplay[12]","17"));
+        params.add(new KeyValuePair("range","0-3000"));
 
         final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
@@ -160,7 +168,8 @@ public class ListTickets extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            nbCount = response.getString("totalcount");
+                            //nbCount = response.getString("totalcount");
+                            nbCount = response.getString("count");
                             System.out.println("nb t = "+nbCount);
                             ticketTab = new String[Integer.valueOf(nbCount)][nbTicketTab];
 
@@ -200,7 +209,7 @@ public class ListTickets extends Fragment {
                                 ticketTab[i][1] = slaTicket;
                                 ticketTab[i][2] = dateDebutTicket;
                                 ticketTab[i][3] = urgenceText(urgenceTicket);
-                                ticketTab[i][4] = calculTempsRestant(dateDebutTicket, slaTicket, dateEchanceTicket);
+                                ticketTab[i][4] = calculTempsRestant(dateEchanceTicket);
                                 ticketTab[i][5] = String.valueOf(ticketEnretard);
                                 ticketTab[i][6] = statutTicket;
                                 ticketTab[i][7] = idTicket;
@@ -209,13 +218,15 @@ public class ListTickets extends Fragment {
 
                             }
 
-                            triTableauTicketParUrgence(ticketTab);
+                            //triTableauTicketParUrgence(ticketTab);
                             AfficheTab(ticketTab);
                             addModelsFromTab(ticketTab);
 
                             adapter = new TicketAdapter(TicketModels,getActivity());
 
                             listView.setAdapter(adapter);
+                            pd.dismiss();
+
                             if(swipeLayout.isRefreshing()){
                                 swipeLayout.setRefreshing(false);
                             }
@@ -349,7 +360,7 @@ public class ListTickets extends Fragment {
         return maxTemps;
     }
 
-    private String calculTempsRestant(String dateDebutTicket, String slaTicket, String dateEcheance) {
+   /* private String calculTempsRestantANCIEN(String dateDebutTicket, String slaTicket, String dateEcheance) {
         String minTemps = getMinTemps(slaTicket);
         String maxTemps = getMaxTemps(slaTicket);
 
@@ -366,6 +377,24 @@ public class ListTickets extends Fragment {
         long differenceCurrentDebut = currentTimeMS - dateDebutMS;
 
         long tempsRestant = maxTempsMS - differenceCurrentDebut;
+
+
+
+        return String.valueOf(differenceEcheanceCurrent);
+
+    }*/
+
+    private String calculTempsRestant(String dateEcheance) {
+        if (dateEcheance.equals("null")){
+            return "-1";
+        }
+
+        long dateEcheanceMS = getDateDebutMS(dateEcheance);
+
+        long currentTimeMS = CurrentTimeMS();
+
+        long differenceEcheanceCurrent = dateEcheanceMS - currentTimeMS;
+
 
         return String.valueOf(differenceEcheanceCurrent);
 

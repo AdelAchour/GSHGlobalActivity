@@ -156,10 +156,18 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         Handler handlerLate = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                txtTempsRestant.setText("En retard");
-                txtTempsRestant.setTextColor(Color.parseColor("#434343"));
-                layout.setBackgroundColor(Color.parseColor("#3caa0000"));
-                info.setImageResource(R.drawable.haute);
+                Bundle bundle = msg.getData();
+                long time = bundle.getLong("time");
+                if (time == -1){
+                    txtTempsRestant.setText("Aucun délai. Ancienne version");
+                    txtTempsRestant.setTextColor(Color.parseColor("#434343"));
+                }
+                else {
+                    txtTempsRestant.setText("En retard");
+                    txtTempsRestant.setTextColor(Color.parseColor("#434343"));
+                    layout.setBackgroundColor(Color.parseColor("#3caa0000"));
+                    info.setImageResource(R.drawable.haute);
+                }
             }
         };
 
@@ -199,7 +207,12 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             }
             else{
                 if (timeLeftMS<0){
-                    handlerLate.sendEmptyMessage(0);
+                    //handlerLate.sendEmptyMessage(0);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("time", timeLeftMS);
+                    Message message = new Message();
+                    message.setData(bundle);
+                    handlerLate.sendMessage(message);
                 }
                 else{
                     CountDownTimer countDownTimer = new CountDownTimer(timeLeftMS, 1000) {

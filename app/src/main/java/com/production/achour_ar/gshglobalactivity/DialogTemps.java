@@ -20,6 +20,7 @@ public class DialogTemps {
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_temps);
 
+
         TextView StatutTV = (TextView) dialog.findViewById(R.id.StatutTicket);
         if (retard){
             StatutTV.setTextColor(Color.parseColor("#98272b"));
@@ -33,12 +34,19 @@ public class DialogTemps {
         TempsResolutionTV.setText("Temps de résolution : "+TransformInTime(tempsResolution));
 
         TextView TempsRetardTV = (TextView) dialog.findViewById(R.id.tempsretard);
-        if (retard){
-            TempsRetardTV.setText("Temps de retard : "+TransformInTime(tempsRetard));
+
+        if (tempsRetard.equals("-1")){
+            TempsRetardTV.setText("Erreur. Ancienne version sans SLA");
         }
-        else{
-            TempsRetardTV.setText("Aucun retard");
+        else {
+            if (retard){
+                TempsRetardTV.setText("Temps de retard : "+TransformInTime(tempsRetard));
+            }
+            else{
+                TempsRetardTV.setText("Aucun retard");
+            }
         }
+
 
 
 

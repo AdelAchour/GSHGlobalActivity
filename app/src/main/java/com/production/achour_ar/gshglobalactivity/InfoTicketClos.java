@@ -311,6 +311,9 @@ public class InfoTicketClos extends AppCompatActivity {
     }
 
     private String calculTempsRetard(String dateEchanceTicket, String dateClotureTicket) {
+        if (dateEchanceTicket.equals("null")){
+            return "-1";
+        }
         long echeance = getDateDebutMS(dateEchanceTicket);
         long cloture = getDateDebutMS(dateClotureTicket);
 
@@ -335,6 +338,9 @@ public class InfoTicketClos extends AppCompatActivity {
     }
 
     private String calculTempsResolution(String dateClotureTicket, String dateDebutTicket) {
+        if (dateClotureTicket.equals("null")){
+            return "-1";
+        }
         long debut = getDateDebutMS(dateDebutTicket);
         long cloture = getDateDebutMS(dateClotureTicket);
 

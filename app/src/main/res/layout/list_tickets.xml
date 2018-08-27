@@ -7,8 +7,12 @@
     android:layout_height="match_parent"
     tools:context="com.production.achour_ar.gshglobalactivity.ListTickets">
 
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 
-
-    <include layout="@layout/content_main" />
+    <!--    <include layout="@layout/content_main" />  -->
 
 </android.support.v4.widget.SwipeRefreshLayout>
