@@ -64,7 +64,7 @@ public class ListTicketsResolu extends Fragment {
 
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Chargement des tickets résolu...");
-        pd.show();
+        //pd.show();
 
         queue = Volley.newRequestQueue(getActivity());
 

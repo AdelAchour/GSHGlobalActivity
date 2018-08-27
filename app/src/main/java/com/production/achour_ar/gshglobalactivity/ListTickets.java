@@ -80,7 +80,7 @@ public class ListTickets extends Fragment {
 
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Chargement des tickets...");
-        pd.show();
+        //pd.show();
 
         swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_blue_dark,
@@ -218,7 +218,7 @@ public class ListTickets extends Fragment {
 
                             }
 
-                            //triTableauTicketParUrgence(ticketTab);
+                            triTableauTicketParUrgence(ticketTab);
                             AfficheTab(ticketTab);
                             addModelsFromTab(ticketTab);
 
