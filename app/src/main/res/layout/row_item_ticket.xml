@@ -34,6 +34,7 @@
             android:id="@+id/SLARestantTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
             android:text="Il reste 2min"
             android:textSize="13dp"
             android:gravity="center"

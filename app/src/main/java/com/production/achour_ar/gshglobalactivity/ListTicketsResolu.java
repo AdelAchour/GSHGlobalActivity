@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -112,14 +111,17 @@ public class ListTicketsResolu extends Fragment {
     private void getTicketsHTTP() {
         String url = FirstEverActivity.GLPI_URL+"search/Ticket";
 
+        String maxRange = ConstantVar.RANGE_TICKET;
         List<KeyValuePair> params = new ArrayList<>();
         params.add(new KeyValuePair("criteria[0][field]","5"));
         params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
         params.add(new KeyValuePair("criteria[0][value]",idUser));
+
         params.add(new KeyValuePair("criteria[1][link]","AND"));
         params.add(new KeyValuePair("criteria[1][field]","12"));
         params.add(new KeyValuePair("criteria[1][searchtype]","equals"));
         params.add(new KeyValuePair("criteria[1][value]","5"));
+
         params.add(new KeyValuePair("forcedisplay[0]","4"));
         params.add(new KeyValuePair("forcedisplay[1]","10"));
         params.add(new KeyValuePair("forcedisplay[2]","7"));
@@ -133,7 +135,10 @@ public class ListTicketsResolu extends Fragment {
         params.add(new KeyValuePair("forcedisplay[10]","16"));
         params.add(new KeyValuePair("forcedisplay[11]","2"));
         params.add(new KeyValuePair("forcedisplay[12]","17"));
-        params.add(new KeyValuePair("range","0-3000"));
+
+        params.add(new KeyValuePair("sort","15"));
+        params.add(new KeyValuePair("order","DESC"));
+        params.add(new KeyValuePair("range","0-"+maxRange+""));
 
         final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
@@ -143,6 +148,15 @@ public class ListTicketsResolu extends Fragment {
                         try {
                             nbCount = response.getString("count");
                             ticketTab = new String[Integer.valueOf(nbCount)][nbTicketTab];
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString("position","2");
+                            bundle.putString("count",nbCount);
+                            bundle.putString("title","Résolu");
+                            Message msg = new Message();
+                            msg.setData(bundle);
+                            msg.what = 1;
+                            TabLayoutActivity.handler.sendMessage(msg);
 
                             JSONArray Jdata = response.getJSONArray("data");
                             if (Jdata.length()==0){

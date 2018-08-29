@@ -132,15 +132,18 @@ public class TabLayoutActivity extends AppCompatActivity {
         ListTickets listTickets = new ListTickets();
         ListTicketsClos listTicketsClos = new ListTicketsClos();
         ListTicketsResolu listTicketsResolu = new ListTicketsResolu();
+        ListTicketsAttente listTicketsAttente = new ListTicketsAttente();
 
         listTickets.setArguments(bundle);
         listTicketsClos.setArguments(bundle);
         listTicketsResolu.setArguments(bundle);
+        listTicketsAttente.setArguments(bundle);
 
         viewPagerAdapter.addFragment(listTickets, "En cours");
         viewPagerAdapter.addFragment(listTicketsClos, "Clos");
         viewPagerAdapter.addFragment(listTicketsResolu, "Résolu");
-        viewPager.setAdapter(viewPagerAdapter);
+        viewPagerAdapter.addFragment(listTicketsAttente, "En attente");
+        //viewPager.setAdapter(viewPagerAdapter);
 
     }
 
@@ -153,6 +156,15 @@ public class TabLayoutActivity extends AppCompatActivity {
                     if (pd.isShowing()){
                         pd.dismiss();
                     }
+                    break;
+
+                case 1:
+                    Bundle bundle = msg.getData();
+                    int position = Integer.valueOf(bundle.getString("position")); //2
+                    String count = bundle.getString("count"); //15
+                    String title = bundle.getString("title"); //Résolu
+
+                    tabLayout.getTabAt(position).setText(title+" ("+count+")");
                     break;
             }
         }
