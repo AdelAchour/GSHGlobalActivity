@@ -1,7 +1,10 @@
 package com.production.achour_ar.gshglobalactivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -19,11 +22,20 @@ public class TabLayoutActivity extends AppCompatActivity {
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
     String session_token, nameUser, idUser, firstnameUser;
+    public static Handler handler;
+    ProgressDialog pd;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_layout);
+
+        pd = new ProgressDialog(TabLayoutActivity.this);
+        pd.setMessage("Chargement des tickets...");
+
+        handler = new HandlerTab();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true); //show a caret even if android:parentActivityName is not specified.
@@ -39,8 +51,8 @@ public class TabLayoutActivity extends AppCompatActivity {
 
         actionBar.setCustomView(v);
 
-        ImageView homebutton = (ImageView)findViewById(R.id.homeiconID);
-        ImageView refreshbutton = (ImageView)findViewById(R.id.refreshIconID);
+        ImageView homebutton = (ImageView) findViewById(R.id.homeiconID);
+        ImageView refreshbutton = (ImageView) findViewById(R.id.refreshIconID);
         homebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,12 +74,46 @@ public class TabLayoutActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        pd.show();
+
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                System.out.println("Tab " + position + " selected ");
+                switch (position) {
+                    case 0: //ListTicket
+                        ListTickets.handlerticket.sendEmptyMessage(0); //stp vérifie si la listview est vide et dabar rassek
+                        break;
+
+                    case 1: //ListTicketClos
+                        ListTicketsClos.handlerticketClos.sendEmptyMessage(0); //stp vérifie si la listview est vide et dabar rassek
+                        break;
+
+                    case 2: //ListTicketRésolu
+                        ListTicketsResolu.handlerticketResolu.sendEmptyMessage(0); //stp vérifie si la listview est vide et dabar rassek
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()== android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
@@ -84,8 +130,8 @@ public class TabLayoutActivity extends AppCompatActivity {
         bundle.putString("id", idUser);
 
         ListTickets listTickets = new ListTickets();
-        ListTicketsClos listTicketsClos  = new ListTicketsClos();
-        ListTicketsResolu listTicketsResolu  = new ListTicketsResolu();
+        ListTicketsClos listTicketsClos = new ListTicketsClos();
+        ListTicketsResolu listTicketsResolu = new ListTicketsResolu();
 
         listTickets.setArguments(bundle);
         listTicketsClos.setArguments(bundle);
@@ -95,6 +141,20 @@ public class TabLayoutActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(listTicketsClos, "Clos");
         viewPagerAdapter.addFragment(listTicketsResolu, "Résolu");
         viewPager.setAdapter(viewPagerAdapter);
+
     }
 
+
+    private class HandlerTab extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    if (pd.isShowing()){
+                        pd.dismiss();
+                    }
+                    break;
+            }
+        }
+    }
 }

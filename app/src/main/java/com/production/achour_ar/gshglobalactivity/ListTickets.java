@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Message;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -64,6 +66,8 @@ public class ListTickets extends Fragment {
 
     String nbClos;
 
+    public static Handler handlerticket;
+
     boolean ticketEnretard;
 
     public int nbTicketTab = 8;
@@ -79,8 +83,11 @@ public class ListTickets extends Fragment {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
 
         pd = new ProgressDialog(getActivity());
+        pd.setTitle("Tickets en cours");
         pd.setMessage("Chargement des tickets...");
         //pd.show();
+
+        handlerticket = new HandlerTicket();
 
         swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_blue_dark,
@@ -89,8 +96,15 @@ public class ListTickets extends Fragment {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.clear();
-                getTicketsHTTP();
+                if (!TicketModels.isEmpty()){
+                    adapter.clear();
+                    getTicketsHTTP();
+                }
+                else{
+                    if (swipeLayout.isRefreshing()){
+                        swipeLayout.setRefreshing(false);
+                    }
+                }
             }
         });
 
@@ -218,14 +232,25 @@ public class ListTickets extends Fragment {
 
                             }
 
+
                             triTableauTicketParUrgence(ticketTab);
                             AfficheTab(ticketTab);
                             addModelsFromTab(ticketTab);
 
-                            adapter = new TicketAdapter(TicketModels,getActivity());
+                            //System.out.println("Je charge la listview");
+                            if (getActivity() != null){
+                                adapter = new TicketAdapter(TicketModels,getActivity());
+                            }
+                            else{
+                                Log.e("STOP BEFORE ERROR", "Il allait y avoir une erreur man (EN COURS)");
+                            }
+
 
                             listView.setAdapter(adapter);
-                            pd.dismiss();
+                            //System.out.println("Listview chargée");
+                            //TabLayoutActivity.handler.sendEmptyMessage(1);
+                            handlerticket.sendEmptyMessage(1);
+                            TabLayoutActivity.handler.sendEmptyMessage(0);
 
                             if(swipeLayout.isRefreshing()){
                                 swipeLayout.setRefreshing(false);
@@ -255,7 +280,8 @@ public class ListTickets extends Fragment {
 
 
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Log.e("malkach",e.getMessage());
+                            handlerticket.sendEmptyMessage(2);
                         }
 
 
@@ -611,5 +637,47 @@ public class ListTickets extends Fragment {
         tableau[i][7] = tampon[7];
     }
 
-}
+     class HandlerTicket extends Handler{
+         boolean nodata = false;
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 0:
+                    if (TicketModels.isEmpty()){
+                        System.out.println("listview vide");
+                        pd.show();
+                        if (nodata){
+                            System.out.println("Enregistré, 0 data déjà");
+                            pd.dismiss();
+                        }
+                    }
+                    else{
+                        System.out.println("listview no nvide !!");
+                    }
+                    break;
+
+                case 1:
+                    System.out.println("Je dois arrêter le chargement de clos");
+                    if(pd.isShowing()){
+                        pd.dismiss();
+                    }
+                    else {
+                        System.out.println("Aucun chargement à arrêter clos");
+                    }
+                    break;
+
+                case 2:
+                    nodata = true;
+                    if(pd.isShowing()){
+                        System.out.println("Nouvelle recherche, 0 data");
+                        pd.dismiss();
+                    }
+                    break;
+            }
+
+        }
+
+        }
+    }
+
 

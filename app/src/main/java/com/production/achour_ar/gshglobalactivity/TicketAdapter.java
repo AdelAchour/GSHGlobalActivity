@@ -306,7 +306,6 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         super(context, R.layout.row_item_ticket, data);
         this.dataSet = data;
         this.mContext=context;
-        //startUpdateTimer();
     }
 
 

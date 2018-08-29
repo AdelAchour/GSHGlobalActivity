@@ -3,6 +3,8 @@ package com.production.achour_ar.gshglobalactivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -58,13 +60,15 @@ public class ListTicketsResolu extends Fragment {
 
     ProgressDialog pd;
 
+    public static Handler handlerticketResolu;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
 
         pd = new ProgressDialog(getActivity());
-        pd.setMessage("Chargement des tickets résolu...");
-        //pd.show();
+        pd.setTitle("Tickets résolus");
+        pd.setMessage("Chargement des tickets...");
 
         queue = Volley.newRequestQueue(getActivity());
 
@@ -72,6 +76,7 @@ public class ListTicketsResolu extends Fragment {
         swipeLayout.setColorScheme(android.R.color.holo_green_light,
                 android.R.color.holo_blue_dark);
 
+        handlerticketResolu = new HandlerTicketResolu();
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -184,10 +189,15 @@ public class ListTicketsResolu extends Fragment {
                             addModelsFromTab(ticketTab);
 
 
-                            adapter = new TicketResoluAdapter(TicketModels,getActivity());
+                            if (getActivity() != null){
+                                adapter = new TicketResoluAdapter(TicketModels,getActivity());
+                            }
+                            else{
+                                Log.e("STOP BEFORE ERROR", "Il allait y avoir une erreur man (RESOLU)");
+                            }
 
                             listView.setAdapter(adapter);
-                            pd.dismiss();
+                            handlerticketResolu.sendEmptyMessage(1);
 
                             if(swipeLayout.isRefreshing()){
                                 swipeLayout.setRefreshing(false);
@@ -217,7 +227,11 @@ public class ListTicketsResolu extends Fragment {
 
 
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Log.e("malkach",e.getMessage());
+                            handlerticketResolu.sendEmptyMessage(2);
+                            //DialogNoTicket alert = new DialogNoTicket();
+                            //alert.showDialog(getActivity());
+                            //e.printStackTrace();
                         }
 
                     }
@@ -436,6 +450,50 @@ public class ListTicketsResolu extends Fragment {
             }
         }
         return baseUrl;
+    }
+
+    class HandlerTicketResolu extends Handler {
+        boolean nodata = false;
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 0:
+                    if (TicketModels.isEmpty()){
+                        System.out.println("listview vide");
+                        pd.show();
+                        if (nodata){
+                            System.out.println("Enregistré, 0 data déjà");
+                            pd.dismiss();
+                        }
+                    }
+                    else{
+                        System.out.println("listview no nvide !!");
+                    }
+                    break;
+
+                case 1:
+
+                    if(pd.isShowing()){
+                        System.out.println("Je dois arrêter le chargement de résolu");
+                        pd.dismiss();
+                    }
+                    else{
+                        System.out.println("Aucun chargement à arrêter résolu");
+                    }
+                    break;
+
+                case 2:
+                    nodata = true;
+                    if(pd.isShowing()){
+                        System.out.println("Nouvelle recherche, 0 data");
+                        pd.dismiss();
+                    }
+                    break;
+
+
+            }
+
+        }
     }
 
 
