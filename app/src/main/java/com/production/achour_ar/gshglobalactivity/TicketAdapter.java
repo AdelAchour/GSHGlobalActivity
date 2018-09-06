@@ -144,7 +144,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 }
 
 
-                System.out.println("Titre "+Nom+ " | "+timeLeftMS+ " | "+txtTempsRestant.getText() );
+                //System.out.println("Titre "+Nom+ " | "+timeLeftMS+ " | "+txtTempsRestant.getText() );
 
 
                 info.setImageResource(getIconUrgence(timeLeftMS));
@@ -327,6 +327,35 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
     private int lastPosition = -1;
 
+    @Override
+    public int getViewTypeCount() {
+        Log.d("getViewTypeCount",""+getCount());
+        return getCount();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Log.d("getItemViewType",""+position);
+        return position;
+    }
+
+    @Override
+    public int getCount() {
+        Log.d("getCount",""+dataSet.size());
+        return dataSet.size();
+    }
+
+    @Override
+    public TicketModel getItem(int position) {
+        Log.d("getItem",""+dataSet.get(position));
+        return dataSet.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        Log.d("getItemId",""+position);
+        return 0;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -371,6 +400,8 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
             result=convertView;
+            Log.d("REUSED", "Je suis recyclé "+result.getId());
+
         }
         //convertView.setHasTransientState(true);
         viewHolder.txtName = (TextView) convertView.findViewById(R.id.titreTV);

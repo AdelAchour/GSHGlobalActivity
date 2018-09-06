@@ -63,8 +63,7 @@ public class ListTickets extends Fragment {
             dateEchanceTicket, dateClotureTicket, dateResolutionTicket, descriptionTicket, lieuTicket;
 
     String nbCount;
-
-    String nbClos;
+    int range;
 
     public static Handler handlerticket;
 
@@ -96,14 +95,12 @@ public class ListTickets extends Fragment {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!TicketModels.isEmpty()){
+                if (!TicketModels.isEmpty()){ //pleins
                     adapter.clear();
                     getTicketsHTTP();
                 }
-                else{
-                    if (swipeLayout.isRefreshing()){
-                        swipeLayout.setRefreshing(false);
-                    }
+                else{ //vide
+                    getTicketsHTTP();
                 }
             }
         });
@@ -115,6 +112,7 @@ public class ListTickets extends Fragment {
         nameUser = getArguments().getString("nom");
         firstnameUser = getArguments().getString("prenom");
         idUser = getArguments().getString("id");
+        range = getArguments().getInt("range");
 
         listView = (ListView) view.findViewById(R.id.list);
 
@@ -157,7 +155,7 @@ public class ListTickets extends Fragment {
     private void getTicketsHTTP() {
         String url = FirstEverActivity.GLPI_URL+"search/Ticket";
 
-        String maxRange = ConstantVar.RANGE_TICKET;
+        int maxRange = range-1;
         List<KeyValuePair> params = new ArrayList<>();
         //TECHNICIEN = IDUSER
         params.add(new KeyValuePair("criteria[0][field]","5"));
@@ -273,7 +271,7 @@ public class ListTickets extends Fragment {
                             }
 
 
-                            triTableauTicketParUrgence(ticketTab);
+                            //triTableauTicketParUrgence(ticketTab);
                             AfficheTab(ticketTab);
                             addModelsFromTab(ticketTab);
 
@@ -322,6 +320,8 @@ public class ListTickets extends Fragment {
                         } catch (JSONException e) {
                             Log.e("malkach",e.getMessage());
                             handlerticket.sendEmptyMessage(2);
+                            handlerticket.sendEmptyMessage(4);
+                            TabLayoutActivity.handler.sendEmptyMessage(0);
                         }
 
 
@@ -709,11 +709,29 @@ public class ListTickets extends Fragment {
                     }
                     break;
 
-                case 2:
+                case 2: //stop refreshing after new research
                     nodata = true;
                     if(pd.isShowing()){
                         System.out.println("Nouvelle recherche, 0 data");
                         pd.dismiss();
+                    }
+                    break;
+
+                case 3: //refresh LV
+                    if (!TicketModels.isEmpty()){ //pleins
+                        swipeLayout.setRefreshing(true);
+                        adapter.clear();
+                        getTicketsHTTP();
+                    }
+                    else{
+                        swipeLayout.setRefreshing(true);
+                        getTicketsHTTP();
+                    }
+                    break;
+
+                case 4: //stop swipe
+                    if(swipeLayout.isRefreshing()){
+                        swipeLayout.setRefreshing(false);
                     }
                     break;
             }

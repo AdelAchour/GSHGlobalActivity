@@ -3,8 +3,10 @@ package com.production.achour_ar.gshglobalactivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -22,9 +24,10 @@ public class TabLayoutActivity extends AppCompatActivity {
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
     String session_token, nameUser, idUser, firstnameUser;
+    int range;
     public static Handler handler;
     ProgressDialog pd;
-
+    SharedPreferences app_preferences;
 
 
     @Override
@@ -51,16 +54,9 @@ public class TabLayoutActivity extends AppCompatActivity {
 
         actionBar.setCustomView(v);
 
-        ImageView homebutton = (ImageView) findViewById(R.id.homeiconID);
-        ImageView refreshbutton = (ImageView) findViewById(R.id.refreshIconID);
-        homebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), FirstEverActivity.class));
-                finish();
-            }
-        });
 
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        range = app_preferences.getInt("range", 30);
 
         Intent i = getIntent();
         session_token = i.getStringExtra("session");
@@ -109,6 +105,38 @@ public class TabLayoutActivity extends AppCompatActivity {
             }
         });
 
+        ImageView homebutton = (ImageView) findViewById(R.id.homeiconID);
+        ImageView refreshbutton = (ImageView) findViewById(R.id.refreshIconID);
+        homebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), FirstEverActivity.class));
+                finish();
+            }
+        });
+
+        refreshbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = tabLayout.getSelectedTabPosition();
+
+                switch (position){
+                    case 0: //en cours
+                        ListTickets.handlerticket.sendEmptyMessage(3);
+                        break;
+                    case 1: //clos
+                        ListTicketsClos.handlerticketClos.sendEmptyMessage(3);
+                        break;
+                    case 2: //résolu
+                        ListTicketsResolu.handlerticketResolu.sendEmptyMessage(3);
+                        break;
+                    case 3: //en attente
+                        ListTicketsAttente.handlerticketAttente.sendEmptyMessage(3);
+                        break;
+                }
+            }
+        });
+
     }
 
     @Override
@@ -128,6 +156,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         bundle.putString("nom", nameUser);
         bundle.putString("prenom", firstnameUser);
         bundle.putString("id", idUser);
+        bundle.putInt("range", range);
 
         ListTickets listTickets = new ListTickets();
         ListTicketsClos listTicketsClos = new ListTicketsClos();
@@ -143,7 +172,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(listTicketsClos, "Clos");
         viewPagerAdapter.addFragment(listTicketsResolu, "Résolu");
         viewPagerAdapter.addFragment(listTicketsAttente, "En attente");
-        //viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setAdapter(viewPagerAdapter);
 
     }
 
@@ -166,6 +195,7 @@ public class TabLayoutActivity extends AppCompatActivity {
 
                     tabLayout.getTabAt(position).setText(title+" ("+count+")");
                     break;
+
             }
         }
     }

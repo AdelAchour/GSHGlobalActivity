@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,19 +54,28 @@ public class InfoTicketClos extends AppCompatActivity {
     RequestQueue queue;
     String observateur;
 
-    ProgressBar progressBarInfo;
-    ProgressDialog pd;
-
+    ProgressBar progressBarDia;
+    ProgressDialog pd, pdCalcul;
+    ArrayList<ObservateurModel> listObservateur;
+    String[] tabObs;
+    private static DateFormat parser ;
+    public static Handler handlerInfoClos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info_ticket_clos);
 
+        listObservateur =new ArrayList<ObservateurModel>();
         pd = new ProgressDialog(InfoTicketClos.this);
         pd.setMessage("Chargement...");
         pd.show();
 
+        pdCalcul = new ProgressDialog(InfoTicketClos.this);
+        pdCalcul.setMessage("Calcul...");
+
+        handlerInfoClos = new HandlerInfoClos();
+        parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         queue = Volley.newRequestQueue(this);
 
         titreTV = (TextView)findViewById(R.id.titreAnswer);
@@ -78,6 +90,8 @@ public class InfoTicketClos extends AppCompatActivity {
         lieuTV = (TextView)findViewById(R.id.LieuAnswer);
         dateClotureTicketTV = (TextView)findViewById(R.id.ClotureAnswer);
         detailtempsTV = (TextView)findViewById(R.id.DetailTimeAnswer);
+
+        progressBarDia = (ProgressBar) findViewById(R.id.progressBarDialog);
 
 
         Intent i = getIntent();
@@ -143,14 +157,26 @@ public class InfoTicketClos extends AppCompatActivity {
                                     ticketEnretard = getBooleanFromSt(oneTicket.getString("82"));
                                     observateur = oneTicket.getString("66");
 
+                                    JSONArray JObs = oneTicket.getJSONArray("66");
+                                    tabObs = new String[JObs.length()];
+                                    for (int j=0; j < JObs.length(); j++) {
+                                        try {
+                                            String oneObservateur = JObs.getString(j);
+                                            tabObs[j] = oneObservateur;
+                                            Log.i("One obs", tabObs[j]);
+
+                                        } catch (JSONException e) {
+                                            Log.e("Error Observateur ", e.getMessage());
+                                        }
+
+                                    }
+
                                 } catch (JSONException e) {
                                     Log.e("Error ticket ", e.getMessage());
                                 }
 
                             }
 
-                            tempsResolution = calculTempsResolution(dateClotureTicket, dateDebutTicket);
-                            tempsRetard = calculTempsRetard(dateEchanceTicket, dateClotureTicket);
 
                             titreTV.setText(titreTicket);
                             categorieTV.setText(categorieTicket);
@@ -168,18 +194,59 @@ public class InfoTicketClos extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
                                     if(ticketEnretard){
-                                        DialogTemps alert = new DialogTemps();
-                                        alert.showDialog(InfoTicketClos.this, "Ticket clos en retard", tempsResolution, tempsRetard, true);
+                                        pdCalcul.show();
+                                        Thread mThread = new Thread() {
+                                            @Override
+                                            public void run() {
+                                                tempsResolution = calculTempsResolution(dateClotureTicket, dateDebutTicket);
+                                                tempsRetard = calculTempsRetard(dateEchanceTicket, dateClotureTicket);
+                                                pdCalcul.dismiss();
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("resolution",tempsResolution);
+                                                bundle.putString("retard",tempsRetard);
+                                                Message msg = new Message();
+                                                msg.setData(bundle);
+                                                msg.what = 0;
+                                                handlerInfoClos.sendMessage(msg);
+                                            }
+                                        };
+                                        mThread.start();
+
+
                                     }
                                     else{
-                                        DialogTemps alert = new DialogTemps();
-                                        alert.showDialog(InfoTicketClos.this, "Ticket clos à temps", tempsResolution, tempsRetard, false);
+                                        pdCalcul.show();
+                                        Thread mThread = new Thread() {
+                                            @Override
+                                            public void run() {
+                                                tempsResolution = calculTempsResolution(dateClotureTicket, dateDebutTicket);
+                                                tempsRetard = calculTempsRetard(dateEchanceTicket, dateClotureTicket);
+                                                pdCalcul.dismiss();
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("resolution",tempsResolution);
+                                                bundle.putString("retard",tempsRetard);
+                                                Message msg = new Message();
+                                                msg.setData(bundle);
+                                                msg.what = 1;
+                                                handlerInfoClos.sendMessage(msg);
+                                            }
+                                        };
+                                        mThread.start();
                                     }
 
                                 }
                             });
 
-                            getObservateurInfo(observateur);
+
+                            Log.d("get Observateur",observateur);
+                            if (tabObs==null){
+                                getObservateurInfo(observateur);
+                            }
+                            else if((tabObs!=null)&&(tabObs.length>1)){
+                                Log.i("not null", "Plusieurs observateurs");
+                                getAllObservateursInfo(tabObs);
+                            }
+
                             getDemandeurInfo(iddemandeur);
 
                             if (dateClotureTicket.equals("null")){
@@ -211,8 +278,113 @@ public class InfoTicketClos extends AppCompatActivity {
 
         };
         queue.add(getRequestTicket);
+    }
+
+    private void getAllObservateursInfo(String[] observateur) {
+        //Récupération des informations de tous les observateurs
+        String urlObs = FirstEverActivity.GLPI_URL+"search/User";
+
+        System.out.println("taille obs = "+observateur.length);
+
+        for (int indexObs = 0; indexObs < observateur.length; indexObs++){
+            System.out.println("Obs n°"+indexObs);
+            List<KeyValuePair> paramsObs = new ArrayList<>();
+            paramsObs.add(new KeyValuePair("criteria[0][field]","2"));
+            paramsObs.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+            paramsObs.add(new KeyValuePair("criteria[0][value]",observateur[indexObs]));
+            paramsObs.add(new KeyValuePair("forcedisplay[0]","9"));
+            paramsObs.add(new KeyValuePair("forcedisplay[1]","34"));
+            paramsObs.add(new KeyValuePair("forcedisplay[2]","5"));
+            paramsObs.add(new KeyValuePair("forcedisplay[3]","6"));
+            paramsObs.add(new KeyValuePair("forcedisplay[4]","81"));
 
 
+            final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlObs, paramsObs), null,
+                    new Response.Listener<JSONObject>()
+                    {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            System.out.println("dans response all observateur");
+                            try {
+                                JSONArray Jdata = response.getJSONArray("data");
+                                try {
+                                    JSONObject userInfo = Jdata.getJSONObject(0);
+                                    // Récupération des données de l'observateur
+                                    usernameObservateur = userInfo.getString("1");
+                                    emailObservateur = userInfo.getString("5");
+                                    telephoneObservateur = userInfo.getString("6");
+                                    prenomObservateur = userInfo.getString("9");
+                                    nomObservateur = userInfo.getString("34");
+                                    lieuObservateur = userInfo.getString("80");
+                                    posteObservateur = userInfo.getString("81");
+
+
+                                } catch (JSONException e) {
+                                    Log.e("Error JSONArray : ", e.getMessage());
+                                }
+
+                            } catch (JSONException e) {
+                                Log.e("JSON Error response",e.getMessage());
+                            }
+
+                            ObservateurModel obsM = new ObservateurModel(usernameObservateur, emailObservateur,
+                                    telephoneObservateur,prenomObservateur,nomObservateur,
+                                    lieuObservateur, posteObservateur);
+
+                            listObservateur.add(obsM);
+
+                            ObservateurTV.setText("Afficher les observateurs");
+                            ObservateurTV.setPaintFlags(ObservateurTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+
+                            ObservateurTV.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    AfficheArrayList(listObservateur);
+
+                                    Intent intent = new Intent(InfoTicketClos.this, ObservateurList.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelableArrayList("Obs", listObservateur);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            });
+
+                        }
+
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //progressBar.setVisibility(View.GONE);
+                            Log.e("Error.Response", error.toString());
+                        }
+
+                    }
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    params.put("App-Token",FirstEverActivity.App_Token);
+                    params.put("Session-Token",session_token);
+                    return params;
+                }
+
+            };
+
+            queue.add(getRequestDemandeur);
+
+        }
+    }
+
+    private void AfficheArrayList(ArrayList<ObservateurModel> listObservateur) {
+        System.out.println("\n --- ArrayList --- \n");
+        for (int i = 0; i < listObservateur.size(); i++){
+            //System.out.println(ticketTab.get(i));
+            ObservateurModel oneObs = (ObservateurModel)listObservateur.get(i);
+            System.out.println(oneObs.getNomObs());
+        }
     }
 
     private void getObservateurInfo(final String observateur) {
@@ -314,10 +486,10 @@ public class InfoTicketClos extends AppCompatActivity {
         if (dateEchanceTicket.equals("null")){
             return "-1";
         }
-        long echeance = getDateDebutMS(dateEchanceTicket);
-        long cloture = getDateDebutMS(dateClotureTicket);
 
-        long tmps = cloture - echeance;
+        WorkTimeCalculator calculator = new WorkTimeCalculator(parse(dateEchanceTicket), parse(dateClotureTicket));
+        System.out.println("Working time: "+calculator.getMinutes()+"\n\n\n");
+        long tmps = calculator.getMinutes()*60*1000;
         return String.valueOf(tmps);
     }
 
@@ -341,11 +513,20 @@ public class InfoTicketClos extends AppCompatActivity {
         if (dateClotureTicket.equals("null")){
             return "-1";
         }
-        long debut = getDateDebutMS(dateDebutTicket);
-        long cloture = getDateDebutMS(dateClotureTicket);
 
-        long tmps = cloture - debut;
+        WorkTimeCalculator calculator = new WorkTimeCalculator(parse(dateDebutTicket), parse(dateClotureTicket));
+        System.out.println("Working time: "+calculator.getMinutes()+"\n\n\n");
+        long tmps = calculator.getMinutes()*60*1000;
         return String.valueOf(tmps);
+    }
+
+    private Date parse(String date) {
+        try {
+            return parser.parse(date);
+        } catch (ParseException e) {
+            Log.e("Parse error",date);
+            return null;
+        }
     }
 
     private String ClotureText(String dateClotureTicket) {
@@ -480,5 +661,34 @@ public class InfoTicketClos extends AppCompatActivity {
             }
         }
         return baseUrl;
+    }
+
+    class HandlerInfoClos extends Handler{
+        String tempsResolution;
+        String tempsRetard;
+        Bundle bundle;
+        DialogTemps alert;
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 0: //Go to Dialog (Reso+Retard)
+                    Log.i("Dialog","Going to Dialog");
+                    bundle = msg.getData();
+                    tempsResolution = bundle.getString("resolution");
+                    tempsRetard = bundle.getString("retard");
+                    alert = new DialogTemps();
+                    alert.showDialog(InfoTicketClos.this, "Ticket clos en retard", tempsResolution, tempsRetard, true);
+                    break;
+
+                case 1: //stop chargement
+                    Log.i("Stop charment","Je devrais arrêter de charger");
+                    bundle = msg.getData();
+                    tempsResolution = bundle.getString("resolution");
+                    tempsRetard = bundle.getString("retard");
+                    alert = new DialogTemps();
+                    alert.showDialog(InfoTicketClos.this, "Ticket clos en retard", tempsResolution, tempsRetard, false);
+                    break;
+            }
+        }
     }
 }

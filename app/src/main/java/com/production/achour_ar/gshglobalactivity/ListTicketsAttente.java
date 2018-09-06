@@ -2,9 +2,11 @@ package com.production.achour_ar.gshglobalactivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -43,7 +45,7 @@ public class ListTicketsAttente extends Fragment {
 
     ArrayList<TicketModel> TicketModels;
     ListView listView;
-    private static TicketClosAdapter adapter;
+    private static TicketAttenteAdapter adapter;
     String session_token, nameUser, idUser, firstnameUser;
     RequestQueue queue;
     String titreTicket, slaTicket, urgenceTicket, idTicket,
@@ -62,6 +64,7 @@ public class ListTicketsAttente extends Fragment {
     SwipeRefreshLayout swipeLayout;
 
     public static Handler handlerticketAttente;
+    int range;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,17 +91,17 @@ public class ListTicketsAttente extends Fragment {
                     getTicketsHTTP();
                 }
                 else{
-                    if (swipeLayout.isRefreshing()){
-                        swipeLayout.setRefreshing(false);
-                    }
+                    getTicketsHTTP();
                 }
             }
         });
+
 
         session_token = getArguments().getString("session");
         nameUser = getArguments().getString("nom");
         firstnameUser = getArguments().getString("prenom");
         idUser = getArguments().getString("id");
+        range = getArguments().getInt("range");
 
 
         listView=(ListView)view.findViewById(R.id.list);
@@ -114,7 +117,7 @@ public class ListTicketsAttente extends Fragment {
     private void getTicketsHTTP() {
         String url = FirstEverActivity.GLPI_URL+"search/Ticket";
 
-        String maxRange = ConstantVar.RANGE_TICKET;
+        int maxRange = range-1;
         List<KeyValuePair> params = new ArrayList<>();
         params.add(new KeyValuePair("criteria[0][field]","5"));
         params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
@@ -152,7 +155,7 @@ public class ListTicketsAttente extends Fragment {
                             ticketTab = new String[Integer.valueOf(nbCount)][nbTicketTab];
 
                             Bundle bundle = new Bundle();
-                            bundle.putString("position","1");
+                            bundle.putString("position","3");
                             bundle.putString("count",nbCount);
                             bundle.putString("title","En attente");
                             Message msg = new Message();
@@ -205,7 +208,7 @@ public class ListTicketsAttente extends Fragment {
                             addModelsFromTab(ticketTab);
 
                             if (getActivity() != null){
-                                adapter = new TicketClosAdapter(TicketModels,getActivity());
+                                adapter = new TicketAttenteAdapter(TicketModels,getActivity());
                             }
                             else{
                                 Log.e("STOP BEFORE ERROR", "Il allait y avoir une erreur man (ATTENTE)");
@@ -228,7 +231,7 @@ public class ListTicketsAttente extends Fragment {
                                     Snackbar.make(view, "Id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
                                             .setAction("No action", null).show();
 
-                                    Intent i = new Intent(getActivity(), InfoTicketClos.class);
+                                    Intent i = new Intent(getActivity(), InfoTicket.class);
                                     i.putExtra("session",session_token);
                                     i.putExtra("nom",nameUser);
                                     i.putExtra("prenom",firstnameUser);
@@ -243,6 +246,7 @@ public class ListTicketsAttente extends Fragment {
 
                         } catch (JSONException e) {
                             Log.e("malkach",e.getMessage());
+                            handlerticketAttente.sendEmptyMessage(4);
                             handlerticketAttente.sendEmptyMessage(2);
                         }
 
@@ -501,6 +505,24 @@ public class ListTicketsAttente extends Fragment {
                     if(pd.isShowing()){
                         System.out.println("Nouvelle recherche, 0 data");
                         pd.dismiss();
+                    }
+                    break;
+
+                case 3: //refresh LV
+                    if (!TicketModels.isEmpty()){ //pleins
+                        swipeLayout.setRefreshing(true);
+                        adapter.clear();
+                        getTicketsHTTP();
+                    }
+                    else{
+                        swipeLayout.setRefreshing(true);
+                        getTicketsHTTP();
+                    }
+                    break;
+
+                case 4: //stop swipe
+                    if(swipeLayout.isRefreshing()){
+                        swipeLayout.setRefreshing(false);
                     }
                     break;
             }

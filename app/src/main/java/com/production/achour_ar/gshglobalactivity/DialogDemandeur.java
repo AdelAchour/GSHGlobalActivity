@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -27,7 +28,19 @@ public class DialogDemandeur {
         EmailTV.setText(Email);
 
         TextView TelTV = (TextView) dialog.findViewById(R.id.telasker);
-        TelTV.setText(DisplayNumber(Tel));
+        if (Tel.equals("")){
+            TelTV.setText("Aucun numéro de Tél.");
+        }
+        else {
+            if (Tel.length()==9){
+                TelTV.setText(DisplayNumber(Tel));
+            }
+            else {
+                TelTV.setText(Tel);
+            }
+        }
+
+
 
         TextView LieuTV = (TextView) dialog.findViewById(R.id.lieuasker);
         LieuTV.setText(Lieu);
@@ -42,7 +55,13 @@ public class DialogDemandeur {
         CallAsker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String number = "0"+Tel;
+                String number = "";
+                if (Tel.length()==9){
+                    number = "0"+Tel;
+                }
+                else{
+                    number = Tel;
+                }
                 Uri call = Uri.parse("tel:" + number);
                 Intent surf = new Intent(Intent.ACTION_DIAL, call);
                 mActivity.startActivity(surf);

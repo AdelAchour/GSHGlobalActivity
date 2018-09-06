@@ -60,6 +60,7 @@ public class ListTicketsResolu extends Fragment {
     ProgressDialog pd;
 
     public static Handler handlerticketResolu;
+    private int range;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,9 +86,7 @@ public class ListTicketsResolu extends Fragment {
                     getTicketsHTTP();
                 }
                 else{
-                    if (swipeLayout.isRefreshing()){
-                        swipeLayout.setRefreshing(false);
-                    }
+                    getTicketsHTTP();
                 }
 
             }
@@ -97,6 +96,7 @@ public class ListTicketsResolu extends Fragment {
         nameUser = getArguments().getString("nom");
         firstnameUser = getArguments().getString("prenom");
         idUser = getArguments().getString("id");
+        range = getArguments().getInt("range");
 
 
         listView=(ListView)view.findViewById(R.id.list);
@@ -111,7 +111,7 @@ public class ListTicketsResolu extends Fragment {
     private void getTicketsHTTP() {
         String url = FirstEverActivity.GLPI_URL+"search/Ticket";
 
-        String maxRange = ConstantVar.RANGE_TICKET;
+        int maxRange = range-1;
         List<KeyValuePair> params = new ArrayList<>();
         params.add(new KeyValuePair("criteria[0][field]","5"));
         params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
@@ -243,9 +243,7 @@ public class ListTicketsResolu extends Fragment {
                         } catch (JSONException e) {
                             Log.e("malkach",e.getMessage());
                             handlerticketResolu.sendEmptyMessage(2);
-                            //DialogNoTicket alert = new DialogNoTicket();
-                            //alert.showDialog(getActivity());
-                            //e.printStackTrace();
+                            handlerticketResolu.sendEmptyMessage(4);
                         }
 
                     }
@@ -504,7 +502,23 @@ public class ListTicketsResolu extends Fragment {
                     }
                     break;
 
+                case 3: //refresh LV
+                    if (!TicketModels.isEmpty()){ //pleins
+                        swipeLayout.setRefreshing(true);
+                        adapter.clear();
+                        getTicketsHTTP();
+                    }
+                    else{
+                        swipeLayout.setRefreshing(true);
+                        getTicketsHTTP();
+                    }
+                    break;
 
+                case 4: //stop swipe
+                    if(swipeLayout.isRefreshing()){
+                        swipeLayout.setRefreshing(false);
+                    }
+                    break;
             }
 
         }

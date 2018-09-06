@@ -27,7 +27,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,13 +56,17 @@ public class InfoTicket extends Activity {
     ProgressBar progressBarInfo;
     ProgressDialog pd;
     boolean ticketEnretard;
-
+    String[] tabObs;
+    String[][] tabInfoObs;
+    int indexObs;
+    ArrayList<ObservateurModel> listObservateur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info_ticket);
 
+        listObservateur =new ArrayList<ObservateurModel>();
 
         pd = new ProgressDialog(InfoTicket.this);
         pd.setMessage("Chargement...");
@@ -149,6 +155,20 @@ public class InfoTicket extends Activity {
                                     ticketEnretard = getBooleanFromSt(oneTicket.getString("82"));
                                     observateur = oneTicket.getString("66");
 
+                                    JSONArray JObs = oneTicket.getJSONArray("66");
+                                    tabObs = new String[JObs.length()];
+                                    for (int j=0; j < JObs.length(); j++) {
+                                        try {
+                                            String oneObservateur = JObs.getString(j);
+                                            tabObs[j] = oneObservateur;
+                                            Log.i("One obs", tabObs[j]);
+
+                                        } catch (JSONException e) {
+                                            Log.e("Error Observateur ", e.getMessage());
+                                        }
+
+                                    }
+
                                 } catch (JSONException e) {
                                     Log.e("Error ticket ", e.getMessage());
                                 }
@@ -167,7 +187,15 @@ public class InfoTicket extends Activity {
                             dateClotureTicketTV.setText(ClotureText(dateClotureTicket));
                             dateResolutionTicketTV.setText(ResolutionText(dateResolutionTicket));
 
-                            getObservateurInfo(observateur);
+                            Log.d("get Observateur",observateur);
+                            if (tabObs==null){
+                                getObservateurInfo(observateur);
+                            }
+                            else if((tabObs!=null)&&(tabObs.length>1)){
+                                Log.i("not null", "Plusieurs observateurs");
+                                getAllObservateursInfo(tabObs);
+                            }
+
                             getDemandeurInfo(iddemandeur);
 
                             if (dateClotureTicket.equals("null")){
@@ -260,7 +288,7 @@ public class InfoTicket extends Activity {
                             }
 
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Log.e("0 obs ou Groupe",e.getMessage());
                         }
 
                         final String NomPrenomObs = nomObservateur+" "+prenomObservateur;
@@ -306,6 +334,124 @@ public class InfoTicket extends Activity {
         };
 
         queue.add(getRequestDemandeur);
+    }
+
+    private void getAllObservateursInfo(final String[] observateur) {
+        //Récupération des informations de tous les observateurs
+        String urlObs = FirstEverActivity.GLPI_URL+"search/User";
+
+        System.out.println("taille obs = "+observateur.length);
+        tabInfoObs = new String[observateur.length][7];
+
+        for (indexObs = 0; indexObs < observateur.length; indexObs++){
+            System.out.println("Obs n°"+indexObs);
+            List<KeyValuePair> paramsObs = new ArrayList<>();
+            paramsObs.add(new KeyValuePair("criteria[0][field]","2"));
+            paramsObs.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+            paramsObs.add(new KeyValuePair("criteria[0][value]",observateur[indexObs]));
+            paramsObs.add(new KeyValuePair("forcedisplay[0]","9"));
+            paramsObs.add(new KeyValuePair("forcedisplay[1]","34"));
+            paramsObs.add(new KeyValuePair("forcedisplay[2]","5"));
+            paramsObs.add(new KeyValuePair("forcedisplay[3]","6"));
+            paramsObs.add(new KeyValuePair("forcedisplay[4]","81"));
+
+
+            final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlObs, paramsObs), null,
+                    new Response.Listener<JSONObject>()
+                    {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            System.out.println("dans response all observateur");
+                            try {
+                                JSONArray Jdata = response.getJSONArray("data");
+                                try {
+                                    JSONObject userInfo = Jdata.getJSONObject(0);
+                                    // Récupération des données de l'observateur
+                                    usernameObservateur = userInfo.getString("1");
+                                    emailObservateur = userInfo.getString("5");
+                                    telephoneObservateur = userInfo.getString("6");
+                                    prenomObservateur = userInfo.getString("9");
+                                    nomObservateur = userInfo.getString("34");
+                                    lieuObservateur = userInfo.getString("80");
+                                    posteObservateur = userInfo.getString("81");
+
+
+                                } catch (JSONException e) {
+                                    Log.e("Error JSONArray : ", e.getMessage());
+                                }
+
+                            } catch (JSONException e) {
+                                Log.e("JSON Error response",e.getMessage());
+                            }
+
+                            ObservateurModel obsM = new ObservateurModel(usernameObservateur, emailObservateur,
+                                    telephoneObservateur,prenomObservateur,nomObservateur,
+                                    lieuObservateur, posteObservateur);
+
+                            listObservateur.add(obsM);
+                            
+                            ObservateurTV.setText("Afficher les observateurs");
+                            ObservateurTV.setPaintFlags(ObservateurTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+
+                            ObservateurTV.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    AfficheArrayList(listObservateur);
+
+                                    Intent intent = new Intent(InfoTicket.this, ObservateurList.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelableArrayList("Obs", listObservateur);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                }
+                            });
+
+                        }
+
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            //progressBar.setVisibility(View.GONE);
+                            Log.e("Error.Response", error.toString());
+                        }
+
+                    }
+            ){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    params.put("App-Token",FirstEverActivity.App_Token);
+                    params.put("Session-Token",session_token);
+                    return params;
+                }
+
+            };
+
+            queue.add(getRequestDemandeur);
+            
+        }
+    }
+
+    private void AfficheTab(String[][] ticketTab) {
+        System.out.println("\n --- Tableau de ticket --- \n");
+        for (int i = 0; i < ticketTab.length; i++){
+            for(int j = 0; j<ticketTab[0].length; j++){
+                System.out.print(ticketTab[i][j]+" ");
+            }
+            System.out.println("\n");
+        }
+    }
+
+    private void AfficheArrayList(ArrayList listObservateur) {
+        System.out.println("\n --- ArrayList --- \n");
+        for (int i = 0; i < listObservateur.size(); i++){
+            //System.out.println(ticketTab.get(i));
+            ObservateurModel oneObs = (ObservateurModel)listObservateur.get(i);
+            System.out.println(oneObs.getNomObs());
+        }
     }
 
     private boolean getBooleanFromSt(String string) {

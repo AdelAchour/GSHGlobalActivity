@@ -1,6 +1,11 @@
 package com.production.achour_ar.gshglobalactivity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,12 +21,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -30,6 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +57,8 @@ public class AccueilUser extends AppCompatActivity {
     ProgressBar progressBar;
     RequestQueue queue;
     private DrawerLayout mDrawerLayout;
-
-
+    public static Handler handler;
+    ProgressDialog pdlogout ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +68,11 @@ public class AccueilUser extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        pdlogout = new ProgressDialog(AccueilUser.this);
+        pdlogout.setMessage("Déconnexion...");
+
+        handler = new HandlerAccueil();
 
         queue = Volley.newRequestQueue(this);
 
@@ -92,7 +107,20 @@ public class AccueilUser extends AppCompatActivity {
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // set item as selected to persist highlight
                         menuItem.setChecked(true);
-                        // close drawer when item is tapped
+                        int id = menuItem.getItemId();
+                        switch (id){
+                            case R.id.nav_setting:
+                                startActivity(new Intent(getApplicationContext(), Setting.class));
+                                break;
+
+                            case R.id.nav_logout:
+                                DialogLogout alert = new DialogLogout();
+                                alert.showDialog(AccueilUser.this, firstnameUser);
+                                break;
+
+                        }
+
+
                         mDrawerLayout.closeDrawers();
 
                         // Add code here to update the UI based on the item selected
@@ -207,4 +235,79 @@ public class AccueilUser extends AppCompatActivity {
         }
         return baseUrl;
     }
+    private void killsession() {
+        String url = GLPI_URL+"killSession";
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        startActivity(new Intent(getApplicationContext(), FirstEverActivity.class));
+                        pdlogout.dismiss();
+                        finish();
+                        Toast.makeText(getApplicationContext(), "Déconnecté",
+                                Toast.LENGTH_SHORT).show();
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressBar.setVisibility(View.GONE);
+                        Log.e("Error.Response", error.toString());
+                        Toast.makeText(getApplicationContext(), "Déconnexion impossible",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+        ){
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                try {
+                    String jsonString = new String(response.data,
+                            HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET));
+
+                    JSONObject result = null;
+
+                    if (jsonString != null && jsonString.length() > 0)
+                        result = new JSONObject(jsonString);
+
+                    return Response.success(result,
+                            HttpHeaderParser.parseCacheHeaders(response));
+                } catch (UnsupportedEncodingException e) {
+                    return Response.error(new ParseError(e));
+                } catch (JSONException je) {
+                    return Response.error(new ParseError(je));
+                }
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("Session-Token",session_token);
+                return params;
+            }
+        };
+        // add it to the RequestQueue
+        queue.add(getRequest);
+
+    }
+
+
+    private class HandlerAccueil extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0: //logout
+                    pdlogout.show();
+                    killsession();
+                    break;
+            }
+        }
+    }
+
+
 }
