@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Big Boss Linear -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/presentationDateTicket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="10/08/2018 - 19/09/2018"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/changeDateStat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="Choisir l'intervalle"
+                android:textColor="#224248"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/presentationTextStat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Achour Adel - 20 Tickets"
+                android:textColor="@color/colorPrimary"
+                android:textSize="25dp" />
+
+        </LinearLayout>
+
+
+        <!-- Contenu nombre de ticket (texts) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical">
+
+            <!-- Ticket en cours -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/encours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Tickets en cours"
+                    android:textColor="#4a4a4a"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/nbticketencours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:text="15"
+                    android:textColor="#186317"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/dontticketenretard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:text="(dont 6 en retard)"
+                    android:textColor="#79191e"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
+
+            <!-- Tickets en attente -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/enattente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Tickets en attente"
+                    android:textColor="#4a4a4a"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/nbticketenattente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:text="11"
+                    android:textColor="#cc8022"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
+
+            <!-- Tickets résolu -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/resolu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Tickets résolus"
+                    android:textColor="#4a4a4a"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/nbticketresolu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:text="9"
+                    android:textColor="#2348c3"
+                    android:textSize="18dp" />
+            </LinearLayout>
+
+            <!-- Tickets clos à temps -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/clos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Tickets clos"
+                    android:textColor="#4a4a4a"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/nbticketclos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:text="21"
+                    android:textColor="#1e1e1e"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/nbticketclosretard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:text="(7 à temps - 14 en retard)"
+                    android:textColor="#4d4d4d"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Graph big Linear -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:orientation="vertical">
+
+            <!-- Graph Ticket (ouvert / clos) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Tickets" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <org.eazegraph.lib.charts.BarChart xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/barOuvertClos"
+                    android:layout_width="match_parent"
+                    android:layout_height="256dp"
+                    android:padding="10dp"
+                    app:egBarWidth="30dp"
+                    app:egFixedBarWidth="true"
+                    app:egLegendHeight="40dp" />
+            </LinearLayout>
+            <!-- Information du graphe -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ListView
+                    android:id="@+id/ListChartTicket"
+                    android:layout_width="wrap_content"
+                    android:layout_height="130dp"></ListView>
+
+                <!--
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#247c8f"
+                        android:textStyle="bold"
+                        android:text="Ouvert"
+                        android:textSize="15dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#292929"
+                        android:textStyle="bold"
+                        android:layout_marginLeft="100dp"
+                        android:text="Clos"
+                        android:textSize="15dp" /> -->
+            </LinearLayout>
+
+            <!-- Graph Ticket (ouvert / clos) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:text="Tickets par état" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <org.eazegraph.lib.charts.BarChart xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/barParEtat"
+                    android:layout_width="match_parent"
+                    android:layout_height="256dp"
+                    android:padding="10dp"
+                    app:egBarWidth="30dp"
+                    app:egFixedBarWidth="true"
+                    app:egLegendHeight="40dp" />
+            </LinearLayout>
+            <!-- Information du graphe -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ListView
+                    android:id="@+id/ListChartParTicket"
+                    android:layout_width="wrap_content"
+                    android:layout_height="260dp"></ListView>
+
+                <!--
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:paddingEnd="5dp"
+                    android:text="En cours"
+                    android:textColor="#247c8f"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:paddingEnd="5dp"
+                    android:text="En retard"
+                    android:textColor="#5e1212"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:paddingEnd="5dp"
+                    android:text="En attente"
+                    android:textColor="#a95516"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:paddingEnd="5dp"
+                    android:text="Résolu"
+                    android:textColor="#1b2a6b"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Clos à temps"
+                    android:textColor="#292929"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text=", en retard"
+                    android:textColor="#7b1d6e"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+                    -->
+            </LinearLayout>
+
+
+            <!-- Fin nombre de tickets (texts) -->
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

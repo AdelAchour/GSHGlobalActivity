@@ -331,8 +331,8 @@ public class ListTickets extends Fragment {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //progressBar.setVisibility(View.GONE);
-                        Log.e("Error.Response", error.toString());
+                        Log.e("Error.Response!", error.toString());
+                        Toast.makeText(getActivity(), "Vérifiez votre connexion", Toast.LENGTH_LONG).show();
                     }
 
                 }

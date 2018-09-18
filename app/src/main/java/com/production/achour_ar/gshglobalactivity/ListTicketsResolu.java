@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -252,7 +253,7 @@ public class ListTicketsResolu extends Fragment {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "Vérifiez votre connexion", Toast.LENGTH_LONG).show();
                         Log.e("Error.Response", error.toString());
                     }
 
