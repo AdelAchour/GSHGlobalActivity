@@ -2,6 +2,7 @@ package com.production.achour_ar.gshglobalactivity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
@@ -11,18 +12,22 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -32,8 +37,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonArray;
 import com.production.achour_ar.gshglobalactivity.DataModel.TicketModel;
 
 import org.json.JSONArray;
@@ -80,7 +87,6 @@ public class ListTickets extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
-
         pd = new ProgressDialog(getActivity());
         pd.setTitle("Tickets en cours");
         pd.setMessage("Chargement des tickets...");
@@ -115,6 +121,7 @@ public class ListTickets extends Fragment {
         range = getArguments().getInt("range");
 
         listView = (ListView) view.findViewById(R.id.list);
+        registerForContextMenu(listView);
 
 
         TicketModels = new ArrayList<>();
@@ -301,8 +308,8 @@ public class ListTickets extends Fragment {
 
                                     TicketModel TicketModel= TicketModels.get(position);
 
-                                    Snackbar.make(view, "id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
-                                            .setAction("No action", null).show();
+                                    /*Snackbar.make(view, "id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
+                                            .setAction("No action", null).show();*/
 
                                     Intent i = new Intent(getActivity(), InfoTicket.class);
                                     i.putExtra("session",session_token);
@@ -315,6 +322,51 @@ public class ListTickets extends Fragment {
 
                                 }
                             });
+
+                            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                @Override
+                                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                    final TicketModel TicketModel= TicketModels.get(position);
+
+                                    //Snackbar.make(view, "id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
+                                      //      .setAction("No action", null).show();
+
+                                    AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
+                                    builderSingle.setTitle("Faites votre choix");
+
+                                    final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.select_dialog_singlechoice);
+                                    arrayAdapter.add("Mettre le ticket en attente");
+                                    arrayAdapter.add("Mettre le ticket en résolu");
+
+
+                                    builderSingle.setNegativeButton("Fermer", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                                    builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            String strName = arrayAdapter.getItem(which);
+                                            switch (strName){
+                                                case "Mettre le ticket en attente":
+                                                    TicketEnAttenteHTTP(TicketModel.getIdTicket());
+                                                    break;
+                                                case "Mettre le ticket en résolu":
+                                                    TicketEnResoluHTTP(TicketModel.getIdTicket());
+                                                    break;
+                                            }
+                                            //Toast.makeText(getActivity(), TicketModel.getTitreTicket(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    builderSingle.show();
+
+                                    return true;
+                                }
+                            });
+
 
 
                         } catch (JSONException e) {
@@ -350,6 +402,86 @@ public class ListTickets extends Fragment {
         // add it to the RequestQueue
         queue.add(getRequest);
 
+    }
+
+    private void TicketEnAttenteHTTP(String idTicket) {
+        String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        // Do something with response
+                        Toast.makeText(getActivity(), "Ticket mis en attente !", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Log.e("Error.Response!", error.toString());
+                        Toast.makeText(getActivity(), "Tache impossible", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("Session-Token",session_token);
+                return params;
+            }
+
+            @Override
+            public byte[] getBody() {
+                String Json_Payload = "{\"input\": {\"status\": \"4\"}}"; // put your json
+                return Json_Payload.getBytes();
+            }
+        };
+
+        // Add JsonArrayRequest to the RequestQueue
+        queue.add(jsonArrayRequest);
+    }
+
+
+
+    private void TicketEnResoluHTTP(String idTicket) {
+        String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        // Do something with response
+                        Toast.makeText(getActivity(), "Ticket mis en résolu !", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Log.e("Error.Response!", error.toString());
+                        Toast.makeText(getActivity(), "Tache impossible", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("Session-Token",session_token);
+                return params;
+            }
+
+            @Override
+            public byte[] getBody() {
+                String Json_Payload = "{\"input\": {\"status\": \"5\"}}"; // put your json
+                return Json_Payload.getBytes();
+            }
+        };
+
+        // Add JsonArrayRequest to the RequestQueue
+        queue.add(jsonArrayRequest);
     }
 
 
@@ -737,8 +869,32 @@ public class ListTickets extends Fragment {
             }
 
         }
+    }
 
+   /* @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.list) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.menu_contextual, menu);
         }
     }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        //AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.alterAttente:
+                //AlterTicketAttente();
+                return true;
+            case R.id.alterResolu:
+                Toast.makeText(getActivity(), "Résolu", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }*/
+
+}
 
 

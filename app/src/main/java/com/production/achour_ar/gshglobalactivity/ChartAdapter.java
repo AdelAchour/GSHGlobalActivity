@@ -102,6 +102,8 @@ public class ChartAdapter extends ArrayAdapter<ChartModel> implements View.OnCli
                 return R.drawable.chart_shape_resolu;
             case "ClosRetard":
                 return R.drawable.chart_shape_clos_retard;
+            case "Stat":
+                return R.drawable.shape_success;
 
         }
 

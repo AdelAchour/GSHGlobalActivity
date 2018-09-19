@@ -1,0 +1,86 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffffff">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/asker"
+        android:background="#a7a7a7"
+        android:src="@drawable/calendar"
+        android:scaleType="fitCenter" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choisissez votre intervalle de recherche"
+        android:id="@+id/presentation"
+        android:layout_below="@+id/asker"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="30dp"
+        android:textSize="19sp"
+        android:textColor="#1d4c81"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="01/08/2017"
+        android:id="@+id/datedebut"
+        android:layout_below="@+id/presentation"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="25dp"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="#211e42"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="20/10/2018"
+        android:id="@+id/datefin"
+        android:layout_below="@+id/datedebut"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="50dp"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="#211e42"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/datefin">
+
+        <Button
+            android:id="@+id/recherche"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:text="Recherche"
+            android:background="#83cf82"
+            android:layout_weight="1.0" />
+
+        <Button
+            android:id="@+id/fermer"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:text="Fermer"
+            android:background="#cf8289"
+            android:layout_weight="1.0" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

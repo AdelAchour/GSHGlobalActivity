@@ -75,6 +75,7 @@ public class InfoTicketClos extends AppCompatActivity {
         pdCalcul.setMessage("Calcul...");
 
         handlerInfoClos = new HandlerInfoClos();
+
         parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         queue = Volley.newRequestQueue(this);
 
@@ -686,7 +687,7 @@ public class InfoTicketClos extends AppCompatActivity {
                     tempsResolution = bundle.getString("resolution");
                     tempsRetard = bundle.getString("retard");
                     alert = new DialogTemps();
-                    alert.showDialog(InfoTicketClos.this, "Ticket clos en retard", tempsResolution, tempsRetard, false);
+                    alert.showDialog(InfoTicketClos.this, "Ticket clos à temps", tempsResolution, tempsRetard, false);
                     break;
             }
         }

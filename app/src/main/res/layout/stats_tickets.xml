@@ -40,13 +40,30 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/presentationTextStat"
+                android:id="@+id/presentationName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:text="Achour Adel - 20 Tickets"
+                android:gravity="center"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:text="KHADRAOUI Merouane"
+                android:textColor="#2f2f2f"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/presentationTextStat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="0dp"
+                android:gravity="center"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:text="20 tickets"
                 android:textColor="@color/colorPrimary"
                 android:textSize="25dp" />
 
@@ -237,7 +254,7 @@
                 <ListView
                     android:id="@+id/ListChartTicket"
                     android:layout_width="wrap_content"
-                    android:layout_height="130dp"></ListView>
+                    android:layout_height="195dp"></ListView>
 
                 <!--
                     <TextView
@@ -361,6 +378,53 @@
                     android:textStyle="bold" />
                     -->
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center"
+                android:text="Temps moyen de résolution:"
+                android:textColor="#4c4c4c"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/tempsresolutionMoyen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:text="3h14m56s"
+                android:textColor="#173d0d"
+                android:textSize="18dp" />
+
+            <ProgressBar
+                android:id="@+id/progressBarTempsMoyen"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center"
+                android:text="Temps moyen de retard:"
+                android:textColor="#4c4c4c"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/tempsretardMoyen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:text="1h10m25s"
+                android:textColor="#711212"
+                android:textSize="18dp" />
 
 
             <!-- Fin nombre de tickets (texts) -->
