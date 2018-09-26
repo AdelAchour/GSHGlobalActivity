@@ -113,7 +113,6 @@ public class TabLayoutActivity extends AppCompatActivity {
         homebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), FirstEverActivity.class));
                 finish();
             }
         });
@@ -144,17 +143,30 @@ public class TabLayoutActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()){
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.itemStatTicket:
-                Intent intent = new Intent(getApplicationContext(), StatsTickets.class);
+                intent = new Intent(getApplicationContext(), StatsTickets.class);
                 intent.putExtra("session",session_token);
                 intent.putExtra("nom",nameUser);
                 intent.putExtra("prenom",firstnameUser);
                 intent.putExtra("id",idUser);
                 startActivity(intent);
+                break;
+
+            case R.id.itemCreationTicket:
+                intent = new Intent(getApplicationContext(), CreationTicket.class);
+                intent.putExtra("session",session_token);
+                intent.putExtra("nom",nameUser);
+                intent.putExtra("prenom",firstnameUser);
+                intent.putExtra("id",idUser);
+                startActivity(intent);
+                break;
+
+            case R.id.itemRechercheTicket:
                 break;
         }
 

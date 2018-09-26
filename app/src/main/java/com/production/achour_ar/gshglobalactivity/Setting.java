@@ -3,8 +3,10 @@ package com.production.achour_ar.gshglobalactivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +23,10 @@ public class Setting extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_layout);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Paramètres");
+        actionBar.setHomeButtonEnabled(true);
 
         rangeTicketET = (EditText)findViewById(R.id.rangeticketmax);
         btnSave = (Button) findViewById(R.id.buttonSaveSetting);
@@ -50,4 +56,15 @@ public class Setting extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

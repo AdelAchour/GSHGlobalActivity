@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -11,14 +12,17 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,10 +55,9 @@ import static com.production.achour_ar.gshglobalactivity.FirstEverActivity.GLPI_
 public class AccueilUser extends AppCompatActivity {
 
     TextView welcomeView, headertitle;
-    Button ticketButton, rendementButton;
+    ImageView ticketButton, projectButton, rendementButton;
     String session_token, nameUser, idUser, firstnameUser;
     static String nbCount ;
-    ProgressBar progressBar;
     RequestQueue queue;
     private DrawerLayout mDrawerLayout;
     public static Handler handler;
@@ -65,9 +68,14 @@ public class AccueilUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.accueil_user);
 
-        ActionBar actionbar = getSupportActionBar();
+        /*ActionBar actionbar = getSupportActionBar();
+        actionbar.setTitle("Accueil");
         actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);*/
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarDrawer);
+        toolbar.setTitle("Accueil");
+        setSupportActionBar(toolbar);
 
         pdlogout = new ProgressDialog(AccueilUser.this);
         pdlogout.setMessage("Déconnexion...");
@@ -77,6 +85,10 @@ public class AccueilUser extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
@@ -84,9 +96,9 @@ public class AccueilUser extends AppCompatActivity {
 
 
         welcomeView = (TextView)findViewById(R.id.welcomeTextView);
-        progressBar = (ProgressBar)findViewById(R.id.progressBarList);
-        ticketButton = (Button) findViewById(R.id.ticketButton);
-        rendementButton = (Button) findViewById(R.id.rendementButton);
+        ticketButton = (ImageView) findViewById(R.id.ticketButton);
+        rendementButton = (ImageView) findViewById(R.id.rendementButton);
+        projectButton = (ImageView) findViewById(R.id.projectButton);
 
        Intent i = getIntent();
        session_token = i.getStringExtra("session");
@@ -144,6 +156,13 @@ public class AccueilUser extends AppCompatActivity {
        });
 
         rendementButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        projectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -255,7 +274,6 @@ public class AccueilUser extends AppCompatActivity {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressBar.setVisibility(View.GONE);
                         Log.e("Error.Response", error.toString());
                         Toast.makeText(getApplicationContext(), "Déconnexion impossible",
                                 Toast.LENGTH_SHORT).show();

@@ -16,6 +16,7 @@ public class TicketModel {
 
 
     String TempsRetard;
+    String description;
 
     public TicketModel(String titreTicket, String slaTicket, String dateTicket, String tempsRestantTicket, String idticket, String statut) {
         this.titreTicket = titreTicket;
@@ -80,4 +81,11 @@ public class TicketModel {
         TempsRetard = tempsRetard;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }

@@ -329,31 +329,31 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
     @Override
     public int getViewTypeCount() {
-        Log.d("getViewTypeCount",""+getCount());
+        //Log.d("getViewTypeCount",""+getCount());
         return getCount();
     }
 
     @Override
     public int getItemViewType(int position) {
-        Log.d("getItemViewType",""+position);
+        //Log.d("getItemViewType",""+position);
         return position;
     }
 
     @Override
     public int getCount() {
-        Log.d("getCount",""+dataSet.size());
+        //Log.d("getCount",""+dataSet.size());
         return dataSet.size();
     }
 
     @Override
     public TicketModel getItem(int position) {
-        Log.d("getItem",""+dataSet.get(position));
+        //Log.d("getItem",""+dataSet.get(position));
         return dataSet.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        Log.d("getItemId",""+position);
+        //Log.d("getItemId",""+position);
         return 0;
     }
 
@@ -434,7 +434,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);
 
-        System.out.println("getView");
+        //System.out.println("getView");
 
 //        System.out.println("Titre : "+TicketModel.getTitreTicket()); //getting each item's name
 //        System.out.println("Time = "+TicketModel.getTempsRestantTicket()); //getting each item's time left and it's correct

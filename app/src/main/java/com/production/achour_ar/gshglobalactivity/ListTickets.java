@@ -64,7 +64,7 @@ public class ListTickets extends Fragment {
     private static TicketAdapter adapter;
     String session_token, nameUser, idUser, firstnameUser;
     RequestQueue queue;
-
+    String motifAttente;
     String titreTicket, slaTicket, urgenceTicket, idTicket, demandeurTicket,
             categorieTicket, etatTicket, dateDebutTicket, statutTicket,
             dateEchanceTicket, dateClotureTicket, dateResolutionTicket, descriptionTicket, lieuTicket;
@@ -76,13 +76,15 @@ public class ListTickets extends Fragment {
 
     boolean ticketEnretard;
 
-    public int nbTicketTab = 8;
+    public int nbTicketTab = 9;
 
     public String[][] ticketTab;
 
     SwipeRefreshLayout swipeLayout;
 
     ProgressDialog pd;
+    ProgressDialog pdChangement;
+    private String newContent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,6 +93,9 @@ public class ListTickets extends Fragment {
         pd.setTitle("Tickets en cours");
         pd.setMessage("Chargement des tickets...");
         //pd.show();
+
+        pdChangement = new ProgressDialog(getActivity());
+        pdChangement.setMessage("Changement de l'état...");
 
         handlerticket = new HandlerTicket();
 
@@ -272,6 +277,7 @@ public class ListTickets extends Fragment {
                                 ticketTab[i][5] = String.valueOf(ticketEnretard);
                                 ticketTab[i][6] = statutTicket;
                                 ticketTab[i][7] = idTicket;
+                                ticketTab[i][8] = descriptionTicket;
 
                                 // -----------------------------
 
@@ -279,7 +285,7 @@ public class ListTickets extends Fragment {
 
 
                             //triTableauTicketParUrgence(ticketTab);
-                            AfficheTab(ticketTab);
+                            //AfficheTab(ticketTab);
                             addModelsFromTab(ticketTab);
 
                             //System.out.println("Je charge la listview");
@@ -306,7 +312,7 @@ public class ListTickets extends Fragment {
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-                                    TicketModel TicketModel= TicketModels.get(position);
+                                    TicketModel TicketModel = TicketModels.get(position);
 
                                     /*Snackbar.make(view, "id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
                                             .setAction("No action", null).show();*/
@@ -352,9 +358,11 @@ public class ListTickets extends Fragment {
                                             String strName = arrayAdapter.getItem(which);
                                             switch (strName){
                                                 case "Mettre le ticket en attente":
-                                                    TicketEnAttenteHTTP(TicketModel.getIdTicket());
+                                                    DialogMotifAttente alert = new DialogMotifAttente();
+                                                    alert.showDialog(getActivity(), TicketModel.getIdTicket(), TicketModel.getDescription());
                                                     break;
                                                 case "Mettre le ticket en résolu":
+                                                    pdChangement.show();
                                                     TicketEnResoluHTTP(TicketModel.getIdTicket());
                                                     break;
                                             }
@@ -404,7 +412,7 @@ public class ListTickets extends Fragment {
 
     }
 
-    private void TicketEnAttenteHTTP(String idTicket) {
+    private void TicketEnAttenteHTTP(String idTicket, final String descriptionTicket, final String motifAttente) {
         String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, url, null,
@@ -412,6 +420,7 @@ public class ListTickets extends Fragment {
                     @Override
                     public void onResponse(JSONArray response) {
                         // Do something with response
+                        handlerticket.sendEmptyMessage(5);
                         Toast.makeText(getActivity(), "Ticket mis en attente !", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -420,6 +429,8 @@ public class ListTickets extends Fragment {
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Log.e("Error.Response!", error.toString());
+                        error.printStackTrace();
+                        handlerticket.sendEmptyMessage(5);
                         Toast.makeText(getActivity(), "Tache impossible", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -429,12 +440,29 @@ public class ListTickets extends Fragment {
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("App-Token",FirstEverActivity.App_Token);
                 params.put("Session-Token",session_token);
+                params.put("Content-Type","application/json");
                 return params;
             }
 
             @Override
             public byte[] getBody() {
-                String Json_Payload = "{\"input\": {\"status\": \"4\"}}"; // put your json
+                String now = getNowTime();
+
+                //String a = "Objet: CRM CONNEXION\\r\\nDate: 16.07.2018 09:46\\r\\nDe: \\\"ilyes TAIBI\\\" \\r\\nÀ: \\\"Sedik DRIFF\\\" \\r\\n\\r\\nBonjour,\\r\\n\\r\\nConcernant CRM, le problème persiste toujours que ce soit en réseau\\r\\nlocal ou bien par VPN, impossible de se connecter au serveur.\\r\\n\\r\\nCi-joint les captures écrans.\\r\\n\\r\\nCordialement\\r\\n\\r\\nILYES TAIBI\\r\\n\\r\\nIngénieur IT\\r\\n\\r\\nMob : +213 (0) 560-966-134\\r\\n\\r\\nE-mail : ilyes.taibi@grupopuma-dz.com";
+
+                String b = descriptionTicket.replaceAll("\r\n","\\\\r\\\\n");
+                b = b.replaceAll("\"","\\\\\"");
+
+
+                //System.out.println("a : " + a + " | " + a.length());
+                //System.out.println("b : " + b + " | " + b.length());
+
+                String motif = "[Ticket mis en attente le "+now+".\\r\\nMotif : "+motifAttente+"]";
+                String nouv = b + "\\r\\n\\r\\n\\r\\n " + motif ;
+
+
+                String Json_Payload = "{\"input\":{\"status\": \"4\",\"content\": \""+nouv+"\"}}"; // put your json
+                //String Json_Payload = "{\"input\":{\"status\": \"4\",\"content\": \""+b+"\"}}"; // put your json
                 return Json_Payload.getBytes();
             }
         };
@@ -443,6 +471,13 @@ public class ListTickets extends Fragment {
         queue.add(jsonArrayRequest);
     }
 
+    private String getNowTime() {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+
+        return strDate;
+    }
 
 
     private void TicketEnResoluHTTP(String idTicket) {
@@ -453,6 +488,7 @@ public class ListTickets extends Fragment {
                     @Override
                     public void onResponse(JSONArray response) {
                         // Do something with response
+                        handlerticket.sendEmptyMessage(5);
                         Toast.makeText(getActivity(), "Ticket mis en résolu !", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -461,6 +497,7 @@ public class ListTickets extends Fragment {
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Log.e("Error.Response!", error.toString());
+                        handlerticket.sendEmptyMessage(5);
                         Toast.makeText(getActivity(), "Tache impossible", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -630,6 +667,7 @@ public class ListTickets extends Fragment {
                 TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4], ticketTab[i][7], ticketTab[i][6]);
                 ticket.setUrgenceTicket(ticketTab[i][3]);
                 ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
+                ticket.setDescription(ticketTab[i][8]);
                 //ticket.setTempsRestantTicket(ticketTab[i][4]);
 
                 TicketModels.add(ticket);
@@ -813,6 +851,7 @@ public class ListTickets extends Fragment {
     }
 
      class HandlerTicket extends Handler{
+        Bundle bundle;
          boolean nodata = false;
         @Override
         public void handleMessage(Message msg) {
@@ -866,6 +905,24 @@ public class ListTickets extends Fragment {
                         swipeLayout.setRefreshing(false);
                     }
                     break;
+
+                case 5: //stop loading
+                    if(pdChangement.isShowing()){
+                        pdChangement.dismiss();
+                    }
+                    adapter.clear();
+                    getTicketsHTTP();
+                    break;
+
+                case 6: //set Motif
+                    bundle = msg.getData();
+                    String motifAttente = bundle.getString("motif");
+                    String id = bundle.getString("id");
+                    String desc = bundle.getString("description");
+                    pdChangement.show();
+                    TicketEnAttenteHTTP(id, desc, motifAttente);
+                    break;
+
             }
 
         }

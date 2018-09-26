@@ -6,14 +6,14 @@
             android:id="@+id/nav_profile"
             android:icon="@drawable/utilisateur"
             android:title="@string/profile" />
-        <item
+     <!--   <item
             android:id="@+id/nav_newticket"
             android:icon="@drawable/ajouterticket"
             android:title="@string/newticket" />
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/chercherticket"
-            android:title="@string/searchticket" />
+            android:title="@string/searchticket" /> -->
         <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/setting"

@@ -1,0 +1,74 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/asker"
+            android:background="#80d592"
+            android:src="@drawable/question"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Veuillez donner une raison"
+            android:id="@+id/messagealert"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp"
+            android:paddingEnd="50dp"
+            android:paddingStart="50dp"
+            android:textSize="19sp"
+            android:textColor="#3e3e3e"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Motif de mise en attente"
+            android:id="@+id/ETmotif"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="50dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:textSize="19sp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp">
+
+            <Button
+                android:id="@+id/saveMotifBtn"
+                android:layout_width="0.0dip"
+                android:layout_height="fill_parent"
+                android:text="Envoyer"
+                android:background="#82becf"
+                android:layout_weight="1.0" />
+
+            <Button
+                android:id="@+id/fermer"
+                android:layout_width="0.0dip"
+                android:layout_height="fill_parent"
+                android:text="Annuler"
+                android:background="#cf8289"
+                android:layout_weight="1.0" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</ScrollView>

@@ -4,7 +4,19 @@
     tools:context="example.javatpoint.com.optionmenu.MainActivity">
 
     <item  android:id="@+id/itemStatTicket"
-        android:title="Stats de mes tickets"/>
+        android:title="Stats de mes tickets"
+        android:icon="@drawable/graph"
+        />
+
+    <item  android:id="@+id/itemCreationTicket"
+        android:title="@string/newticket"
+        android:icon="@drawable/ajouterticket"
+        />
+
+    <item  android:id="@+id/itemRechercheTicket"
+        android:title="@string/searchticket"
+        android:icon="@drawable/chercherticket"
+        />
 
 
 </menu>
