@@ -2,18 +2,17 @@ package com.production.achour_ar.gshglobalactivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.icu.text.IDNA;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,20 +20,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.production.achour_ar.gshglobalactivity.DataModel.TicketModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InfoTicket extends Activity {
+public class InfoTicket extends AppCompatActivity {
 
     String session_token, nameUser, idUser, firstnameUser;
 
@@ -65,6 +60,11 @@ public class InfoTicket extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info_ticket);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Information du ticket");
+        //actionBar.setHomeButtonEnabled(true); //show a caret only if android:parentActivityName is specified.
+        actionBar.setDisplayHomeAsUpEnabled(true); //show a caret even if android:parentActivityName is not specified.
 
         listObservateur =new ArrayList<ObservateurModel>();
 
@@ -606,6 +606,16 @@ public class InfoTicket extends Activity {
             }
         }
         return baseUrl;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

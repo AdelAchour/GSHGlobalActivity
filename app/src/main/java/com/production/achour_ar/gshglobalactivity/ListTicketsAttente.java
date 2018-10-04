@@ -58,17 +58,23 @@ public class ListTicketsAttente extends Fragment {
 
     String nbCount;
 
-    ProgressDialog pd ;
+    ProgressDialog pd;
 
-    public String[][] ticketTab ;
+    public String[][] ticketTab;
 
     SwipeRefreshLayout swipeLayout;
 
     public static Handler handlerticketAttente;
     int range;
 
+    public ListTicketsAttente() {
+        handlerticketAttente = new HandlerTicketAttente();
+        Log.d("INITIALIZATION","J'ai intialisé le handler attente !");
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.list_tickets, container, false);
 
         queue = Volley.newRequestQueue(getActivity());
@@ -79,7 +85,7 @@ public class ListTicketsAttente extends Fragment {
 
         handlerticketAttente = new HandlerTicketAttente();
 
-        swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_container);
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_green_light,
                 android.R.color.holo_blue_dark);
 
@@ -87,11 +93,10 @@ public class ListTicketsAttente extends Fragment {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!TicketModels.isEmpty()){
+                if (!TicketModels.isEmpty()) {
                     adapter.clear();
                     getTicketsHTTP();
-                }
-                else{
+                } else {
                     getTicketsHTTP();
                 }
             }
@@ -105,7 +110,7 @@ public class ListTicketsAttente extends Fragment {
         range = getArguments().getInt("range");
 
 
-        listView=(ListView)view.findViewById(R.id.list);
+        listView = (ListView) view.findViewById(R.id.list);
 
         TicketModels = new ArrayList<>();
 
@@ -116,39 +121,38 @@ public class ListTicketsAttente extends Fragment {
 
 
     private void getTicketsHTTP() {
-        String url = FirstEverActivity.GLPI_URL+"search/Ticket";
+        String url = FirstEverActivity.GLPI_URL + "search/Ticket";
 
-        int maxRange = range-1;
+        int maxRange = range - 1;
         List<KeyValuePair> params = new ArrayList<>();
-        params.add(new KeyValuePair("criteria[0][field]","5"));
-        params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
-        params.add(new KeyValuePair("criteria[0][value]",idUser));
+        params.add(new KeyValuePair("criteria[0][field]", "5"));
+        params.add(new KeyValuePair("criteria[0][searchtype]", "equals"));
+        params.add(new KeyValuePair("criteria[0][value]", idUser));
 
-        params.add(new KeyValuePair("criteria[1][link]","AND"));
-        params.add(new KeyValuePair("criteria[1][field]","12"));
-        params.add(new KeyValuePair("criteria[1][searchtype]","equals"));
-        params.add(new KeyValuePair("criteria[1][value]","4"));
+        params.add(new KeyValuePair("criteria[1][link]", "AND"));
+        params.add(new KeyValuePair("criteria[1][field]", "12"));
+        params.add(new KeyValuePair("criteria[1][searchtype]", "equals"));
+        params.add(new KeyValuePair("criteria[1][value]", "4"));
 
-        params.add(new KeyValuePair("forcedisplay[0]","4"));
-        params.add(new KeyValuePair("forcedisplay[1]","10"));
-        params.add(new KeyValuePair("forcedisplay[2]","7"));
-        params.add(new KeyValuePair("forcedisplay[3]","12"));
-        params.add(new KeyValuePair("forcedisplay[4]","15"));
-        params.add(new KeyValuePair("forcedisplay[5]","30"));
-        params.add(new KeyValuePair("forcedisplay[6]","18"));
-        params.add(new KeyValuePair("forcedisplay[7]","21"));
-        params.add(new KeyValuePair("forcedisplay[8]","83"));
-        params.add(new KeyValuePair("forcedisplay[9]","82"));
-        params.add(new KeyValuePair("forcedisplay[10]","16"));
-        params.add(new KeyValuePair("forcedisplay[11]","2"));
+        params.add(new KeyValuePair("forcedisplay[0]", "4"));
+        params.add(new KeyValuePair("forcedisplay[1]", "10"));
+        params.add(new KeyValuePair("forcedisplay[2]", "7"));
+        params.add(new KeyValuePair("forcedisplay[3]", "12"));
+        params.add(new KeyValuePair("forcedisplay[4]", "15"));
+        params.add(new KeyValuePair("forcedisplay[5]", "30"));
+        params.add(new KeyValuePair("forcedisplay[6]", "18"));
+        params.add(new KeyValuePair("forcedisplay[7]", "21"));
+        params.add(new KeyValuePair("forcedisplay[8]", "83"));
+        params.add(new KeyValuePair("forcedisplay[9]", "82"));
+        params.add(new KeyValuePair("forcedisplay[10]", "16"));
+        params.add(new KeyValuePair("forcedisplay[11]", "2"));
 
-        params.add(new KeyValuePair("sort","15"));
-        params.add(new KeyValuePair("order","DESC"));
-        params.add(new KeyValuePair("range","0-"+maxRange+""));
+        params.add(new KeyValuePair("sort", "15"));
+        params.add(new KeyValuePair("order", "DESC"));
+        params.add(new KeyValuePair("range", "0-" + maxRange + ""));
 
         final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
-                new Response.Listener<JSONObject>()
-                {
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -156,16 +160,16 @@ public class ListTicketsAttente extends Fragment {
                             ticketTab = new String[Integer.valueOf(nbCount)][nbTicketTab];
 
                             Bundle bundle = new Bundle();
-                            bundle.putString("position","3");
-                            bundle.putString("count",nbCount);
-                            bundle.putString("title","En attente");
+                            bundle.putString("position", "3");
+                            bundle.putString("count", nbCount);
+                            bundle.putString("title", "En attente");
                             Message msg = new Message();
                             msg.setData(bundle);
                             msg.what = 1;
                             TabLayoutActivity.handler.sendMessage(msg);
 
                             JSONArray Jdata = response.getJSONArray("data");
-                            for (int i=0; i < Jdata.length(); i++) {
+                            for (int i = 0; i < Jdata.length(); i++) {
                                 try {
                                     JSONObject oneTicket = Jdata.getJSONObject(i);
                                     // Récupération des items pour le row_item
@@ -187,7 +191,7 @@ public class ListTicketsAttente extends Fragment {
 
 
                                 } catch (JSONException e) {
-                                    Log.e("Nb of data: "+Jdata.length()+" || "+"Error JSONArray at "+i+" : ", e.getMessage());
+                                    Log.e("Nb of data: " + Jdata.length() + " || " + "Error JSONArray at " + i + " : ", e.getMessage());
                                 }
                                 // ------------------------
 
@@ -208,17 +212,16 @@ public class ListTicketsAttente extends Fragment {
 
                             addModelsFromTab(ticketTab);
 
-                            if (getActivity() != null){
-                                adapter = new TicketAttenteAdapter(TicketModels,getActivity());
-                            }
-                            else{
+                            if (getActivity() != null) {
+                                adapter = new TicketAttenteAdapter(TicketModels, getActivity());
+                            } else {
                                 Log.e("STOP BEFORE ERROR", "Il allait y avoir une erreur man (ATTENTE)");
                             }
 
                             listView.setAdapter(adapter);
                             handlerticketAttente.sendEmptyMessage(1);
 
-                            if(swipeLayout.isRefreshing()){
+                            if (swipeLayout.isRefreshing()) {
                                 swipeLayout.setRefreshing(false);
                             }
 
@@ -227,17 +230,17 @@ public class ListTicketsAttente extends Fragment {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                                    TicketModel TicketModel= TicketModels.get(position);
+                                    TicketModel TicketModel = TicketModels.get(position);
 
-                                    Snackbar.make(view, "Id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
+                                    Snackbar.make(view, "Id = " + TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
                                             .setAction("No action", null).show();
 
                                     Intent i = new Intent(getActivity(), InfoTicket.class);
-                                    i.putExtra("session",session_token);
-                                    i.putExtra("nom",nameUser);
-                                    i.putExtra("prenom",firstnameUser);
-                                    i.putExtra("id",idUser);
-                                    i.putExtra("idTicket",TicketModel.getIdTicket());
+                                    i.putExtra("session", session_token);
+                                    i.putExtra("nom", nameUser);
+                                    i.putExtra("prenom", firstnameUser);
+                                    i.putExtra("id", idUser);
+                                    i.putExtra("idTicket", TicketModel.getIdTicket());
 
                                     startActivity(i);
 
@@ -246,15 +249,14 @@ public class ListTicketsAttente extends Fragment {
 
 
                         } catch (JSONException e) {
-                            Log.e("malkach",e.getMessage());
+                            Log.e("malkach", e.getMessage());
                             handlerticketAttente.sendEmptyMessage(4);
                             handlerticketAttente.sendEmptyMessage(2);
                         }
 
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getActivity(), "Vérifiez votre connexion", Toast.LENGTH_LONG).show();
@@ -262,12 +264,12 @@ public class ListTicketsAttente extends Fragment {
                     }
 
                 }
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
-                params.put("Session-Token",session_token);
+                params.put("App-Token", FirstEverActivity.App_Token);
+                params.put("Session-Token", session_token);
                 return params;
             }
 
@@ -280,7 +282,7 @@ public class ListTicketsAttente extends Fragment {
     }
 
     private String calculTempsRetard(String dateEchanceTicket, String dateClotureTicket) {
-        if ((dateEchanceTicket.equals("null"))||(dateClotureTicket.equals("null"))){
+        if ((dateEchanceTicket.equals("null")) || (dateClotureTicket.equals("null"))) {
             return "-1";
         }
 
@@ -292,7 +294,7 @@ public class ListTicketsAttente extends Fragment {
     }
 
     private String calculTempsResolution(String dateClotureTicket, String dateDebutTicket) {
-        if ((dateDebutTicket.equals("null"))||(dateClotureTicket.equals("null"))){
+        if ((dateDebutTicket.equals("null")) || (dateClotureTicket.equals("null"))) {
             return "-1";
         }
         long debut = getDateDebutMS(dateDebutTicket);
@@ -304,10 +306,9 @@ public class ListTicketsAttente extends Fragment {
 
     private boolean getBooleanFromSt(String string) {
         boolean bool = false;
-        if(string.equals("0")){
+        if (string.equals("0")) {
             bool = false;
-        }
-        else if (string.equals("1")){
+        } else if (string.equals("1")) {
             bool = true;
         }
         return bool;
@@ -318,7 +319,7 @@ public class ListTicketsAttente extends Fragment {
 
         Pattern pattern = Pattern.compile("\\((.*?)\\)");
         Matcher matcher = pattern.matcher(slaTicket);
-        while (matcher.find()){
+        while (matcher.find()) {
             between = matcher.group();
         }
 
@@ -330,7 +331,7 @@ public class ListTicketsAttente extends Fragment {
 
         Pattern pattern = Pattern.compile("([\\d]+)");
         Matcher matcher = pattern.matcher(text);
-        while (matcher.find()){
+        while (matcher.find()) {
             digit = matcher.group();
         }
 
@@ -343,7 +344,7 @@ public class ListTicketsAttente extends Fragment {
 
         Pattern pattern = Pattern.compile("^(.*?)\\/");
         Matcher matcher = pattern.matcher(between);
-        while (matcher.find()){
+        while (matcher.find()) {
             minTemps = matcher.group();
         }
 
@@ -356,7 +357,7 @@ public class ListTicketsAttente extends Fragment {
 
         Pattern pattern = Pattern.compile("([\\d]+)(?=[^\\/]*$)");
         Matcher matcher = pattern.matcher(between);
-        while (matcher.find()){
+        while (matcher.find()) {
             maxTemps = matcher.group();
         }
 
@@ -365,7 +366,7 @@ public class ListTicketsAttente extends Fragment {
     }
 
     private String calculTempsRestant(String dateDebutTicket, String slaTicket) {
-        if ((slaTicket.equals("null"))||(slaTicket.equals(""))){
+        if ((slaTicket.equals("null")) || (slaTicket.equals(""))) {
             return "-1";
         }
         String minTemps = getMinTemps(slaTicket);
@@ -384,7 +385,7 @@ public class ListTicketsAttente extends Fragment {
     }
 
     private long hourToMSConvert(String minTemps) {
-        long time = Long.valueOf(minTemps)*3600000;
+        long time = Long.valueOf(minTemps) * 3600000;
         return time;
     }
 
@@ -403,14 +404,16 @@ public class ListTicketsAttente extends Fragment {
         Date oldDate = null;
         try {
             oldDate = formatter.parse(oldTime);
-        } catch (ParseException e) { e.printStackTrace(); }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         dateDebutMS = oldDate.getTime();
 
         return dateDebutMS;
     }
 
     private void addModelsFromTab(String[][] ticketTab) {
-        for (int i = 0; i < ticketTab.length; i++){
+        for (int i = 0; i < ticketTab.length; i++) {
             TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4], ticketTab[i][7], ticketTab[i][6]);
             ticket.setUrgenceTicket(ticketTab[i][3]);
             ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
@@ -423,9 +426,9 @@ public class ListTicketsAttente extends Fragment {
 
     private void AfficheTab(String[][] ticketTab) {
         System.out.println("\n --- Tableau de ticket --- \n");
-        for (int i = 0; i < ticketTab.length; i++){
-            for(int j = 0; j<ticketTab[0].length; j++){
-                System.out.print(ticketTab[i][j]+" ");
+        for (int i = 0; i < ticketTab.length; i++) {
+            for (int j = 0; j < ticketTab[0].length; j++) {
+                System.out.print(ticketTab[i][j] + " ");
             }
             System.out.println("\n");
         }
@@ -434,7 +437,7 @@ public class ListTicketsAttente extends Fragment {
     private String urgenceText(String urgenceTicket) {
         String urgence = "";
         int urg = Integer.valueOf(urgenceTicket);
-        switch (urg){
+        switch (urg) {
             case 1:
                 urgence = "Très basse";
                 break;
@@ -458,12 +461,11 @@ public class ListTicketsAttente extends Fragment {
 
     public static String generateUrl(String baseUrl, List<KeyValuePair> params) {
         if (params.size() > 0) {
-            int cpt = 1 ;
-            for (KeyValuePair parameter: params) {
-                if (cpt==1){
+            int cpt = 1;
+            for (KeyValuePair parameter : params) {
+                if (cpt == 1) {
                     baseUrl += "?" + parameter.getKey() + "=" + parameter.getValue();
-                }
-                else{
+                } else {
                     baseUrl += "&" + parameter.getKey() + "=" + parameter.getValue();
                 }
                 cpt++;
@@ -474,55 +476,53 @@ public class ListTicketsAttente extends Fragment {
 
     class HandlerTicketAttente extends Handler {
         boolean nodata = false;
+
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case 0:
-                    if (TicketModels.isEmpty()){
+                    if (TicketModels.isEmpty()) {
                         System.out.println("listview vide");
                         pd.show();
-                        if (nodata){
+                        if (nodata) {
                             System.out.println("Enregistré, 0 data déjà");
                             pd.dismiss();
                         }
-                    }
-                    else{
+                    } else {
                         System.out.println("listview no nvide !!");
                     }
                     break;
 
                 case 1:
                     System.out.println("Je dois arrêter le chargement de attente");
-                    if(pd.isShowing()){
+                    if (pd.isShowing()) {
                         pd.dismiss();
-                    }
-                    else {
+                    } else {
                         System.out.println("Aucun chargement à arrêter attente");
                     }
                     break;
 
                 case 2:
                     nodata = true;
-                    if(pd.isShowing()){
+                    if (pd.isShowing()) {
                         System.out.println("Nouvelle recherche, 0 data");
                         pd.dismiss();
                     }
                     break;
 
                 case 3: //refresh LV
-                    if (!TicketModels.isEmpty()){ //pleins
+                    if (!TicketModels.isEmpty()) { //pleins
                         swipeLayout.setRefreshing(true);
                         adapter.clear();
                         getTicketsHTTP();
-                    }
-                    else{
+                    } else {
                         swipeLayout.setRefreshing(true);
                         getTicketsHTTP();
                     }
                     break;
 
                 case 4: //stop swipe
-                    if(swipeLayout.isRefreshing()){
+                    if (swipeLayout.isRefreshing()) {
                         swipeLayout.setRefreshing(false);
                     }
                     break;
@@ -530,5 +530,6 @@ public class ListTicketsAttente extends Fragment {
 
         }
     }
+
 
 }

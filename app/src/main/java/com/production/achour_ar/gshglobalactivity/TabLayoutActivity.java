@@ -12,14 +12,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TabLayoutActivity extends AppCompatActivity {
 
@@ -27,10 +29,11 @@ public class TabLayoutActivity extends AppCompatActivity {
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
     String session_token, nameUser, idUser, firstnameUser;
-    int range;
+    int range, timeLoad;
     public static Handler handler;
     ProgressDialog pd;
     SharedPreferences app_preferences;
+    Timer timer = new Timer();
 
 
     @Override
@@ -42,6 +45,12 @@ public class TabLayoutActivity extends AppCompatActivity {
         pd.setMessage("Chargement des tickets...");
 
         handler = new HandlerTab();
+
+        new ListTickets();
+        new ListTicketsClos();
+        new ListTicketsResolu();
+        new ListTicketsAttente();
+        new ListTicketBackLog();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true); //show a caret even if android:parentActivityName is not specified.
@@ -60,6 +69,7 @@ public class TabLayoutActivity extends AppCompatActivity {
 
         app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
         range = app_preferences.getInt("range", 30);
+        timeLoad = app_preferences.getInt("load", 3);
 
         Intent i = getIntent();
         session_token = i.getStringExtra("session");
@@ -73,7 +83,65 @@ public class TabLayoutActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+//        LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
+//        for(int j = 0; j < tabStrip.getChildCount(); j++) {
+//            tabStrip.getChildAt(j).setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    return true;
+//                }
+//            });
+//        }
+
         pd.show();
+
+       /* ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
+        scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                System.out.println("J'actualise chaque 5 secondes");
+
+                ListTickets.handlerticket.sendEmptyMessage(3);
+                ListTicketsClos.handlerticketClos.sendEmptyMessage(3);
+                ListTicketsResolu.handlerticketResolu.sendEmptyMessage(3);
+                ListTicketsAttente.handlerticketAttente.sendEmptyMessage(3);
+                ListTicketBackLog.handlerticketbackLog.sendEmptyMessage(3);
+
+
+            }
+        }, 0, 5, TimeUnit.SECONDS); */
+
+
+        timer.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("3 sec in the RUN");
+
+                int position = tabLayout.getSelectedTabPosition();
+
+                switch (position){
+                    case 0: //en cours
+                        ListTickets.handlerticket.sendEmptyMessage(3);
+                        break;
+                    case 1: //clos
+                        ListTicketsClos.handlerticketClos.sendEmptyMessage(3);
+                        break;
+                    case 2: //résolu
+                        ListTicketsResolu.handlerticketResolu.sendEmptyMessage(3);
+                        break;
+                    case 3: //en attente
+                        ListTicketsAttente.handlerticketAttente.sendEmptyMessage(3);
+                        break;
+                    case 4: //backlog
+                        ListTicketBackLog.handlerticketbackLog.sendEmptyMessage(3);
+                        break;
+                }
+
+            }
+        }, 10000, timeLoad*60*1000);
+        Log.d("TIME LOAD", ""+timeLoad);
+
 
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -93,6 +161,16 @@ public class TabLayoutActivity extends AppCompatActivity {
                     case 2: //ListTicketRésolu
                         ListTicketsResolu.handlerticketResolu.sendEmptyMessage(0); //stp vérifie si la listview est vide et dabar rassek
                         break;
+
+                    case 3: //ListTicketAttente
+                        ListTicketsAttente.handlerticketAttente.sendEmptyMessage(0); //stp vérifie si la listview est vide et dabar rassek
+                        break;
+
+                    case 4: //ListTicketBackLog
+                        ListTicketBackLog.handlerticketbackLog.sendEmptyMessage(0); //stp vérifie si la listview est vide et dabar rassek
+                        break;
+
+
                 }
 
             }
@@ -135,10 +213,78 @@ public class TabLayoutActivity extends AppCompatActivity {
                     case 3: //en attente
                         ListTicketsAttente.handlerticketAttente.sendEmptyMessage(3);
                         break;
+                    case 4: //backlog
+                        ListTicketBackLog.handlerticketbackLog.sendEmptyMessage(3);
+                        break;
                 }
             }
         });
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("\n\n\nOn est parti, stop timer\n\n\n");
+        timer.cancel();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        System.out.println("\n\n\nOn a stoppé, stop timer\n\n\n");
+        timer.cancel();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        System.out.println("\n\n\nOn est revenu\n\n\n");
+        /*timer = new Timer();
+        timer.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("3 sec in onResume");
+            }
+        }, 0, 3000);*/
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        System.out.println("On a recommencé");
+        timer = new Timer();
+        timer.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("3 sec in onRestart");
+
+                int position = tabLayout.getSelectedTabPosition();
+
+                switch (position){
+                    case 0: //en cours
+                        ListTickets.handlerticket.sendEmptyMessage(3);
+                        break;
+                    case 1: //clos
+                        ListTicketsClos.handlerticketClos.sendEmptyMessage(3);
+                        break;
+                    case 2: //résolu
+                        ListTicketsResolu.handlerticketResolu.sendEmptyMessage(3);
+                        break;
+                    case 3: //en attente
+                        ListTicketsAttente.handlerticketAttente.sendEmptyMessage(3);
+                        break;
+                    case 4: //backlog
+                        ListTicketBackLog.handlerticketbackLog.sendEmptyMessage(3);
+                        break;
+                }
+            }
+        }, 30000, timeLoad*60*1000);
+        Log.d("TIME LOAD", ""+timeLoad);
     }
 
     @Override
@@ -167,7 +313,15 @@ public class TabLayoutActivity extends AppCompatActivity {
                 break;
 
             case R.id.itemRechercheTicket:
+                intent = new Intent(getApplicationContext(), SearchTicket.class);
+                intent.putExtra("session",session_token);
+                intent.putExtra("nom",nameUser);
+                intent.putExtra("prenom",firstnameUser);
+                intent.putExtra("id",idUser);
+                startActivity(intent);
                 break;
+
+
         }
 
         /*if (item.getItemId() == android.R.id.home) {
@@ -192,16 +346,19 @@ public class TabLayoutActivity extends AppCompatActivity {
         ListTicketsClos listTicketsClos = new ListTicketsClos();
         ListTicketsResolu listTicketsResolu = new ListTicketsResolu();
         ListTicketsAttente listTicketsAttente = new ListTicketsAttente();
+        ListTicketBackLog listTicketsBackLog = new ListTicketBackLog();
 
         listTickets.setArguments(bundle);
         listTicketsClos.setArguments(bundle);
         listTicketsResolu.setArguments(bundle);
         listTicketsAttente.setArguments(bundle);
+        listTicketsBackLog.setArguments(bundle);
 
         viewPagerAdapter.addFragment(listTickets, "En cours");
         viewPagerAdapter.addFragment(listTicketsClos, "Clos");
         viewPagerAdapter.addFragment(listTicketsResolu, "Résolu");
         viewPagerAdapter.addFragment(listTicketsAttente, "En attente");
+        viewPagerAdapter.addFragment(listTicketsBackLog, "BackLog");
         viewPager.setAdapter(viewPagerAdapter);
 
     }

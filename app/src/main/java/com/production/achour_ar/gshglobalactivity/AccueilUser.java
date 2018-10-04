@@ -68,6 +68,33 @@ public class AccueilUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.accueil_user);
 
+        Intent i = getIntent();
+        session_token = i.getStringExtra("session");
+        nameUser = i.getStringExtra("nom");
+        firstnameUser = i.getStringExtra("prenom");
+        idUser = i.getStringExtra("id");
+
+        System.out.println("Je vais vérifier.");
+
+        /*Thread thread = new Thread() {
+            @Override
+            public void run() {
+                if(ServiceNotificationNewTicket.ServiceIsRunning == false ) {
+                    System.out.println("Service not running");
+                    ServiceNotificationNewTicket.ServiceIsRunning = true ;
+                    //register the services to run in background
+                    Intent intent = new Intent(AccueilUser.this, ServiceNotificationNewTicket.class);
+                    intent.putExtra("id",idUser);
+                    intent.putExtra("session",session_token);
+                    // start the services
+                    startService(intent);
+                    System.out.println("Service started");
+                }
+            }
+        };
+        thread.start();*/
+
+
         /*ActionBar actionbar = getSupportActionBar();
         actionbar.setTitle("Accueil");
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -100,11 +127,6 @@ public class AccueilUser extends AppCompatActivity {
         rendementButton = (ImageView) findViewById(R.id.rendementButton);
         projectButton = (ImageView) findViewById(R.id.projectButton);
 
-       Intent i = getIntent();
-       session_token = i.getStringExtra("session");
-       nameUser = i.getStringExtra("nom");
-       firstnameUser = i.getStringExtra("prenom");
-       idUser = i.getStringExtra("id");
 
        welcomeView.setText("Bienvenue "+firstnameUser+" "+nameUser);
 

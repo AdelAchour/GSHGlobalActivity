@@ -63,6 +63,12 @@ public class ListTicketsResolu extends Fragment {
     public static Handler handlerticketResolu;
     private int range;
 
+    public ListTicketsResolu() {
+        handlerticketResolu = new HandlerTicketResolu();
+        TicketModels = new ArrayList<>();
+        Log.d("INITIALIZATION","J'ai intialisé le handler résolu !");
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
@@ -480,7 +486,7 @@ public class ListTicketsResolu extends Fragment {
                         }
                     }
                     else{
-                        System.out.println("listview no nvide !!");
+                        System.out.println("listview non vide !!");
                     }
                     break;
 

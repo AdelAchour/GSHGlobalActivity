@@ -133,7 +133,7 @@ public class CreationTicket extends AppCompatActivity {
                 }
                 else{
                     pdCreation.show();
-                    CreateTicketHTTP(titreTicket, idCatRequest, idTypeRequest, contentTicket.replaceAll("\n", "\\\\r\\\\n"));
+                    CreateTicketHTTP(titreTicket, idCatRequest, idTypeRequest, contentTicket);
                     //System.out.println("Titre bro = \n"+titreTicket);
                     //System.out.println("Content bro = \n"+contentTicket.replaceAll("\n", "\\\\r\\\\n"));
                 }
@@ -232,7 +232,11 @@ public class CreationTicket extends AppCompatActivity {
             @Override
             public byte[] getBody() {
 
-                String Json_Payload = "{\"input\": {\"name\": \""+titreTicket+"\",\t\"content\": \""+contentTicket+"\",\"itilcategories_id\": \""+idCatRequest+"\",\"type\": \""+idTypeRequest+"\"}}"; // put your json
+                String b = contentTicket.replaceAll("\"","\\\\\"");
+                b = b.replaceAll("\n", "\\\\n");
+                b = b.replaceAll("\r", "\\\\r");
+
+                String Json_Payload = "{\"input\": {\"name\": \""+titreTicket+"\",\t\"content\": \""+b+"\",\"itilcategories_id\": \""+idCatRequest+"\",\"type\": \""+idTypeRequest+"\"}}"; // put your json
                 return Json_Payload.getBytes();
             }
 

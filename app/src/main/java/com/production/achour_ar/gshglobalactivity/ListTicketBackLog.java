@@ -4,31 +4,20 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -40,7 +29,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonArray;
 import com.production.achour_ar.gshglobalactivity.DataModel.TicketModel;
 
 import org.json.JSONArray;
@@ -50,6 +38,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,11 +46,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ListTickets extends Fragment {
+public class ListTicketBackLog extends Fragment {
 
     ArrayList<TicketModel> TicketModels;
     ListView listView;
-    private static TicketAdapter adapter;
+    private static TicketBackLogAdapter adapter;
     String session_token, nameUser, idUser, firstnameUser;
     RequestQueue queue;
     String motifAttente;
@@ -72,7 +61,7 @@ public class ListTickets extends Fragment {
     String nbCount;
     int range;
 
-    public static Handler handlerticket;
+    public static Handler handlerticketbackLog;
 
     boolean ticketEnretard;
 
@@ -86,23 +75,23 @@ public class ListTickets extends Fragment {
     ProgressDialog pdChangement;
     private String newContent;
 
-    public ListTickets() {
-        handlerticket = new HandlerTicket();
-        Log.d("INITIALIZATION","J'ai intialisé le handler en cours !");
+    public ListTicketBackLog() {
+        handlerticketbackLog = new HandlerTicketBackLog();
+        Log.d("INITIALIZATION","J'ai intialisé le handler BackLog !");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
         pd = new ProgressDialog(getActivity());
-        pd.setTitle("Tickets en cours");
+        pd.setTitle("Tickets BACKLOG");
         pd.setMessage("Chargement des tickets...");
         //pd.show();
 
         pdChangement = new ProgressDialog(getActivity());
         pdChangement.setMessage("Changement de l'état...");
 
-        handlerticket = new HandlerTicket();
+        handlerticketbackLog = new HandlerTicketBackLog();
 
         swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_blue_dark,
@@ -172,6 +161,12 @@ public class ListTickets extends Fragment {
     private void getTicketsHTTP() {
         String url = FirstEverActivity.GLPI_URL+"search/Ticket";
 
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        //Substract 30 days to current date.
+        cal.add(Calendar.DATE, -30);
+        String minus30 = editTime(sdfDate.format(cal.getTime()));
+        
         int maxRange = range-1;
         List<KeyValuePair> params = new ArrayList<>();
         //TECHNICIEN = IDUSER
@@ -183,26 +178,26 @@ public class ListTickets extends Fragment {
         params.add(new KeyValuePair("criteria[1][field]","12"));
         params.add(new KeyValuePair("criteria[1][searchtype]","equals"));
         params.add(new KeyValuePair("criteria[1][value]","2"));
+        //AND DATE < DATE D'UN MOIS EN ARRIERE
+        params.add(new KeyValuePair("criteria[2][link]","AND"));
+        params.add(new KeyValuePair("criteria[2][field]","15"));
+        params.add(new KeyValuePair("criteria[2][searchtype]","lessthan"));
+        params.add(new KeyValuePair("criteria[2][value]",minus30));
         //OU TECHNICIEN = IDUSER
-        params.add(new KeyValuePair("criteria[2][link]","OR"));
-        params.add(new KeyValuePair("criteria[2][field]","5"));
-        params.add(new KeyValuePair("criteria[2][searchtype]","equals"));
-        params.add(new KeyValuePair("criteria[2][value]",idUser));
-        //AND STATUT EST EN COURS (PLANIFIE)
-        params.add(new KeyValuePair("criteria[3][link]","AND"));
-        params.add(new KeyValuePair("criteria[3][field]","12"));
+        params.add(new KeyValuePair("criteria[3][link]","OR"));
+        params.add(new KeyValuePair("criteria[3][field]","5"));
         params.add(new KeyValuePair("criteria[3][searchtype]","equals"));
-        params.add(new KeyValuePair("criteria[3][value]","3"));
-//        //OU TECHNICIEN = IDUSER
-//        params.add(new KeyValuePair("criteria[4][link]","OR"));
-//        params.add(new KeyValuePair("criteria[4][field]","5"));
-//        params.add(new KeyValuePair("criteria[4][searchtype]","equals"));
-//        params.add(new KeyValuePair("criteria[4][value]",idUser));
-//        //AND STATUT EST EN ATTENTE
-//        params.add(new KeyValuePair("criteria[5][link]","AND"));
-//        params.add(new KeyValuePair("criteria[5][field]","12"));
-//        params.add(new KeyValuePair("criteria[5][searchtype]","equals"));
-//        params.add(new KeyValuePair("criteria[5][value]","4"));
+        params.add(new KeyValuePair("criteria[3][value]",idUser));
+        //AND STATUT EST EN ATTENTE
+        params.add(new KeyValuePair("criteria[4][link]","AND"));
+        params.add(new KeyValuePair("criteria[4][field]","12"));
+        params.add(new KeyValuePair("criteria[4][searchtype]","equals"));
+        params.add(new KeyValuePair("criteria[4][value]","4"));
+        //AND DATE < DATE D'UN MOIS EN ARRIERE
+        params.add(new KeyValuePair("criteria[5][link]","AND"));
+        params.add(new KeyValuePair("criteria[5][field]","15"));
+        params.add(new KeyValuePair("criteria[5][searchtype]","lessthan"));
+        params.add(new KeyValuePair("criteria[5][value]",minus30));
         //AFFICHAGE
         params.add(new KeyValuePair("forcedisplay[0]","4"));
         params.add(new KeyValuePair("forcedisplay[1]","10"));
@@ -234,9 +229,9 @@ public class ListTickets extends Fragment {
                             ticketTab = new String[Integer.valueOf(nbCount)][nbTicketTab];
 
                             Bundle bundle = new Bundle();
-                            bundle.putString("position","0");
+                            bundle.putString("position","4");
                             bundle.putString("count",nbCount);
-                            bundle.putString("title","En cours");
+                            bundle.putString("title","BackLog");
                             Message msg = new Message();
                             msg.setData(bundle);
                             msg.what = 1;
@@ -295,17 +290,17 @@ public class ListTickets extends Fragment {
 
                             //System.out.println("Je charge la listview");
                             if (getActivity() != null){
-                                adapter = new TicketAdapter(TicketModels,getActivity());
+                                adapter = new TicketBackLogAdapter(TicketModels,getActivity());
                             }
                             else{
-                                Log.e("STOP BEFORE ERROR", "Il allait y avoir une erreur man (EN COURS)");
+                                Log.e("STOP BEFORE ERROR", "Il allait y avoir une erreur man (BACKLOG)");
                             }
 
 
                             listView.setAdapter(adapter);
                             //System.out.println("Listview chargée");
                             //TabLayoutActivity.handler.sendEmptyMessage(1);
-                            handlerticket.sendEmptyMessage(1);
+                            handlerticketbackLog.sendEmptyMessage(1);
                             TabLayoutActivity.handler.sendEmptyMessage(0);
 
                             if(swipeLayout.isRefreshing()){
@@ -340,7 +335,7 @@ public class ListTickets extends Fragment {
                                     final TicketModel TicketModel= TicketModels.get(position);
 
                                     //Snackbar.make(view, "id = "+TicketModel.getIdTicket(), Snackbar.LENGTH_LONG)
-                                      //      .setAction("No action", null).show();
+                                    //      .setAction("No action", null).show();
 
                                     AlertDialog.Builder builderSingle = new AlertDialog.Builder(getActivity());
                                     builderSingle.setTitle("Faites votre choix");
@@ -368,7 +363,7 @@ public class ListTickets extends Fragment {
                                                     break;
                                                 case "Mettre le ticket en résolu":
                                                     pdChangement.show();
-                                                    TicketEnResoluHTTP(TicketModel.getIdTicket(), TicketModel.getDescription());
+                                                    TicketEnResoluHTTP(TicketModel.getIdTicket());
                                                     break;
                                             }
                                             //Toast.makeText(getActivity(), TicketModel.getTitreTicket(), Toast.LENGTH_SHORT).show();
@@ -384,8 +379,8 @@ public class ListTickets extends Fragment {
 
                         } catch (JSONException e) {
                             Log.e("malkach",e.getMessage());
-                            handlerticket.sendEmptyMessage(2);
-                            handlerticket.sendEmptyMessage(4);
+                            handlerticketbackLog.sendEmptyMessage(2);
+                            handlerticketbackLog.sendEmptyMessage(4);
                             TabLayoutActivity.handler.sendEmptyMessage(0);
                         }
 
@@ -417,6 +412,12 @@ public class ListTickets extends Fragment {
 
     }
 
+    private String editTime(String format) {
+        String nouv = format.substring(0, 10);
+        nouv = nouv + " 17:00:00";
+        return nouv;
+    }
+
     private void TicketEnAttenteHTTP(String idTicket, final String descriptionTicket, final String motifAttente) {
         String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
 
@@ -425,7 +426,7 @@ public class ListTickets extends Fragment {
                     @Override
                     public void onResponse(JSONArray response) {
                         // Do something with response
-                        handlerticket.sendEmptyMessage(5);
+                        handlerticketbackLog.sendEmptyMessage(5);
                         Toast.makeText(getActivity(), "Ticket mis en attente !", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -435,7 +436,7 @@ public class ListTickets extends Fragment {
                         // Do something when error occurred
                         Log.e("Error.Response!", error.toString());
                         error.printStackTrace();
-                        handlerticket.sendEmptyMessage(5);
+                        handlerticketbackLog.sendEmptyMessage(5);
                         Toast.makeText(getActivity(), "Tache impossible", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -456,8 +457,6 @@ public class ListTickets extends Fragment {
                 //String a = "Objet: CRM CONNEXION\\r\\nDate: 16.07.2018 09:46\\r\\nDe: \\\"ilyes TAIBI\\\" \\r\\nÀ: \\\"Sedik DRIFF\\\" \\r\\n\\r\\nBonjour,\\r\\n\\r\\nConcernant CRM, le problème persiste toujours que ce soit en réseau\\r\\nlocal ou bien par VPN, impossible de se connecter au serveur.\\r\\n\\r\\nCi-joint les captures écrans.\\r\\n\\r\\nCordialement\\r\\n\\r\\nILYES TAIBI\\r\\n\\r\\nIngénieur IT\\r\\n\\r\\nMob : +213 (0) 560-966-134\\r\\n\\r\\nE-mail : ilyes.taibi@grupopuma-dz.com";
 
                 String b = descriptionTicket.replaceAll("\r\n","\\\\r\\\\n");
-                b = b.replaceAll("\n", "\\\\n");
-                b = b.replaceAll("\r", "\\\\r");
                 b = b.replaceAll("\"","\\\\\"");
 
 
@@ -487,7 +486,7 @@ public class ListTickets extends Fragment {
     }
 
 
-    private void TicketEnResoluHTTP(String idTicket, final String descriptionTicket) {
+    private void TicketEnResoluHTTP(String idTicket) {
         String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, url, null,
@@ -495,7 +494,7 @@ public class ListTickets extends Fragment {
                     @Override
                     public void onResponse(JSONArray response) {
                         // Do something with response
-                        handlerticket.sendEmptyMessage(5);
+                        handlerticketbackLog.sendEmptyMessage(5);
                         Toast.makeText(getActivity(), "Ticket mis en résolu !", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -504,7 +503,7 @@ public class ListTickets extends Fragment {
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Log.e("Error.Response!", error.toString());
-                        handlerticket.sendEmptyMessage(5);
+                        handlerticketbackLog.sendEmptyMessage(5);
                         Toast.makeText(getActivity(), "Tache impossible", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -519,28 +518,8 @@ public class ListTickets extends Fragment {
 
             @Override
             public byte[] getBody() {
-
-                String now = getNowTime();
-
-                //String a = "Salut,\\n\\nMerci de vérifier la connexion quant à l'ERP RH à St-Remy\\n\\nMerci";
-
-                String b = descriptionTicket.replaceAll("\r\n","\\\\r\\\\n");
-                b = b.replaceAll("\n", "\\\\n");
-                b = b.replaceAll("\r", "\\\\r");
-                b = b.replaceAll("\"","\\\\\"");
-
-
-                //System.out.println("a : " + a + " | " + a.length());
-                //System.out.println("b : " + b + " | " + b.length());
-
-                String motif = "[Ticket mis en résolu le "+now+"]";
-                String nouv = b + "\\r\\n\\r\\n\\r\\n " + motif ;
-
-
-                String Json_Payload = "{\"input\":{\"status\": \"5\",\"content\": \""+nouv+"\"}}"; // put your json
-                //String Json_Payload = "{\"input\":{\"status\": \"5\",\"content\": \""+b+"\"}}"; // put your json
+                String Json_Payload = "{\"input\": {\"status\": \"5\"}}"; // put your json
                 return Json_Payload.getBytes();
-
             }
         };
 
@@ -622,30 +601,6 @@ public class ListTickets extends Fragment {
         return maxTemps;
     }
 
-   /* private String calculTempsRestantANCIEN(String dateDebutTicket, String slaTicket, String dateEcheance) {
-        String minTemps = getMinTemps(slaTicket);
-        String maxTemps = getMaxTemps(slaTicket);
-
-        long dateDebutMS = getDateDebutMS(dateDebutTicket);
-        long dateEcheanceMS = getDateDebutMS(dateEcheance);
-
-        long currentTimeMS = CurrentTimeMS();
-
-        long differenceEcheanceCurrent = dateEcheanceMS - currentTimeMS;
-
-        long minTempsMS = hourToMSConvert(minTemps);
-        long maxTempsMS = hourToMSConvert(maxTemps);
-
-        long differenceCurrentDebut = currentTimeMS - dateDebutMS;
-
-        long tempsRestant = maxTempsMS - differenceCurrentDebut;
-
-
-
-        return String.valueOf(differenceEcheanceCurrent);
-
-    }*/
-
     private String calculTempsRestant(String dateEcheance) {
         if (dateEcheance.equals("null")){
             return "-1";
@@ -691,13 +646,13 @@ public class ListTickets extends Fragment {
     private void addModelsFromTab(String[][] ticketTab) {
         for (int i = 0; i < ticketTab.length; i++){
 
-                TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4], ticketTab[i][7], ticketTab[i][6]);
-                ticket.setUrgenceTicket(ticketTab[i][3]);
-                ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
-                ticket.setDescription(ticketTab[i][8]);
-                //ticket.setTempsRestantTicket(ticketTab[i][4]);
+            TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4], ticketTab[i][7], ticketTab[i][6]);
+            ticket.setUrgenceTicket(ticketTab[i][3]);
+            ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
+            ticket.setDescription(ticketTab[i][8]);
+            //ticket.setTempsRestantTicket(ticketTab[i][4]);
 
-                TicketModels.add(ticket);
+            TicketModels.add(ticket);
 
             // if ((!ticketTab[i][6].equals("6"))&&(!ticketTab[i][6].equals("5"))) {
             // }
@@ -721,7 +676,7 @@ public class ListTickets extends Fragment {
         switch (urg){
             case 1:
                 urgence = "Très basse";
-            break;
+                break;
             case 2:
                 urgence = "Basse";
                 break;
@@ -787,20 +742,20 @@ public class ListTickets extends Fragment {
         int longueur = tableau.length;
         boolean foundRetard = false;
 
-            // ---- Tri par retard ---
-            for (int i = 0; i < longueur; i++) {
-                if (Long.valueOf(tableau[i][4]) >= 0) {
-                    for (int k = i+1; k< longueur; k++){
-                        if ((Long.valueOf(tableau[k][4]) < 0)){
-                            foundRetard = true;
-                            permuter(k,i,tableau);
-                        }
+        // ---- Tri par retard ---
+        for (int i = 0; i < longueur; i++) {
+            if (Long.valueOf(tableau[i][4]) >= 0) {
+                for (int k = i+1; k< longueur; k++){
+                    if ((Long.valueOf(tableau[k][4]) < 0)){
+                        foundRetard = true;
+                        permuter(k,i,tableau);
                     }
-                    foundRetard = false;
                 }
+                foundRetard = false;
             }
+        }
 
-            // ---- Tri par temps min ---
+        // ---- Tri par temps min ---
 
 
         int tampon = 0;
@@ -877,9 +832,9 @@ public class ListTickets extends Fragment {
         tableau[i][7] = tampon[7];
     }
 
-     class HandlerTicket extends Handler{
+    class HandlerTicketBackLog extends Handler{
         Bundle bundle;
-         boolean nodata = false;
+        boolean nodata = false;
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
@@ -954,30 +909,6 @@ public class ListTickets extends Fragment {
 
         }
     }
-
-   /* @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()==R.id.list) {
-            MenuInflater inflater = getActivity().getMenuInflater();
-            inflater.inflate(R.menu.menu_contextual, menu);
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        //AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
-            case R.id.alterAttente:
-                //AlterTicketAttente();
-                return true;
-            case R.id.alterResolu:
-                Toast.makeText(getActivity(), "Résolu", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-    }*/
 
 }
 
