@@ -76,6 +76,20 @@ public class AccueilUser extends AppCompatActivity {
 
         System.out.println("Je vais vérifier.");
 
+
+        if(ServiceNotificationNewTicket.ServiceIsRunning == false ) {
+            System.out.println("Service not running");
+            ServiceNotificationNewTicket.ServiceIsRunning = true ;
+            //register the services to run in background
+            Intent intent = new Intent(AccueilUser.this, ServiceNotificationNewTicket.class);
+            intent.putExtra("id",idUser);
+            intent.putExtra("session",session_token);
+            // start the services
+            startService(intent);
+            System.out.println("Service started");
+        }
+
+
         /*Thread thread = new Thread() {
             @Override
             public void run() {
@@ -333,6 +347,9 @@ public class AccueilUser extends AppCompatActivity {
         };
         // add it to the RequestQueue
         queue.add(getRequest);
+
+        ServiceNotificationNewTicket.ServiceIsRunning = false;
+        System.out.println("Service stopped");
 
     }
 

@@ -35,7 +35,6 @@ public class TicketAttenteAdapter extends ArrayAdapter<TicketModel> implements V
     }
 
 
-
     public TicketAttenteAdapter(ArrayList<TicketModel> data, Context context) {
         super(context, R.layout.row_item_ticket, data);
         this.dataSet = data;
@@ -104,7 +103,7 @@ public class TicketAttenteAdapter extends ArrayAdapter<TicketModel> implements V
         viewHolder.txtSLA.setText(TicketModel.getSlaTicket());
         viewHolder.txtTempsRestant.setText("En attente...");
         viewHolder.txtTempsRestant.setTextColor(Color.parseColor("#434343"));
-        viewHolder.info.setImageResource(R.drawable.enattente);
+        viewHolder.info.setImageResource(R.drawable.ic_more_horiz_black_30dp);
         viewHolder.layout.setBackgroundColor(Color.parseColor("#62dea968"));
         viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);

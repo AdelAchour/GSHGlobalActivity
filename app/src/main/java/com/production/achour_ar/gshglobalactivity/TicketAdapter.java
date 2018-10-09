@@ -26,6 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -43,7 +45,6 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
     // View lookup cache
     private class ViewHolder {
         TextView txtName;
-        TextView txtType;
         TextView txtTempsRestant;
         TextView txtDate;
         TextView txtSLA;
@@ -55,15 +56,21 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             public void handleMessage(Message msg) {
                 //Log.d("I'm here ",String.valueOf(System.currentTimeMillis()));
 
+                String pourcentage25;
+                String pourcentage50;
+                String pourcentage75;
+                
                 Bundle bundle = msg.getData();
                 long timeLeftMS = bundle.getLong("time");
                 String Nom = bundle.getString("name");
+                long SLA = Long.valueOf(bundle.getString("SLA"));
                 String idTicket = bundle.getString("id");
 
                 int day = (int) ((timeLeftMS / (24*3600000)));
                 int hour = (int) ((timeLeftMS / (1000*60*60)) % 24);
                 int minute = (int) ((timeLeftMS / (60000)) % 60);
                 int seconde = (int)timeLeftMS % 60000 / 1000;
+
 
                 String timeLeftText = "";
 
@@ -81,74 +88,44 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
                 txtTempsRestant.setText(timeLeftText);
 
-                String timeNotif2Jours = "02:00:00:00";
-                String timeNotif1Jour = "01:00:00:00";
-                String timeNotif2Heures = "00:02:00:00";
-                String timeNotif1Heure = "00:01:00:00";
-                String timeNotif30Min = "00:00:30:00";
-                String timeNotif10Min = "00:00:10:00";
+                //String timeNotif1Heure = "00:01:00:00";
+                pourcentage25 = calculRebours(Math.round(HoursToMS(SLA)*0.25));
+                pourcentage50 = calculRebours(Math.round(HoursToMS(SLA)*0.50));
+                pourcentage75 = calculRebours(Math.round(HoursToMS(SLA)*0.75));
 
-                if (timeLeftText.equals(timeNotif2Jours)){
+
+                if (timeLeftText.equals(pourcentage25)){
                     int idNotif = Integer.valueOf(idTicket) + 000000001 ;
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.mipmap.moyennepriorite);
+                            R.drawable.ic_battery_25_red_30dp);
 
-                    NotifyUser("Urgence moyenne", ""+Nom+" : Il vous reste 2 jours avant l'expiration du ticket", bitmap, idNotif);
+                    NotifyUser("Urgence haute", ""+Nom+" : 75% du SLA viennent de s'écrouler", bitmap, idNotif);
 
                 }
 
-                if (timeLeftText.equals(timeNotif1Jour)){
+                if (timeLeftText.equals(pourcentage50)){
+
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.mipmap.moyennepriorite);
+                            R.drawable.ic_battery_50_yellow_30dp);
                     int idNotif = Integer.valueOf(idTicket) + 000000002 ;
 
-                    NotifyUser("Urgence moyenne", ""+Nom+" : Il vous reste 1 journée avant l'expiration du ticket", bitmap, idNotif);
+                    NotifyUser("Urgence moyenne", ""+Nom+" : 50% du SLA viennent de s'écrouler", bitmap, idNotif);
 
                 }
 
-                if (timeLeftText.equals(timeNotif2Heures)){
+                if (timeLeftText.equals(pourcentage75)){
+
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.mipmap.hautepriorite);
+                            R.drawable.ic_battery_75_green_30dp);
                     int idNotif = Integer.valueOf(idTicket) + 000000003 ;
 
-                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus que 2 heures avant l'expiration du ticket", bitmap, idNotif);
+                    NotifyUser("Urgence faible", ""+Nom+" : 25% du SLA viennent de s'écrouler", bitmap, idNotif);
 
                 }
-
-                if (timeLeftText.equals(timeNotif1Heure)){
-                    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.mipmap.fire);
-                    int idNotif = Integer.valueOf(idTicket) + 000000004 ;
-
-                    txtTempsRestant.setTextColor(Color.parseColor("#ca1f1f"));
-                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus qu'1 heure avant l'expiration du ticket", bitmap, idNotif);
-
-                }
-
-                if (timeLeftText.equals(timeNotif30Min)){
-                    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.mipmap.timefinal);
-                    int idNotif = Integer.valueOf(idTicket) + 000000005 ;
-
-                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus que 30 minutes avant l'expiration du ticket", bitmap, idNotif);
-
-                }
-
-                if (timeLeftText.equals(timeNotif10Min)){
-                    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.mipmap.timefinal);
-                    int idNotif = Integer.valueOf(idTicket) + 000000006 ;
-
-                    NotifyUser("Urgence haute", ""+Nom+" : Il ne vous reste plus que 10 minutes avant l'expiration du ticket", bitmap, idNotif);
-
-                }
-
 
                 //System.out.println("Titre "+Nom+ " | "+timeLeftMS+ " | "+txtTempsRestant.getText() );
 
-
-                info.setImageResource(getIconUrgence(timeLeftMS));
-
+                info.setImageResource(getIconUrgence(timeLeftMS, SLA));
 
             }
         };
@@ -166,7 +143,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                     txtTempsRestant.setText("En retard");
                     txtTempsRestant.setTextColor(Color.parseColor("#434343"));
                     layout.setBackgroundColor(Color.parseColor("#3caa0000"));
-                    info.setImageResource(R.drawable.haute);
+                    info.setImageResource(R.drawable.ic_priority_high_red_30dp);
                 }
             }
         };
@@ -181,7 +158,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 txtTempsRestant.setText("En retard");
                 txtTempsRestant.setTextColor(Color.parseColor("#434343"));
                 layout.setBackgroundColor(Color.parseColor("#3caa0000"));
-                info.setImageResource(R.drawable.haute);
+                info.setImageResource(R.drawable.ic_priority_high_red_30dp);
 
                 Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
                         R.mipmap.timeexpire);
@@ -191,58 +168,47 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             }
         };
 
-        Handler handlerAttente = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                txtTempsRestant.setText("En attente...");
-                txtTempsRestant.setTextColor(Color.parseColor("#434343"));
-                layout.setBackgroundColor(Color.parseColor("#949494"));
-                info.setImageResource(R.drawable.enattente);
-            }
-        };
 
-        public void startTimer(long timeLeftMS, String statut, final String Nom, final String idTicket) {
-            if(statut.equals("4")){
-                handlerAttente.sendEmptyMessage(0);
+        public void startTimer(long timeLeftMS, final String SLA, final String Nom, final String idTicket) {
+            if (timeLeftMS<0){
+                //handlerLate.sendEmptyMessage(0);
+                Bundle bundle = new Bundle();
+                bundle.putLong("time", timeLeftMS);
+                Message message = new Message();
+                message.setData(bundle);
+                handlerLate.sendMessage(message);
             }
             else{
-                if (timeLeftMS<0){
-                    //handlerLate.sendEmptyMessage(0);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("time", timeLeftMS);
-                    Message message = new Message();
-                    message.setData(bundle);
-                    handlerLate.sendMessage(message);
-                }
-                else{
-                    CountDownTimer countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
-
-                        @Override
-                        public void onTick(long l) {
-                            Bundle bundle = new Bundle();
-                            bundle.putLong("time", l);
-                            bundle.putString("name", Nom);
-                            bundle.putString("id", idTicket);
-                            Message message = new Message();
-                            message.setData(bundle);
-                            handler.sendMessage(message);
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("name", Nom);
-                            bundle.putString("id", idTicket);
-                            Message message = new Message();
-                            message.setData(bundle);
-                            handlerFinishLate.sendMessage(message);
-                        }
-                    }.start();
-                }
+                CountDownTimer countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
+                    @Override
+                    public void onTick(long l) {
+                        Bundle bundle = new Bundle();
+                        bundle.putLong("time", l);
+                        bundle.putString("name", Nom);
+                        bundle.putString("id", idTicket);
+                        bundle.putString("SLA", getMaxTemps(SLA));
+                        Message message = new Message();
+                        message.setData(bundle);
+                        handler.sendMessage(message);
+                    }
+                    @Override
+                    public void onFinish() {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("name", Nom);
+                        bundle.putString("id", idTicket);
+                        Message message = new Message();
+                        message.setData(bundle);
+                        handlerFinishLate.sendMessage(message);
+                    }
+                }.start();
             }
 
         }
 
+    }
+
+    private double HoursToMS(long sla) {
+        return sla*60*60*1000;
     }
 
     private boolean TimeLeftBetween(long timeLeftMS, String min, String max) {
@@ -319,8 +285,15 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         {
             case R.id.item_info:
 
-                Snackbar.make(v, "En retard? : " +TicketModel.isTicketEnRetard(), Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
+                if (TicketModel.isTicketEnRetard()){
+                    Snackbar.make(v, "Ticket en retard", Snackbar.LENGTH_LONG)
+                            .setAction("No action", null).show();
+                }
+                else {
+                    Snackbar.make(v, "Ticket en cours", Snackbar.LENGTH_LONG)
+                            .setAction("No action", null).show();
+                }
+
                 break;
         }
     }
@@ -367,7 +340,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
         final View result;
         long timeLeft;
-        String Statut;
+        String SLA;
         String Nom;
         String idTicket;
         if (convertView == null) {
@@ -384,7 +357,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
 
             timeLeft = Long.valueOf(TicketModel.getTempsRestantTicket());
-            Statut = TicketModel.getStatut();
+            SLA = TicketModel.getSlaTicket();
             Nom = TicketModel.getTitreTicket();
             idTicket = TicketModel.getIdTicket();
 
@@ -393,7 +366,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             //viewHolder.startTimer(Long.valueOf(TicketModel.getTempsRestantTicket()));
 
 
-            viewHolder.startTimer(timeLeft, Statut, Nom, idTicket);
+            viewHolder.startTimer(timeLeft, SLA, Nom, idTicket);
 
             convertView.setTag(viewHolder);
 
@@ -412,7 +385,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         viewHolder.layout = (RelativeLayout) convertView.findViewById(R.id.backgroundRow);
 
         timeLeft = Long.valueOf(TicketModel.getTempsRestantTicket());
-        Statut = TicketModel.getStatut();
+        SLA = TicketModel.getSlaTicket();
         Nom = TicketModel.getTitreTicket();
         idTicket = TicketModel.getIdTicket();
 
@@ -482,35 +455,58 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
     }
 
 
-
-    private int getIconUrgence(long timeLeftMS) {
+    private int getIconUrgence(long timeLeftMS, long SLA) {
         int icon = 0;
 
-        /*if((urgenceTicket.equals("Très basse"))||(urgenceTicket.equals("Basse"))){
-            icon = R.drawable.basse;
-        }
-        else if((urgenceTicket.equals("Haute"))||(urgenceTicket.equals("Très haute"))){
-            icon = R.drawable.haute;
-        }
-        else {
-            icon = R.drawable.moyenne;
-        }*/
+        String pourcentage25 = calculRebours(Math.round(HoursToMS(SLA)*0.25));
+        String pourcentage50 = calculRebours(Math.round(HoursToMS(SLA)*0.50));
+        String pourcentage75 = calculRebours(Math.round(HoursToMS(SLA)*0.75));
 
-        String limite = "00:02:00:00";
-        String aLaise = "03:00:00:00";
+        //Log.d("SLA 25",""+calculRebours(Math.round(HoursToMS(SLA)*0.50)));
+        //Log.d("TIME LEFT",""+calculRebours(timeLeftMS));
 
-        if (timeLeftMS <= getMSfromTime(limite)){
-            icon = R.drawable.haute;
+        if ((timeLeftMS <= getMSfromTime(pourcentage25))){
+            icon = R.drawable.ic_battery_25_red_30dp;
         }
-        else if ((timeLeftMS > getMSfromTime(limite))&&((timeLeftMS <= getMSfromTime(aLaise)))){
-            icon = R.drawable.moyenne;
+        else if ((timeLeftMS > getMSfromTime(pourcentage25))&&((timeLeftMS <= getMSfromTime(pourcentage50)))){
+            icon = R.drawable.ic_battery_50_yellow_30dp;
         }
-        else if(timeLeftMS > getMSfromTime(aLaise)) {
-            icon = R.drawable.basse;
+        else if((timeLeftMS > getMSfromTime(pourcentage50))&&((timeLeftMS <= getMSfromTime(pourcentage75)))) {
+            icon = R.drawable.ic_battery_75_green_30dp;
+        }
+        else if (timeLeftMS > getMSfromTime(pourcentage75)){
+            icon = R.drawable.ic_battery_full_green_30dp;
         }
 
         return icon;
     }
+
+
+    private String getMaxTemps(String slaTicket) {
+        String between = getBetweenBrackets(slaTicket);
+        String maxTemps = "";
+
+        Pattern pattern = Pattern.compile("([\\d]+)(?=[^\\/]*$)");
+        Matcher matcher = pattern.matcher(between);
+        while (matcher.find()){
+            maxTemps = matcher.group();
+        }
+
+        return maxTemps;
+    }
+
+    private String getBetweenBrackets(String slaTicket) {
+        String between = "";
+
+        Pattern pattern = Pattern.compile("\\((.*?)\\)");
+        Matcher matcher = pattern.matcher(slaTicket);
+        while (matcher.find()){
+            between = matcher.group();
+        }
+
+        return between;
+    }
+
 
 
 }

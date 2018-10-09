@@ -95,7 +95,6 @@ public class TicketResoluAdapter extends ArrayAdapter<TicketModel> implements Vi
 
 
             result = convertView;
-            //viewHolder.startTimer(Long.valueOf(TicketModel.getTempsRestantTicket()));
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (TicketResoluAdapter.ViewHolder) convertView.getTag();
@@ -111,7 +110,7 @@ public class TicketResoluAdapter extends ArrayAdapter<TicketModel> implements Vi
         viewHolder.txtSLA.setText(TicketModel.getSlaTicket());
         viewHolder.txtTempsRestant.setText(TexteClos(TicketModel.isTicketEnRetard()));
         viewHolder.txtTempsRestant.setTextColor(Color.parseColor("#434343"));
-        viewHolder.info.setImageResource(R.drawable.doneclos);
+        viewHolder.info.setImageResource(R.drawable.ic_check_green_30dp);
         viewHolder.layout.setBackgroundColor(getColorBG(TicketModel.isTicketEnRetard()));
         viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);
@@ -130,7 +129,6 @@ public class TicketResoluAdapter extends ArrayAdapter<TicketModel> implements Vi
         return respose;
     }
 
-
     private int getColorBG(boolean ticketEnRetard) {
         int color;
 
@@ -142,18 +140,4 @@ public class TicketResoluAdapter extends ArrayAdapter<TicketModel> implements Vi
         return color;
     }
 
-
-    private int getIconUrgence(String urgenceTicket) {
-        int icon;
-
-        if ((urgenceTicket.equals("Très basse")) || (urgenceTicket.equals("Basse"))) {
-            icon = R.drawable.basse;
-        } else if ((urgenceTicket.equals("Haute")) || (urgenceTicket.equals("Très haute"))) {
-            icon = R.drawable.haute;
-        } else {
-            icon = R.drawable.moyenne;
-        }
-
-        return icon;
-    }
 }

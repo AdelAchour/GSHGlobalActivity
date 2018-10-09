@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 /**
@@ -21,6 +22,7 @@ import android.support.v4.app.NotificationCompat;
  * class to create notifications in a backward-compatible way.
  */
 public class NewTicketNotification {
+
     /**
      * The unique identifier for this type of notification.
      */
@@ -42,20 +44,28 @@ public class NewTicketNotification {
      * @see #cancel(Context)
      */
     public static void notify(final Context context,
-                              final String exampleString, final int number) {
+                              final Bundle infoTicket,
+                              final int number) {
+
+        System.out.println("NOTIF !!!");
 
         final Resources res = context.getResources();
 
         // This image is used as the notification's large icon (thumbnail).
         // TODO: Remove this if your notification has no relevant thumbnail.
-        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.example_picture);
+        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.newtag);
 
 
-        final String ticker = exampleString;
+        String titreTicket = infoTicket.getString("titre");
+        String descriptionTicket = infoTicket.getString("content");
+        String dateTicket = infoTicket.getString("date");
+        String textShare = "Ticket ouvert le "+dateTicket+".\n\nTitre : "+titreTicket+"\n\nDescription : \n"+descriptionTicket+"\n\nID : "+number+".";
+
+        final String ticker = titreTicket ;
         final String title = res.getString(
-                R.string.new_ticket_notification_title_template, exampleString);
+                R.string.new_ticket_notification_title_template, titreTicket);
 
-        final String text = exampleString;
+        final String contentTicket = descriptionTicket ;
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
 
@@ -67,7 +77,7 @@ public class NewTicketNotification {
                 // notification title, and text.
                 .setSmallIcon(R.drawable.ic_stat_new_ticket)
                 .setContentTitle(title)
-                .setContentText(text)
+                .setContentText(contentTicket)
 
                 // All fields below this line are optional.
 
@@ -107,15 +117,17 @@ public class NewTicketNotification {
                 // Show expanded text content on devices running Android 4.1 or
                 // later.
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(text)
+                        .bigText(contentTicket)
                         .setBigContentTitle(title)
-                        .setSummaryText("Dummy summary text"))
+                        .setSummaryText("Nouveau ticket reçu"))
 
                 // Example additional actions for this notification. These will
                 // only show on devices running Android 4.1 or later, so you
                 // should ensure that the activity in this notification's
                 // content intent provides access to the same actions in
                 // another way.
+
+
                 .addAction(
                         R.drawable.ic_action_stat_share,
                         res.getString(R.string.action_share),
@@ -124,12 +136,12 @@ public class NewTicketNotification {
                                 0,
                                 Intent.createChooser(new Intent(Intent.ACTION_SEND)
                                         .setType("text/plain")
-                                        .putExtra(Intent.EXTRA_TEXT, "Dummy text"), "Dummy title"),
+                                        .putExtra(Intent.EXTRA_TEXT, ""+textShare), "Partager ce ticket"),
                                 PendingIntent.FLAG_UPDATE_CURRENT))
-                .addAction(
+                /*.addAction(
                         R.drawable.ic_action_stat_reply,
                         res.getString(R.string.action_reply),
-                        null)
+                        null)*/
 
                 // Automatically dismiss the notification when it is touched.
                 .setAutoCancel(true);
@@ -150,7 +162,7 @@ public class NewTicketNotification {
 
     /**
      * Cancels any notifications of this type previously shown using
-     * {@link #notify(Context, String, int)}.
+     * {@link #notify(Context, Bundle, int)}.
      */
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     public static void cancel(final Context context) {

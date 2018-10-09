@@ -115,10 +115,10 @@ public class TicketBackLogAdapter extends ArrayAdapter<TicketModel> implements V
 
     private int getIcon(String statut) {
         if (statut.equals("2")){
-            return R.drawable.haute;
+            return R.drawable.ic_priority_high_red_30dp;
         }
         else if (statut.equals("4")){
-            return R.drawable.enattente;
+            return R.drawable.ic_more_horiz_black_30dp;
         }
 
         return 0;

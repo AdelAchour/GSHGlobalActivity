@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/titreTV"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -62,7 +63,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/basse" />
+        android:src="@drawable/ic_battery_75_green_30dp" />
 
 
 </RelativeLayout>
