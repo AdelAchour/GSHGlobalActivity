@@ -4,19 +4,15 @@ public class TicketModel {
     String titreTicket;
     String slaTicket;
     String DateTicket;
-
     String UrgenceTicket;
-
     boolean ticketEnRetard;
-
     String TempsRestantTicket;
     String idTicket;
     String Statut;
     String TempsResolution;
-
-
     String TempsRetard;
     String description;
+    String demandeurID;
 
     public TicketModel(String titreTicket, String slaTicket, String dateTicket, String tempsRestantTicket, String idticket, String statut) {
         this.titreTicket = titreTicket;
@@ -87,5 +83,13 @@ public class TicketModel {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDemandeurID(String demandeurID) {
+        this.demandeurID = demandeurID;
+    }
+
+    public String getDemandeurID() {
+        return demandeurID;
     }
 }

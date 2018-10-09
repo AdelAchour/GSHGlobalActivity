@@ -94,10 +94,16 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 pourcentage75 = calculRebours(Math.round(HoursToMS(SLA)*0.75));
 
 
+                /*Log.d("25% "+Nom, ""+pourcentage25);
+                Log.d("50% "+Nom, ""+pourcentage50);
+                Log.d("75% "+Nom, ""+pourcentage75);
+
+                Log.d("TimeLeft "+Nom, ""+timeLeftText);*/
+
                 if (timeLeftText.equals(pourcentage25)){
                     int idNotif = Integer.valueOf(idTicket) + 000000001 ;
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.drawable.ic_battery_25_red_30dp);
+                            R.drawable.haute2);
 
                     NotifyUser("Urgence haute", ""+Nom+" : 75% du SLA viennent de s'écrouler", bitmap, idNotif);
 
@@ -106,7 +112,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 if (timeLeftText.equals(pourcentage50)){
 
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.drawable.ic_battery_50_yellow_30dp);
+                            R.drawable.moyenne2);
                     int idNotif = Integer.valueOf(idTicket) + 000000002 ;
 
                     NotifyUser("Urgence moyenne", ""+Nom+" : 50% du SLA viennent de s'écrouler", bitmap, idNotif);
@@ -116,7 +122,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 if (timeLeftText.equals(pourcentage75)){
 
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
-                            R.drawable.ic_battery_75_green_30dp);
+                            R.drawable.basse2);
                     int idNotif = Integer.valueOf(idTicket) + 000000003 ;
 
                     NotifyUser("Urgence faible", ""+Nom+" : 25% du SLA viennent de s'écrouler", bitmap, idNotif);

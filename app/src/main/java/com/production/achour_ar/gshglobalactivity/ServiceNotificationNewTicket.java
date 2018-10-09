@@ -86,7 +86,7 @@ public class ServiceNotificationNewTicket extends IntentService {
                             @Override
                             public void run() {
                                 while (ServiceIsRunning) {
-                                    System.out.println("Another new ticket notif test...");
+                                    System.out.println("Another new ticket notif test ("+idUser+")...");
                                     CheckNewTicket();
                                     try { Thread.sleep(25000); }
                                     catch (Exception ex) { ex.printStackTrace(); }

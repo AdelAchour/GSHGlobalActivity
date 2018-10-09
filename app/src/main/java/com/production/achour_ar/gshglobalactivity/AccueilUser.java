@@ -86,7 +86,7 @@ public class AccueilUser extends AppCompatActivity {
             intent.putExtra("session",session_token);
             // start the services
             startService(intent);
-            System.out.println("Service started");
+            System.out.println("Service started with id = "+idUser);
         }
 
 
@@ -349,6 +349,9 @@ public class AccueilUser extends AppCompatActivity {
         queue.add(getRequest);
 
         ServiceNotificationNewTicket.ServiceIsRunning = false;
+        Intent intent = new Intent(AccueilUser.this, ServiceNotificationNewTicket.class);
+        // stop the services
+        stopService(intent);
         System.out.println("Service stopped");
 
     }

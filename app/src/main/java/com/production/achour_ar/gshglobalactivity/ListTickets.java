@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.TabLayout;
@@ -84,7 +85,10 @@ public class ListTickets extends Fragment {
 
     ProgressDialog pd;
     ProgressDialog pdChangement;
-    private String newContent;
+    private String now;
+    private String emailDemandeur;
+    private String prenomDemandeur;
+    private String nomDemandeur;
 
     public ListTickets() {
         handlerticket = new HandlerTicket();
@@ -269,29 +273,26 @@ public class ListTickets extends Fragment {
                                 } catch (JSONException e) {
                                     Log.e("Nb of data: "+Jdata.length()+" || "+"Error JSONArray at "+i+" : ", e.getMessage());
                                 }
-                                // ------------------------
 
+                                /* ---------  Creating a TicketModel object  --------- */
 
+                                TicketModel ticket = new TicketModel(titreTicket, slaTicket, dateDebutTicket,
+                                        calculTempsRestant(dateEchanceTicket), idTicket, statutTicket);
 
-                                /* Remplissage du tableau des tickets pour le row item */
-                                ticketTab[i][0] = titreTicket;
-                                ticketTab[i][1] = slaTicket;
-                                ticketTab[i][2] = dateDebutTicket;
-                                ticketTab[i][3] = urgenceText(urgenceTicket);
-                                ticketTab[i][4] = calculTempsRestant(dateEchanceTicket);
-                                ticketTab[i][5] = String.valueOf(ticketEnretard);
-                                ticketTab[i][6] = statutTicket;
-                                ticketTab[i][7] = idTicket;
-                                ticketTab[i][8] = descriptionTicket;
+                                ticket.setUrgenceTicket(urgenceText(urgenceTicket));
+                                ticket.setTicketEnRetard(Boolean.parseBoolean(String.valueOf(ticketEnretard)));
+                                ticket.setDescription(descriptionTicket);
+                                ticket.setDemandeurID(demandeurTicket);
 
-                                // -----------------------------
+                                TicketModels.add(ticket);
+
+                                /* ---------  Creating a TicketModel object  --------- */
 
                             }
 
-
                             //triTableauTicketParUrgence(ticketTab);
                             //AfficheTab(ticketTab);
-                            addModelsFromTab(ticketTab);
+
 
                             //System.out.println("Je charge la listview");
                             if (getActivity() != null){
@@ -368,7 +369,8 @@ public class ListTickets extends Fragment {
                                                     break;
                                                 case "Mettre le ticket en résolu":
                                                     pdChangement.show();
-                                                    TicketEnResoluHTTP(TicketModel.getIdTicket(), TicketModel.getDescription());
+                                                    TicketEnResoluHTTP(TicketModel.getIdTicket(), TicketModel.getDescription(),
+                                                                       TicketModel.getDemandeurID());
                                                     break;
                                             }
                                             //Toast.makeText(getActivity(), TicketModel.getTitreTicket(), Toast.LENGTH_SHORT).show();
@@ -487,7 +489,7 @@ public class ListTickets extends Fragment {
     }
 
 
-    private void TicketEnResoluHTTP(String idTicket, final String descriptionTicket) {
+    private void TicketEnResoluHTTP(String idTicket, final String descriptionTicket, String demandeurID) {
         String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, url, null,
@@ -520,7 +522,7 @@ public class ListTickets extends Fragment {
             @Override
             public byte[] getBody() {
 
-                String now = getNowTime();
+                now = getNowTime();
 
                 //String a = "Salut,\\n\\nMerci de vérifier la connexion quant à l'ERP RH à St-Remy\\n\\nMerci";
 
@@ -546,6 +548,70 @@ public class ListTickets extends Fragment {
 
         // Add JsonArrayRequest to the RequestQueue
         queue.add(jsonArrayRequest);
+
+        SendEmailResolu(now, demandeurID);
+
+    }
+
+    private void SendEmailResolu(final String now, String demandeurID) {
+        //Récupération des informations du demandeur
+        String urlDemandeur = FirstEverActivity.GLPI_URL+"search/User";
+
+        List<KeyValuePair> paramsDemandeur = new ArrayList<>();
+        paramsDemandeur.add(new KeyValuePair("criteria[0][field]","2"));
+        paramsDemandeur.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+        paramsDemandeur.add(new KeyValuePair("criteria[0][value]",demandeurID));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[0]","9"));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[1]","34"));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[2]","5"));
+
+        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlDemandeur, paramsDemandeur), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("dans response demandeur");
+                        try {
+                            JSONArray Jdata = response.getJSONArray("data");
+                            try {
+                                JSONObject userInfo = Jdata.getJSONObject(0);
+                                // Récupération des données du demandeur
+                                emailDemandeur = userInfo.getString("5");
+                                prenomDemandeur = userInfo.getString("9");
+                                nomDemandeur = userInfo.getString("34");
+
+                            } catch (JSONException e) {
+                                Log.e("Error JSONArray : ", e.getMessage());
+                            }
+                        } catch (JSONException e) { e.printStackTrace(); }
+
+                        //SendEmail to demandeur
+                        String subject = "Ticket résolu";
+                        String content = prenomDemandeur+",\n\nVotre ticket a été résolu le "+now;
+                        EmailModel emailModel = new EmailModel("helpdesk-mobile@groupe-hasnaoui.com", emailDemandeur, subject, content);
+                        emailModel.sendMessage();
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //progressBar.setVisibility(View.GONE);
+                        Log.e("Error.Response", error.toString());
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("Session-Token",session_token);
+                return params;
+            }
+        };
+
+        queue.add(getRequestDemandeur);
     }
 
 
@@ -688,22 +754,6 @@ public class ListTickets extends Fragment {
         return dateDebutMS;
     }
 
-    private void addModelsFromTab(String[][] ticketTab) {
-        for (int i = 0; i < ticketTab.length; i++){
-
-                TicketModel ticket = new TicketModel(ticketTab[i][0], ticketTab[i][1], ticketTab[i][2], ticketTab[i][4], ticketTab[i][7], ticketTab[i][6]);
-                ticket.setUrgenceTicket(ticketTab[i][3]);
-                ticket.setTicketEnRetard(Boolean.parseBoolean(ticketTab[i][5]));
-                ticket.setDescription(ticketTab[i][8]);
-                //ticket.setTempsRestantTicket(ticketTab[i][4]);
-
-                TicketModels.add(ticket);
-
-            // if ((!ticketTab[i][6].equals("6"))&&(!ticketTab[i][6].equals("5"))) {
-            // }
-
-        }
-    }
 
     private void AfficheTab(String[][] ticketTab) {
         System.out.println("\n --- Tableau de ticket --- \n");
