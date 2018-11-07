@@ -28,9 +28,9 @@ public class Setting extends AppCompatActivity {
         actionBar.setTitle("Paramètres");
         actionBar.setHomeButtonEnabled(true);
 
-        rangeTicketET = (EditText)findViewById(R.id.rangeticketmax);
-        timeActualisationET = (EditText)findViewById(R.id.timeactualisation);
-        btnSave = (Button) findViewById(R.id.buttonSaveSetting);
+        rangeTicketET = findViewById(R.id.rangeticketmax);
+        timeActualisationET = findViewById(R.id.timeactualisation);
+        btnSave = findViewById(R.id.buttonSaveSetting);
 
         app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
         // Get the value for the run counter

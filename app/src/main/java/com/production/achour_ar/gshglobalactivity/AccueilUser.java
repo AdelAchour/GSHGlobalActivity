@@ -49,8 +49,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.production.achour_ar.gshglobalactivity.FirstEverActivity.App_Token;
-import static com.production.achour_ar.gshglobalactivity.FirstEverActivity.GLPI_URL;
+import static com.production.achour_ar.gshglobalactivity.Constants.App_Token;
+import static com.production.achour_ar.gshglobalactivity.Constants.GLPI_URL;
 
 public class AccueilUser extends AppCompatActivity {
 
@@ -220,7 +220,7 @@ public class AccueilUser extends AppCompatActivity {
     }
 
     private void getTicketsByTechnicien(final String idUser) {
-        String url = FirstEverActivity.GLPI_URL+"search/Ticket";
+        String url = Constants.GLPI_URL+"search/Ticket";
 
         List<KeyValuePair> params = new ArrayList<>();
             params.add(new KeyValuePair("criteria[0][field]","5"));
@@ -262,7 +262,7 @@ public class AccueilUser extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }
@@ -340,7 +340,7 @@ public class AccueilUser extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }

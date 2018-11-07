@@ -20,7 +20,7 @@ public class DialogMotifAttente {
     EditText txt;
     TextView listeMotif;
 
-    public void showDialog(final Activity activity, final String idTicket, final String description){
+    public void showDialog(final Activity activity, final String idTicket, final String description, final String demandeurID, final String titreTicket){
         mActivity = activity;
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -106,6 +106,8 @@ public class DialogMotifAttente {
                     bundle.putString("motif",motif);
                     bundle.putString("id",idTicket);
                     bundle.putString("description",description);
+                    bundle.putString("demandeur",demandeurID);
+                    bundle.putString("titre",titreTicket);
                     Message msg = new Message();
                     msg.what = 6;
                     msg.setData(bundle);

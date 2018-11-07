@@ -102,7 +102,7 @@ public class SearchTicket extends AppCompatActivity {
     }
 
     private void SearchThenPolulate(String title) {
-        String url = FirstEverActivity.GLPI_URL+"search/Ticket";
+        String url = Constants.GLPI_URL+"search/Ticket";
 
         List<KeyValuePair> params = new ArrayList<>();
         params.add(new KeyValuePair("criteria[0][field]","5"));
@@ -209,7 +209,7 @@ public class SearchTicket extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }

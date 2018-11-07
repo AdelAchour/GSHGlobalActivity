@@ -133,7 +133,7 @@ public class InfoTicketClos extends AppCompatActivity {
         paramsTicket.add(new KeyValuePair("forcedisplay[13]","66"));
 
 
-        String urlTicket = FirstEverActivity.GLPI_URL+"search/Ticket";
+        String urlTicket = Constants.GLPI_URL+"search/Ticket";
 
         final JsonObjectRequest getRequestTicket = new JsonObjectRequest(Request.Method.GET, generateUrl(urlTicket, paramsTicket), null,
                 new Response.Listener<JSONObject>()
@@ -278,7 +278,7 @@ public class InfoTicketClos extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }
@@ -289,7 +289,7 @@ public class InfoTicketClos extends AppCompatActivity {
 
     private void getAllObservateursInfo(String[] observateur) {
         //Récupération des informations de tous les observateurs
-        String urlObs = FirstEverActivity.GLPI_URL+"search/User";
+        String urlObs = Constants.GLPI_URL+"search/User";
 
         System.out.println("taille obs = "+observateur.length);
 
@@ -373,7 +373,7 @@ public class InfoTicketClos extends AppCompatActivity {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     HashMap<String, String> params = new HashMap<String, String>();
-                    params.put("App-Token",FirstEverActivity.App_Token);
+                    params.put("App-Token",Constants.App_Token);
                     params.put("Session-Token",session_token);
                     return params;
                 }
@@ -396,7 +396,7 @@ public class InfoTicketClos extends AppCompatActivity {
 
     private void getObservateurInfo(final String observateur) {
         //Récupération des informations de l'observateur
-        String urlObs = FirstEverActivity.GLPI_URL+"search/User";
+        String urlObs = Constants.GLPI_URL+"search/User";
 
         List<KeyValuePair> paramsObs = new ArrayList<>();
         paramsObs.add(new KeyValuePair("criteria[0][field]","2"));
@@ -468,7 +468,7 @@ public class InfoTicketClos extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }
@@ -574,7 +574,7 @@ public class InfoTicketClos extends AppCompatActivity {
 
     private void getDemandeurInfo(String iddemandeur) {
         //Récupération des informations du demandeur
-        String urlDemandeur = FirstEverActivity.GLPI_URL+"search/User";
+        String urlDemandeur = Constants.GLPI_URL+"search/User";
 
         List<KeyValuePair> paramsDemandeur = new ArrayList<>();
         paramsDemandeur.add(new KeyValuePair("criteria[0][field]","2"));
@@ -643,7 +643,7 @@ public class InfoTicketClos extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }

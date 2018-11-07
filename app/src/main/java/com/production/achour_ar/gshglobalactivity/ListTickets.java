@@ -34,10 +34,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -48,6 +52,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,37 +63,33 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.production.achour_ar.gshglobalactivity.Constants.GLPI_URL;
+
 public class ListTickets extends Fragment {
 
-    ArrayList<TicketModel> TicketModels;
-    ListView listView;
+    private ArrayList<TicketModel> TicketModels;
+    private ListView listView;
     private static TicketAdapter adapter;
-    String session_token, nameUser, idUser, firstnameUser;
-    RequestQueue queue;
-    String motifAttente;
-    String titreTicket, slaTicket, urgenceTicket, idTicket, demandeurTicket,
+    private String session_token, nameUser, idUser, firstnameUser;
+    private RequestQueue queue;
+    private String motifAttente;
+    private String titreTicket, slaTicket, urgenceTicket, idTicket, demandeurTicket,
             categorieTicket, etatTicket, dateDebutTicket, statutTicket,
             dateEchanceTicket, dateClotureTicket, dateResolutionTicket, descriptionTicket, lieuTicket;
-
-    String nbCount;
-    int range;
-
+    private String nbCount;
+    private int range;
     public static Handler handlerticket;
-
     boolean ticketEnretard;
-
     public int nbTicketTab = 9;
-
     public String[][] ticketTab;
-
-    SwipeRefreshLayout swipeLayout;
-
-    ProgressDialog pd;
-    ProgressDialog pdChangement;
+    private SwipeRefreshLayout swipeLayout;
+    private ProgressDialog pd;
+    private ProgressDialog pdChangement;
     private String now;
     private String emailDemandeur;
     private String prenomDemandeur;
     private String nomDemandeur;
+    private String nowAttente;
 
     public ListTickets() {
         handlerticket = new HandlerTicket();
@@ -98,20 +99,32 @@ public class ListTickets extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
-        pd = new ProgressDialog(getActivity());
+
+        initView(view);
+        SetupPDs();
+        setListener();
+        getArgmts();
+        registerForContextMenu(listView);
+        getTicketsHTTP();
+
+        return view;
+    }
+
+    private void SetupPDs() {
         pd.setTitle("Tickets en cours");
         pd.setMessage("Chargement des tickets...");
-        //pd.show();
-
-        pdChangement = new ProgressDialog(getActivity());
         pdChangement.setMessage("Changement de l'état...");
+    }
 
-        handlerticket = new HandlerTicket();
+    private void getArgmts() {
+        session_token = getArguments().getString("session");
+        nameUser = getArguments().getString("nom");
+        firstnameUser = getArguments().getString("prenom");
+        idUser = getArguments().getString("id");
+        range = getArguments().getInt("range");
+    }
 
-        swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_container);
-        swipeLayout.setColorScheme(android.R.color.holo_blue_dark,
-                android.R.color.holo_green_light);
-
+    private void setListener() {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -124,57 +137,23 @@ public class ListTickets extends Fragment {
                 }
             }
         });
+    }
 
+    private void initView(View view) {
+        swipeLayout = view.findViewById(R.id.swipe_container);
+        swipeLayout.setColorScheme(android.R.color.holo_blue_dark,
+                android.R.color.holo_green_light);
 
-        queue = Volley.newRequestQueue(getActivity());
-
-        session_token = getArguments().getString("session");
-        nameUser = getArguments().getString("nom");
-        firstnameUser = getArguments().getString("prenom");
-        idUser = getArguments().getString("id");
-        range = getArguments().getInt("range");
-
-        listView = (ListView) view.findViewById(R.id.list);
-        registerForContextMenu(listView);
-
-
+        handlerticket = new HandlerTicket();
+        pdChangement = new ProgressDialog(getActivity());
+        pd = new ProgressDialog(getActivity());
         TicketModels = new ArrayList<>();
-
-
-
-        getTicketsHTTP();
-
-        /*final Handler handlerRefresh = new Handler();
-
-        Runnable refresh = new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), "Actualisation", Toast.LENGTH_SHORT).show();
-                adapter.clear();
-                getTicketsHTTP();
-                handlerRefresh.postDelayed(this, 120 * 1000);
-            }
-        };
-
-        handlerRefresh.postDelayed(refresh, 120 * 1000);*/
-
-
-       /* ImageView refreshIcon ;
-        refreshIcon = (ImageView)view.findViewById(R.id.refreshIconID);
-        refreshIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                adapter.clear();
-                getTicketsHTTP();
-            }
-        });*/
-
-
-        return view;
+        queue = Volley.newRequestQueue(getActivity());
+        listView = view.findViewById(R.id.list);
     }
 
     private void getTicketsHTTP() {
-        String url = FirstEverActivity.GLPI_URL+"search/Ticket";
+        String url = Constants.GLPI_URL+"search/Ticket";
 
         int maxRange = range-1;
         List<KeyValuePair> params = new ArrayList<>();
@@ -283,6 +262,7 @@ public class ListTickets extends Fragment {
                                 ticket.setTicketEnRetard(Boolean.parseBoolean(String.valueOf(ticketEnretard)));
                                 ticket.setDescription(descriptionTicket);
                                 ticket.setDemandeurID(demandeurTicket);
+                                //ticket.setObserverID(observerTicket);
 
                                 TicketModels.add(ticket);
 
@@ -365,12 +345,13 @@ public class ListTickets extends Fragment {
                                             switch (strName){
                                                 case "Mettre le ticket en attente":
                                                     DialogMotifAttente alert = new DialogMotifAttente();
-                                                    alert.showDialog(getActivity(), TicketModel.getIdTicket(), TicketModel.getDescription());
+                                                    alert.showDialog(getActivity(), TicketModel.getIdTicket(), TicketModel.getDescription(),
+                                                            TicketModel.getDemandeurID(), TicketModel.getTitreTicket());
                                                     break;
                                                 case "Mettre le ticket en résolu":
                                                     pdChangement.show();
                                                     TicketEnResoluHTTP(TicketModel.getIdTicket(), TicketModel.getDescription(),
-                                                                       TicketModel.getDemandeurID());
+                                                                       TicketModel.getDemandeurID(), TicketModel.getTitreTicket());
                                                     break;
                                             }
                                             //Toast.makeText(getActivity(), TicketModel.getTitreTicket(), Toast.LENGTH_SHORT).show();
@@ -407,7 +388,7 @@ public class ListTickets extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }
@@ -419,8 +400,8 @@ public class ListTickets extends Fragment {
 
     }
 
-    private void TicketEnAttenteHTTP(String idTicket, final String descriptionTicket, final String motifAttente) {
-        String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
+    private void TicketEnAttenteHTTP(String idTicket, final String descriptionTicket, final String motifAttente, final String demandeurTicket, final String titreTicket, final String attente) {
+        String url = Constants.GLPI_URL+"Ticket/"+idTicket;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, url, null,
                 new Response.Listener<JSONArray>() {
@@ -428,6 +409,8 @@ public class ListTickets extends Fragment {
                     public void onResponse(JSONArray response) {
                         // Do something with response
                         handlerticket.sendEmptyMessage(5);
+                        getDemandeurInfoThenSendEmailAttente(now, demandeurTicket, titreTicket, attente);
+                        //getObserverInfoThenSendEmailAttente(now, observerTicket, titreTicket, attente);
                         Toast.makeText(getActivity(), "Ticket mis en attente !", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -445,7 +428,7 @@ public class ListTickets extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 params.put("Content-Type","application/json");
                 return params;
@@ -453,7 +436,7 @@ public class ListTickets extends Fragment {
 
             @Override
             public byte[] getBody() {
-                String now = getNowTime();
+                nowAttente = getNowTime();
 
                 //String a = "Objet: CRM CONNEXION\\r\\nDate: 16.07.2018 09:46\\r\\nDe: \\\"ilyes TAIBI\\\" \\r\\nÀ: \\\"Sedik DRIFF\\\" \\r\\n\\r\\nBonjour,\\r\\n\\r\\nConcernant CRM, le problème persiste toujours que ce soit en réseau\\r\\nlocal ou bien par VPN, impossible de se connecter au serveur.\\r\\n\\r\\nCi-joint les captures écrans.\\r\\n\\r\\nCordialement\\r\\n\\r\\nILYES TAIBI\\r\\n\\r\\nIngénieur IT\\r\\n\\r\\nMob : +213 (0) 560-966-134\\r\\n\\r\\nE-mail : ilyes.taibi@grupopuma-dz.com";
 
@@ -480,6 +463,134 @@ public class ListTickets extends Fragment {
         queue.add(jsonArrayRequest);
     }
 
+    private void getDemandeurInfoThenSendEmailAttente(final String now, final String demandeurTicket, final String titreTicket, final String attente) {
+        //Récupération des informations du demandeur
+        String urlDemandeur = Constants.GLPI_URL+"search/User";
+
+        List<KeyValuePair> paramsDemandeur = new ArrayList<>();
+        paramsDemandeur.add(new KeyValuePair("criteria[0][field]","2"));
+        paramsDemandeur.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+        paramsDemandeur.add(new KeyValuePair("criteria[0][value]",demandeurTicket));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[0]","9"));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[1]","34"));
+        paramsDemandeur.add(new KeyValuePair("forcedisplay[2]","5"));
+
+        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlDemandeur, paramsDemandeur), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("dans response demandeur");
+                        try {
+                            JSONArray Jdata = response.getJSONArray("data");
+                            try {
+                                JSONObject userInfo = Jdata.getJSONObject(0);
+                                // Récupération des données du demandeur
+                                emailDemandeur = userInfo.getString("5");
+                                prenomDemandeur = userInfo.getString("9");
+                                nomDemandeur = userInfo.getString("34");
+
+                            } catch (JSONException e) {
+                                Log.e("Error JSONArray : ", e.getMessage());
+                            }
+                        } catch (JSONException e) { e.printStackTrace(); }
+
+                        SendEmailAttente(now, prenomDemandeur,emailDemandeur, titreTicket, attente);
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //progressBar.setVisibility(View.GONE);
+                        Log.e("Error.Response", error.toString());
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",Constants.App_Token);
+                params.put("Session-Token",session_token);
+                return params;
+            }
+        };
+
+        queue.add(getRequestDemandeur);
+    }
+
+    private void SendEmailAttente(final String now, final String prenomDemandeur, final String emailDemandeur, final String titreTicket, final String attente) {
+        String url = "http://10.10.10.18:8180/emailrestapi/mailapi/SendEmail/send";
+
+        //final String content = prenomDemandeur+",\\n\\nVotre ticket "+titreTicket+" a été résolu à "+now+".\\n\\nMerci,\\n\\nL'équipe Helpdesk mobile.";
+        final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomDemandeur+",<br><br>" +
+                "Votre ticket \""+titreTicket+"\" a été mis en attente le "+nowAttente+".<br><br>" +
+                "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br>" +
+                "Motif de mise en attente : "+attente+"." +
+                "<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
+                "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
+
+        List<KeyValuePair> paramsEmail = new ArrayList<>();
+        paramsEmail.add(new KeyValuePair("from","helpdesk-mobile@groupe-hasnaoui.com"));
+        paramsEmail.add(new KeyValuePair("to",emailDemandeur)); //emailDemandeur
+        paramsEmail.add(new KeyValuePair("subject","Ticket en attente"));
+        paramsEmail.add(new KeyValuePair("content",content));
+
+        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, generateUrl(url, paramsEmail), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            String state = response.getString("state");
+                            String from = response.getString("from");
+                            String to = response.getString("to");
+                            String content = response.getString("content");
+                            Log.d("RESPONSE FROM", "from = "+from);
+                            Log.d("RESPONSE TO", "to = "+to);
+                            Log.d("RESPONSE STATE", "state = "+state);
+                            Log.d("RESPONSE CONTENT", "content = "+content);
+                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
+
+                            try {
+                                Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e("Toast Email", "Impossible de notifier");
+                            }
+
+                        } catch (JSONException e) { e.printStackTrace(); }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error.Response Email", error.toString());
+                        //Toast.makeText(getActivity(), "Envoi de l'email au demandeur impossible", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("Content-type","application/json");
+                return params;
+            }
+        };
+
+        getRequestEmail.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
+        queue.add(getRequestEmail);
+    }
+
     private String getNowTime() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date();
@@ -489,8 +600,8 @@ public class ListTickets extends Fragment {
     }
 
 
-    private void TicketEnResoluHTTP(String idTicket, final String descriptionTicket, String demandeurID) {
-        String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
+    private void TicketEnResoluHTTP(String idTicket, final String descriptionTicket, final String demandeurID, final String titreTicket) {
+        String url = Constants.GLPI_URL+"Ticket/"+idTicket;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, url, null,
                 new Response.Listener<JSONArray>() {
@@ -498,6 +609,7 @@ public class ListTickets extends Fragment {
                     public void onResponse(JSONArray response) {
                         // Do something with response
                         handlerticket.sendEmptyMessage(5);
+                        getDemandeurInfoThenSendEmail(now, demandeurID, titreTicket);
                         Toast.makeText(getActivity(), "Ticket mis en résolu !", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -514,7 +626,7 @@ public class ListTickets extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }
@@ -539,7 +651,7 @@ public class ListTickets extends Fragment {
                 String nouv = b + "\\r\\n\\r\\n\\r\\n " + motif ;
 
 
-                String Json_Payload = "{\"input\":{\"status\": \"5\",\"content\": \""+nouv+"\"}}"; // put your json
+                    String Json_Payload = "{\"input\":{\"status\": \"5\",\"content\": \""+nouv+"\"}}"; // put your json
                 //String Json_Payload = "{\"input\":{\"status\": \"5\",\"content\": \""+b+"\"}}"; // put your json
                 return Json_Payload.getBytes();
 
@@ -549,13 +661,12 @@ public class ListTickets extends Fragment {
         // Add JsonArrayRequest to the RequestQueue
         queue.add(jsonArrayRequest);
 
-        SendEmailResolu(now, demandeurID);
 
     }
 
-    private void SendEmailResolu(final String now, String demandeurID) {
+    private void getDemandeurInfoThenSendEmail(final String now, final String demandeurID, final String titreTicket) {
         //Récupération des informations du demandeur
-        String urlDemandeur = FirstEverActivity.GLPI_URL+"search/User";
+        String urlDemandeur = Constants.GLPI_URL+"search/User";
 
         List<KeyValuePair> paramsDemandeur = new ArrayList<>();
         paramsDemandeur.add(new KeyValuePair("criteria[0][field]","2"));
@@ -585,11 +696,7 @@ public class ListTickets extends Fragment {
                             }
                         } catch (JSONException e) { e.printStackTrace(); }
 
-                        //SendEmail to demandeur
-                        String subject = "Ticket résolu";
-                        String content = prenomDemandeur+",\n\nVotre ticket a été résolu le "+now;
-                        EmailModel emailModel = new EmailModel("helpdesk-mobile@groupe-hasnaoui.com", emailDemandeur, subject, content);
-                        emailModel.sendMessage();
+                        SendEmailResolu(now, prenomDemandeur,emailDemandeur, titreTicket);
 
                     }
                 },
@@ -605,7 +712,7 @@ public class ListTickets extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }
@@ -615,16 +722,75 @@ public class ListTickets extends Fragment {
     }
 
 
-    public void notifyUser(String Nom, String timeLeftText, Context context) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity(),  "")
-                .setSmallIcon(R.drawable.refreshicon)
-                .setContentTitle("Urgent")
-                .setContentText("Ticket "+Nom+" expire dans : "+timeLeftText)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-        notificationManager.notify(0, mBuilder.build());
+    private void SendEmailResolu(String now, String prenomDemandeur, String emailDemandeur, String titreTicket) {
+        String url = "http://10.10.10.18:8180/emailrestapi/mailapi/SendEmail/send";
+
+        //final String content = prenomDemandeur+",\\n\\nVotre ticket "+titreTicket+" a été résolu à "+now+".\\n\\nMerci,\\n\\nL'équipe Helpdesk mobile.";
+        final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomDemandeur+",<br><br>" +
+                "Votre ticket \""+titreTicket+"\" a été résolu le "+now+".<br><br>" +
+                "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
+                "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
+
+        List<KeyValuePair> paramsEmail = new ArrayList<>();
+        paramsEmail.add(new KeyValuePair("from","helpdesk-mobile@groupe-hasnaoui.com"));
+        paramsEmail.add(new KeyValuePair("to",emailDemandeur)); //emailDemandeur
+        paramsEmail.add(new KeyValuePair("subject","Ticket résolu"));
+        paramsEmail.add(new KeyValuePair("content",content));
+
+        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, generateUrl(url, paramsEmail), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            String state = response.getString("state");
+                            String from = response.getString("from");
+                            String to = response.getString("to");
+                            String content = response.getString("content");
+                            Log.d("RESPONSE FROM", "from = "+from);
+                            Log.d("RESPONSE TO", "to = "+to);
+                            Log.d("RESPONSE STATE", "state = "+state);
+                            Log.d("RESPONSE CONTENT", "content = "+content);
+                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
+                            try {
+                                Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e("Toast Email", "Impossible de notifier");
+                            }
+
+                        } catch (JSONException e) { e.printStackTrace(); }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error.Response Email", error.toString());
+                        //Toast.makeText(getActivity(), "Envoi de l'email au demandeur impossible", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("Content-type","application/json");
+                return params;
+            }
+        };
+
+        getRequestEmail.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
+        queue.add(getRequestEmail);
     }
+
 
     private boolean getBooleanFromSt(String string) {
         boolean bool = false;
@@ -996,8 +1162,10 @@ public class ListTickets extends Fragment {
                     String motifAttente = bundle.getString("motif");
                     String id = bundle.getString("id");
                     String desc = bundle.getString("description");
+                    String demandeur = bundle.getString("demandeur");
+                    String titre = bundle.getString("titre");
                     pdChangement.show();
-                    TicketEnAttenteHTTP(id, desc, motifAttente);
+                    TicketEnAttenteHTTP(id, desc, motifAttente, demandeur, titre, motifAttente);
                     break;
 
             }

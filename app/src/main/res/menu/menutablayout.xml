@@ -13,9 +13,22 @@
         android:icon="@drawable/ajouterticket"
         />
 
+    <item  android:id="@+id/itemGoHome"
+        android:title="@string/retourAccueil"
+        android:icon="@drawable/ic_home_white_24dp"
+        app:showAsAction="always"
+        />
+
+    <item  android:id="@+id/itemUpdateTicket"
+        android:title="@string/actualiserTicket"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        app:showAsAction="always"
+        />
+
     <item  android:id="@+id/itemRechercheTicket"
         android:title="@string/searchticket"
-        android:icon="@drawable/chercherticket"
+        android:icon="@drawable/ic_search_white_24dp"
+        app:showAsAction="always"
         />
 
 

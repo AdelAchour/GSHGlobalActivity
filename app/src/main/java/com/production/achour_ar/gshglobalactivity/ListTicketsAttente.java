@@ -121,7 +121,7 @@ public class ListTicketsAttente extends Fragment {
 
 
     private void getTicketsHTTP() {
-        String url = FirstEverActivity.GLPI_URL + "search/Ticket";
+        String url = Constants.GLPI_URL + "search/Ticket";
 
         int maxRange = range - 1;
         List<KeyValuePair> params = new ArrayList<>();
@@ -268,7 +268,7 @@ public class ListTicketsAttente extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token", FirstEverActivity.App_Token);
+                params.put("App-Token", Constants.App_Token);
                 params.put("Session-Token", session_token);
                 return params;
             }

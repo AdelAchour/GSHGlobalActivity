@@ -164,7 +164,7 @@ public class StatsTickets extends AppCompatActivity {
         BarOuvertClos.clearChart();
         BarParEtat.clearChart();
 
-        String url = FirstEverActivity.GLPI_URL+"search/Ticket";
+        String url = Constants.GLPI_URL+"search/Ticket";
 
         List<KeyValuePair> params = new ArrayList<>();
         //TECHNICIEN = IDUSER
@@ -233,6 +233,7 @@ public class StatsTickets extends AppCompatActivity {
                                 //ticketTab[i][1] = slaTicket; //temps de retard
 
                                 if (statutTicket.equals("6")){
+                                    //Here, i'm gonna create a list of ticket_clos_date object (with date debut & date cloture variables)
                                     listDateDebut.add(dateDebutTicket);
                                     listDateCloture.add(dateClotureTicket);
 
@@ -280,7 +281,7 @@ public class StatsTickets extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }
@@ -430,7 +431,7 @@ public class StatsTickets extends AppCompatActivity {
                     String dateDebut, dateCloture;
                     dateDebut = listDateDebut.get(i);
                     dateCloture = listDateCloture.get(i);
-                    listTempsResolution.add(calculTempsResolution(dateCloture,dateDebut));
+                    listTempsResolution.add(calculTempsResolution(dateCloture,dateDebut)); //faut faire sauter ça en API, cette fct...
                 }
                 long somme = 0;
                 for (int j = 0; j < listTempsResolution.size(); j++){

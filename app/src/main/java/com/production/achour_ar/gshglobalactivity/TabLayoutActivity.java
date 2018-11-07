@@ -23,127 +23,49 @@ import android.widget.ImageView;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TabLayoutActivity extends AppCompatActivity {
+public class TabLayoutActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    ViewPagerAdapter viewPagerAdapter;
-    String session_token, nameUser, idUser, firstnameUser;
-    int range, timeLoad;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private ViewPagerAdapter viewPagerAdapter;
+    private String session_token, nameUser, idUser, firstnameUser;
+    private int range, timeLoad;
     public static Handler handler;
-    ProgressDialog pd;
-    SharedPreferences app_preferences;
-    Timer timer = new Timer();
-
+    private ProgressDialog pd;
+    private SharedPreferences app_preferences;
+    private Timer timer = new Timer();
+    private ImageView homebutton;
+    private ImageView refreshbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_layout);
 
-        pd = new ProgressDialog(TabLayoutActivity.this);
-        pd.setMessage("Chargement des tickets...");
+        initOtherViews();
+        SetupActionBar();
+        initView();
+        SetupPD();
+        getArguments();
+        getPrefs();
+        SetupViewPagerTabLayout();
+        TabSwitchListener();
+        //setListener();
+        LaunchAutoTimerLoad();
+        ShowPD();
 
-        handler = new HandlerTab();
+    }
 
-        new ListTickets();
-        new ListTicketsClos();
-        new ListTicketsResolu();
-        new ListTicketsAttente();
-        new ListTicketBackLog();
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true); //show a caret even if android:parentActivityName is not specified.
-        //actionBar.setDisplayShowHomeEnabled(true); //just controls whether to show the Activity icon/logo or not.
-        //actionBar.setHomeButtonEnabled(true); //show a caret only if android:parentActivityName is specified.
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setTitle("Tickets");
-        //actionBar.setIcon(R.drawable.call); //set the Activity icon/logo
-
-        LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflator.inflate(R.layout.setupactionbar, null);
-
-        actionBar.setCustomView(v);
-
-
-        app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        range = app_preferences.getInt("range", 30);
-        timeLoad = app_preferences.getInt("load", 3);
-
-        Intent i = getIntent();
-        session_token = i.getStringExtra("session");
-        nameUser = i.getStringExtra("nom");
-        firstnameUser = i.getStringExtra("prenom");
-        idUser = i.getStringExtra("id");
-
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        setupViewPager(viewPager);
-
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
-//        LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
-//        for(int j = 0; j < tabStrip.getChildCount(); j++) {
-//            tabStrip.getChildAt(j).setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    return true;
-//                }
-//            });
-//        }
-
+    private void ShowPD() {
         pd.show();
+    }
 
-       /* ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
-        scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-            public void run() {
-                System.out.println("J'actualise chaque 5 secondes");
+    private void setListener() {
+        refreshbutton.setOnClickListener(this);
+        homebutton.setOnClickListener(this);
+    }
 
-                ListTickets.handlerticket.sendEmptyMessage(3);
-                ListTicketsClos.handlerticketClos.sendEmptyMessage(3);
-                ListTicketsResolu.handlerticketResolu.sendEmptyMessage(3);
-                ListTicketsAttente.handlerticketAttente.sendEmptyMessage(3);
-                ListTicketBackLog.handlerticketbackLog.sendEmptyMessage(3);
-
-
-            }
-        }, 0, 5, TimeUnit.SECONDS); */
-
-
-        timer.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                System.out.println("3 sec in the RUN");
-
-                int position = tabLayout.getSelectedTabPosition();
-
-                switch (position){
-                    case 0: //en cours
-                        ListTickets.handlerticket.sendEmptyMessage(3);
-                        break;
-                    case 1: //clos
-                        ListTicketsClos.handlerticketClos.sendEmptyMessage(3);
-                        break;
-                    case 2: //résolu
-                        ListTicketsResolu.handlerticketResolu.sendEmptyMessage(3);
-                        break;
-                    case 3: //en attente
-                        ListTicketsAttente.handlerticketAttente.sendEmptyMessage(3);
-                        break;
-                    case 4: //backlog
-                        ListTicketBackLog.handlerticketbackLog.sendEmptyMessage(3);
-                        break;
-                }
-
-            }
-        }, 10000, timeLoad*60*1000);
-        Log.d("TIME LOAD", ""+timeLoad);
-
-
-
+    private void TabSwitchListener() {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -185,19 +107,14 @@ public class TabLayoutActivity extends AppCompatActivity {
 
             }
         });
+    }
 
-        ImageView homebutton = (ImageView) findViewById(R.id.homeiconID);
-        ImageView refreshbutton = (ImageView) findViewById(R.id.refreshIconID);
-        homebutton.setOnClickListener(new View.OnClickListener() {
+    private void LaunchAutoTimerLoad() {
+        timer.schedule(new TimerTask()
+        {
             @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        refreshbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            public void run()
+            {
                 int position = tabLayout.getSelectedTabPosition();
 
                 switch (position){
@@ -217,9 +134,65 @@ public class TabLayoutActivity extends AppCompatActivity {
                         ListTicketBackLog.handlerticketbackLog.sendEmptyMessage(3);
                         break;
                 }
-            }
-        });
 
+            }
+        }, 10000, timeLoad*60*1000);
+        Log.d("TIME LOAD", ""+timeLoad);
+    }
+
+    private void SetupViewPagerTabLayout() {
+        setupViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void getPrefs() {
+        range = app_preferences.getInt("range", 30);
+        timeLoad = app_preferences.getInt("load", 3);
+    }
+
+    private void getArguments() {
+        Intent i = getIntent();
+        session_token = i.getStringExtra("session");
+        nameUser = i.getStringExtra("nom");
+        firstnameUser = i.getStringExtra("prenom");
+        idUser = i.getStringExtra("id");
+    }
+
+    private void SetupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true); //show a caret even if android:parentActivityName is not specified.
+        actionBar.setTitle("Tickets");
+
+        //actionBar.setDisplayShowHomeEnabled(true); //just controls whether to show the Activity icon/logo or not.
+        //actionBar.setHomeButtonEnabled(true); //show a caret only if android:parentActivityName is specified.
+        //actionBar.setDisplayShowCustomEnabled(true);
+        //actionBar.setDisplayShowTitleEnabled(false);
+        //actionBar.setIcon(R.drawable.call); //set the Activity icon/logo
+        //LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //View v = inflator.inflate(R.layout.setupactionbar, null);
+        //actionBar.setCustomView(v);
+    }
+
+    private void SetupPD() {
+        pd.setMessage("Chargement des tickets...");
+    }
+
+    private void initOtherViews() {
+        new ListTickets();
+        new ListTicketsClos();
+        new ListTicketsResolu();
+        new ListTicketsAttente();
+        new ListTicketBackLog();
+    }
+
+    private void initView() {
+        //homebutton = findViewById(R.id.homeiconID);
+        //refreshbutton = findViewById(R.id.refreshIconID);
+        viewPager = findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.tabs);
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        handler = new HandlerTab();
+        pd = new ProgressDialog(TabLayoutActivity.this);
     }
 
     @Override
@@ -321,6 +294,14 @@ public class TabLayoutActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
 
+            case R.id.itemUpdateTicket:
+                refreshCurrentFragmentsTicket();
+                break;
+
+            case R.id.itemGoHome:
+                finish();
+                break;
+
 
         }
 
@@ -361,6 +342,40 @@ public class TabLayoutActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(listTicketsBackLog, "BackLog");
         viewPager.setAdapter(viewPagerAdapter);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+          /*  case R.id.homeiconID:
+                finish();
+                break;
+            case R.id.refreshIconID:
+                refreshCurrentFragmentsTicket();
+                break;*/
+        }
+    }
+
+    private void refreshCurrentFragmentsTicket() {
+        int position = tabLayout.getSelectedTabPosition();
+
+        switch (position){
+            case 0: //en cours
+                ListTickets.handlerticket.sendEmptyMessage(3);
+                break;
+            case 1: //clos
+                ListTicketsClos.handlerticketClos.sendEmptyMessage(3);
+                break;
+            case 2: //résolu
+                ListTicketsResolu.handlerticketResolu.sendEmptyMessage(3);
+                break;
+            case 3: //en attente
+                ListTicketsAttente.handlerticketAttente.sendEmptyMessage(3);
+                break;
+            case 4: //backlog
+                ListTicketBackLog.handlerticketbackLog.sendEmptyMessage(3);
+                break;
+        }
     }
 
 

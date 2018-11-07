@@ -68,12 +68,12 @@ public class CreationTicket extends AppCompatActivity {
 
 
        //Mapping
-        titreTV = (EditText)findViewById(R.id.titreNewTicket);
-        catTV = (EditText)findViewById(R.id.categorieNewTicket);
-        typeTV = (EditText)findViewById(R.id.typeNewTicket);
-        contentTV = (EditText)findViewById(R.id.descriptionNewTicket);
+        titreTV = findViewById(R.id.titreNewTicket);
+        catTV = findViewById(R.id.categorieNewTicket);
+        typeTV = findViewById(R.id.typeNewTicket);
+        contentTV = findViewById(R.id.descriptionNewTicket);
 
-        createTicketBtn = (Button)findViewById(R.id.createTicketButton);
+        createTicketBtn = findViewById(R.id.createTicketButton);
 
         catTV.setFocusable(false);
         catTV.setClickable(true);
@@ -197,7 +197,7 @@ public class CreationTicket extends AppCompatActivity {
         System.out.println("id: "+idCatRequest);
         System.out.println("content: "+contentTicket);
 
-        String url = FirstEverActivity.GLPI_URL+"Ticket/";
+        String url = Constants.GLPI_URL+"Ticket/";
 
 
         final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, null,
@@ -224,7 +224,7 @@ public class CreationTicket extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }
@@ -249,7 +249,7 @@ public class CreationTicket extends AppCompatActivity {
 
 
     private void PopulateCategorieTicket() {
-        String url = FirstEverActivity.GLPI_URL+"search/ITILCategory";
+        String url = Constants.GLPI_URL+"search/ITILCategory";
 
         int maxRange = 50;
         List<KeyValuePair> params = new ArrayList<>();
@@ -353,7 +353,7 @@ public class CreationTicket extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }

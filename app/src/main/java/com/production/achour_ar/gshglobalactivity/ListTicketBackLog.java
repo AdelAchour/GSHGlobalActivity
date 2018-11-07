@@ -48,31 +48,25 @@ import java.util.regex.Pattern;
 
 public class ListTicketBackLog extends Fragment {
 
-    ArrayList<TicketModel> TicketModels;
-    ListView listView;
+    private ArrayList<TicketModel> TicketModels;
+    private ListView listView;
     private static TicketBackLogAdapter adapter;
-    String session_token, nameUser, idUser, firstnameUser;
-    RequestQueue queue;
-    String motifAttente;
-    String titreTicket, slaTicket, urgenceTicket, idTicket, demandeurTicket,
+    private String session_token, nameUser, idUser, firstnameUser;
+    private RequestQueue queue;
+    private String motifAttente;
+    private String titreTicket, slaTicket, urgenceTicket, idTicket, demandeurTicket,
             categorieTicket, etatTicket, dateDebutTicket, statutTicket,
             dateEchanceTicket, dateClotureTicket, dateResolutionTicket, descriptionTicket, lieuTicket;
 
-    String nbCount;
-    int range;
-
+    private String nbCount;
+    private int range;
     public static Handler handlerticketbackLog;
-
-    boolean ticketEnretard;
-
+    private boolean ticketEnretard;
     public int nbTicketTab = 9;
-
     public String[][] ticketTab;
-
-    SwipeRefreshLayout swipeLayout;
-
-    ProgressDialog pd;
-    ProgressDialog pdChangement;
+    private SwipeRefreshLayout swipeLayout;
+    private ProgressDialog pd;
+    private ProgressDialog pdChangement;
     private String newContent;
 
     public ListTicketBackLog() {
@@ -83,20 +77,27 @@ public class ListTicketBackLog extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_tickets, container, false);
-        pd = new ProgressDialog(getActivity());
-        pd.setTitle("Tickets BACKLOG");
-        pd.setMessage("Chargement des tickets...");
-        //pd.show();
 
-        pdChangement = new ProgressDialog(getActivity());
-        pdChangement.setMessage("Changement de l'état...");
+        initView(view);
+        setupPDs();
+        setupListener();
+        getArgmts();
+        registerForContextMenu(listView);
+        getTicketsHTTP();
 
-        handlerticketbackLog = new HandlerTicketBackLog();
+        return view;
 
-        swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_container);
-        swipeLayout.setColorScheme(android.R.color.holo_blue_dark,
-                android.R.color.holo_green_light);
+    }
 
+    private void getArgmts() {
+        session_token = getArguments().getString("session");
+        nameUser = getArguments().getString("nom");
+        firstnameUser = getArguments().getString("prenom");
+        idUser = getArguments().getString("id");
+        range = getArguments().getInt("range");
+    }
+
+    private void setupListener() {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -109,57 +110,28 @@ public class ListTicketBackLog extends Fragment {
                 }
             }
         });
+    }
 
+    private void setupPDs() {
+        pd.setTitle("Tickets BACKLOG");
+        pd.setMessage("Chargement des tickets...");
+        pdChangement.setMessage("Changement de l'état...");
+    }
 
-        queue = Volley.newRequestQueue(getActivity());
-
-        session_token = getArguments().getString("session");
-        nameUser = getArguments().getString("nom");
-        firstnameUser = getArguments().getString("prenom");
-        idUser = getArguments().getString("id");
-        range = getArguments().getInt("range");
-
-        listView = (ListView) view.findViewById(R.id.list);
-        registerForContextMenu(listView);
-
-
+    private void initView(View view) {
         TicketModels = new ArrayList<>();
-
-
-
-        getTicketsHTTP();
-
-        /*final Handler handlerRefresh = new Handler();
-
-        Runnable refresh = new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), "Actualisation", Toast.LENGTH_SHORT).show();
-                adapter.clear();
-                getTicketsHTTP();
-                handlerRefresh.postDelayed(this, 120 * 1000);
-            }
-        };
-
-        handlerRefresh.postDelayed(refresh, 120 * 1000);*/
-
-
-       /* ImageView refreshIcon ;
-        refreshIcon = (ImageView)view.findViewById(R.id.refreshIconID);
-        refreshIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                adapter.clear();
-                getTicketsHTTP();
-            }
-        });*/
-
-
-        return view;
+        pd = new ProgressDialog(getActivity());
+        pdChangement = new ProgressDialog(getActivity());
+        handlerticketbackLog = new HandlerTicketBackLog();
+        swipeLayout = view.findViewById(R.id.swipe_container);
+        swipeLayout.setColorScheme(android.R.color.holo_blue_dark,
+                android.R.color.holo_green_light);
+        queue = Volley.newRequestQueue(getActivity());
+        listView = view.findViewById(R.id.list);
     }
 
     private void getTicketsHTTP() {
-        String url = FirstEverActivity.GLPI_URL+"search/Ticket";
+        String url = Constants.GLPI_URL+"search/Ticket";
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
@@ -264,29 +236,21 @@ public class ListTicketBackLog extends Fragment {
                                 } catch (JSONException e) {
                                     Log.e("Nb of data: "+Jdata.length()+" || "+"Error JSONArray at "+i+" : ", e.getMessage());
                                 }
-                                // ------------------------
 
+                                /* ---------  Creating a TicketModel object  --------- */
+                                TicketModel ticket = new TicketModel(titreTicket, slaTicket, dateDebutTicket,
+                                        calculTempsRestant(dateEchanceTicket), idTicket, statutTicket);
 
+                                ticket.setUrgenceTicket(urgenceText(urgenceTicket));
+                                ticket.setTicketEnRetard(Boolean.parseBoolean(String.valueOf(ticketEnretard)));
+                                ticket.setDescription(descriptionTicket);
 
-                                /* Remplissage du tableau des tickets pour le row item */
-                                ticketTab[i][0] = titreTicket;
-                                ticketTab[i][1] = slaTicket;
-                                ticketTab[i][2] = dateDebutTicket;
-                                ticketTab[i][3] = urgenceText(urgenceTicket);
-                                ticketTab[i][4] = calculTempsRestant(dateEchanceTicket);
-                                ticketTab[i][5] = String.valueOf(ticketEnretard);
-                                ticketTab[i][6] = statutTicket;
-                                ticketTab[i][7] = idTicket;
-                                ticketTab[i][8] = descriptionTicket;
+                                TicketModels.add(ticket);
 
-                                // -----------------------------
+                                /* ---------  Creating a TicketModel object  --------- */
 
                             }
 
-
-                            //triTableauTicketParUrgence(ticketTab);
-                            //AfficheTab(ticketTab);
-                            addModelsFromTab(ticketTab);
 
                             //System.out.println("Je charge la listview");
                             if (getActivity() != null){
@@ -358,12 +322,14 @@ public class ListTicketBackLog extends Fragment {
                                             String strName = arrayAdapter.getItem(which);
                                             switch (strName){
                                                 case "Mettre le ticket en attente":
-                                                    DialogMotifAttente alert = new DialogMotifAttente();
-                                                    alert.showDialog(getActivity(), TicketModel.getIdTicket(), TicketModel.getDescription());
+                                                    //DialogMotifAttente alert = new DialogMotifAttente();
+                                                    //alert.showDialog(getActivity(), TicketModel.getIdTicket(), TicketModel.getDescription());
+                                                    Toast.makeText(getActivity(), "Procédez à cette action via l'onglet \"ticket en cours.\"",Toast.LENGTH_SHORT).show();
                                                     break;
                                                 case "Mettre le ticket en résolu":
-                                                    pdChangement.show();
-                                                    TicketEnResoluHTTP(TicketModel.getIdTicket());
+                                                    Toast.makeText(getActivity(), "Procédez à cette action via l'onglet \"ticket en cours.\".",Toast.LENGTH_SHORT).show();
+                                                    //pdChangement.show();
+                                                    //TicketEnResoluHTTP(TicketModel.getIdTicket());
                                                     break;
                                             }
                                             //Toast.makeText(getActivity(), TicketModel.getTitreTicket(), Toast.LENGTH_SHORT).show();
@@ -400,7 +366,7 @@ public class ListTicketBackLog extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }
@@ -419,7 +385,7 @@ public class ListTicketBackLog extends Fragment {
     }
 
     private void TicketEnAttenteHTTP(String idTicket, final String descriptionTicket, final String motifAttente) {
-        String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
+        String url = Constants.GLPI_URL+"Ticket/"+idTicket;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, url, null,
                 new Response.Listener<JSONArray>() {
@@ -444,7 +410,7 @@ public class ListTicketBackLog extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 params.put("Content-Type","application/json");
                 return params;
@@ -487,7 +453,7 @@ public class ListTicketBackLog extends Fragment {
 
 
     private void TicketEnResoluHTTP(String idTicket) {
-        String url = FirstEverActivity.GLPI_URL+"Ticket/"+idTicket;
+        String url = Constants.GLPI_URL+"Ticket/"+idTicket;
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.PUT, url, null,
                 new Response.Listener<JSONArray>() {
@@ -511,7 +477,7 @@ public class ListTicketBackLog extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",FirstEverActivity.App_Token);
+                params.put("App-Token",Constants.App_Token);
                 params.put("Session-Token",session_token);
                 return params;
             }

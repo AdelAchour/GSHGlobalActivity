@@ -55,7 +55,7 @@ public class ServiceNotificationNewTicket extends IntentService {
 
         System.out.println("Service running... ");
 
-        String url = FirstEverActivity.GLPI_URL + "search/Ticket";
+        String url = Constants.GLPI_URL + "search/Ticket";
         List<KeyValuePair> params = new ArrayList<>();
         //TECHNICIEN = IDUSER
         params.add(new KeyValuePair("criteria[0][field]", "5"));
@@ -108,7 +108,7 @@ public class ServiceNotificationNewTicket extends IntentService {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token", FirstEverActivity.App_Token);
+                params.put("App-Token", Constants.App_Token);
                 params.put("Session-Token", session_token);
                 return params;
             }
@@ -124,7 +124,7 @@ public class ServiceNotificationNewTicket extends IntentService {
 
 
     private void CheckNewTicket() {
-        String url = FirstEverActivity.GLPI_URL + "search/Ticket";
+        String url = Constants.GLPI_URL + "search/Ticket";
         List<KeyValuePair> params = new ArrayList<>();
         //TECHNICIEN = IDUSER
         params.add(new KeyValuePair("criteria[0][field]", "5"));
@@ -170,7 +170,7 @@ public class ServiceNotificationNewTicket extends IntentService {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token", FirstEverActivity.App_Token);
+                params.put("App-Token", Constants.App_Token);
                 params.put("Session-Token", session_token);
                 return params;
             }
