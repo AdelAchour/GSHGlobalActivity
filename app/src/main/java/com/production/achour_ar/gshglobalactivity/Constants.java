@@ -32,4 +32,9 @@ public class Constants {
     final static String requestedtYPETxt = "requestedTypeTxt";
     final static String requestedLocationTxt = "requestedLocationTxt";
     public static String from = "fromWhere";
+    public static String KEY_USERNAME = "username";
+    public static String KEY_PASSWORD = "password";
+    public static String USERNAME_DEF_VALUE = "defaultusername";
+    public static String PASSWORD_DEF_VALUE = "defaultpassword";
+
 }
