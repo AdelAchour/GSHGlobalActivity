@@ -72,7 +72,7 @@ public class InfoTicketClos extends AppCompatActivity {
         actionBar.setTitle("Information du ticket");
         actionBar.setDisplayHomeAsUpEnabled(true); //show a caret even if android:parentActivityName is not specified.
 
-        listObservateur =new ArrayList<ObservateurModel>();
+        listObservateur = new ArrayList<ObservateurModel>();
         pd = new ProgressDialog(InfoTicketClos.this);
         pd.setMessage("Chargement...");
         pd.show();

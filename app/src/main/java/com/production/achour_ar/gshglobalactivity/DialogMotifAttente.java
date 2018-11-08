@@ -3,10 +3,12 @@ package com.production.achour_ar.gshglobalactivity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Service;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -15,12 +17,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class DialogMotifAttente {
     Activity mActivity;
     EditText txt;
     TextView listeMotif;
 
-    public void showDialog(final Activity activity, final String idTicket, final String description, final String demandeurID, final String titreTicket){
+    public void showDialog(final Activity activity, final String idTicket, final String description, final String demandeurID, final String titreTicket, final ArrayList<String> obsID){
         mActivity = activity;
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -69,6 +73,14 @@ public class DialogMotifAttente {
                             txt.setText("");
                             txt.setHint("Spécifiez un motif");
 
+                            try {
+                                InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.showSoftInput(txt, InputMethodManager.SHOW_IMPLICIT);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e("keybord", "Cannot show soft Keybord");
+                            }
+
                         }
                         else {
                             txt.setText(strName);
@@ -108,6 +120,8 @@ public class DialogMotifAttente {
                     bundle.putString("description",description);
                     bundle.putString("demandeur",demandeurID);
                     bundle.putString("titre",titreTicket);
+                    bundle.putStringArrayList(Constants.KEY_ARRAYLIST_OBSERVERS,obsID);
+
                     Message msg = new Message();
                     msg.what = 6;
                     msg.setData(bundle);

@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -25,13 +28,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CheckAuth extends AppCompatActivity {
+public class CheckAuth extends AppCompatActivity implements View.OnClickListener{
 
     private String username;
     private String password;
     private ProgressDialog pdAuth;
     private String session_token;
     private RequestQueue queue;
+    private TextView noConnection;
+    private Button retryConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +44,23 @@ public class CheckAuth extends AppCompatActivity {
         setContentView(R.layout.check_auth);
 
         initView();
+        setListener();
         setupActionBar();
         setupPDs();
         checkAutoAuth();
 
     }
 
+    private void showPD() {
+        pdAuth.show();
+    }
+
+    private void setListener() {
+        retryConnection.setOnClickListener(this);
+    }
+
     private void setupPDs() {
         pdAuth.setMessage("Récupération des identifiants...");
-        pdAuth.show();
     }
 
     private void setupActionBar() {
@@ -56,19 +69,25 @@ public class CheckAuth extends AppCompatActivity {
     }
 
     private void initView() {
+        retryConnection = findViewById(R.id.retry_button);
+        noConnection = findViewById(R.id.no_connection_tv);
         queue = Volley.newRequestQueue(this);
         pdAuth = new ProgressDialog(CheckAuth.this);
     }
 
     private void checkAutoAuth() {
+        showPD();
+        Log.d("CheckAuth", "Checking the auto auth...");
         username = MyPreferences.getMyString(this, Constants.KEY_USERNAME, Constants.USERNAME_DEF_VALUE);
         password = MyPreferences.getMyString(this, Constants.KEY_PASSWORD, Constants.PASSWORD_DEF_VALUE);
 
         if ((username.equals(Constants.USERNAME_DEF_VALUE))||(password.equals(Constants.PASSWORD_DEF_VALUE))){ //no auto auth
             pdAuth.dismiss();
+            Log.d("CheckAuth", "NO auto auth.");
             startActivity(new Intent(CheckAuth.this, FirstEverActivity.class));
         }
         else{ //got the ids successfully
+            Log.d("CheckAuth", "Got the IDs successfully | "+username);
             Login(username, password);
         }
 
@@ -100,6 +119,7 @@ public class CheckAuth extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
+                        connectionSuccess();
                         getUser(session_token);
                         System.out.println("session : "+session_token);
                     }
@@ -112,6 +132,8 @@ public class CheckAuth extends AppCompatActivity {
                         Log.e("Error.Response", error.toString());
                         Toast.makeText(getApplicationContext(), "Connexion échouée. \nProblème de connexion réseaux.",
                                 Toast.LENGTH_SHORT).show();
+
+                        connectionError();
                     }
 
                 }
@@ -129,6 +151,16 @@ public class CheckAuth extends AppCompatActivity {
 
         // add it to the RequestQueue
         queue.add(getRequest);
+    }
+
+    private void connectionSuccess() {
+        noConnection.setText(R.string.connection_success);
+        noConnection.setTextColor(getColor(R.color.green_notif));
+    }
+
+    private void connectionError() {
+        noConnection.setText(R.string.no_connection);
+        noConnection.setTextColor(getColor(R.color.red_notif));
     }
 
     private void getUser(final String Token_Session) {
@@ -187,5 +219,14 @@ public class CheckAuth extends AppCompatActivity {
 
         queue.add(getRequest);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.retry_button:
+                checkAutoAuth();
+                break;
+        }
     }
 }

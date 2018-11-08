@@ -48,6 +48,13 @@ public class MyPreferences {
         return value;
     }
 
+    public static void deletePreference(String key){
+        SharedPreferences.Editor editor = app_preferences.edit();
+        editor.remove(key).commit();
+    }
+
+
+
 
 
 }

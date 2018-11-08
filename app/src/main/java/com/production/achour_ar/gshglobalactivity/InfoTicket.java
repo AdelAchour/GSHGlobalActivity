@@ -101,6 +101,10 @@ public class InfoTicket extends AppCompatActivity {
         System.out.println("id t = "+idTicket);
 
         //Récupération du ticket
+
+        String urlTicket = Constants.GLPI_URL+"search/Ticket";
+
+
         List<KeyValuePair> paramsTicket = new ArrayList<>();
         paramsTicket.add(new KeyValuePair("criteria[0][field]","2"));
         paramsTicket.add(new KeyValuePair("criteria[0][searchtype]","equals"));
@@ -121,9 +125,6 @@ public class InfoTicket extends AppCompatActivity {
         paramsTicket.add(new KeyValuePair("forcedisplay[12]","2"));
         paramsTicket.add(new KeyValuePair("forcedisplay[13]","66"));
         paramsTicket.add(new KeyValuePair("forcedisplay[14]","17"));
-
-
-        String urlTicket = Constants.GLPI_URL+"search/Ticket";
 
         final JsonObjectRequest getRequestTicket = new JsonObjectRequest(Request.Method.GET, generateUrl(urlTicket, paramsTicket), null,
                 new Response.Listener<JSONObject>()

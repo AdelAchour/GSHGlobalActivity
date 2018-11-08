@@ -54,14 +54,14 @@ import static com.production.achour_ar.gshglobalactivity.Constants.GLPI_URL;
 
 public class AccueilUser extends AppCompatActivity {
 
-    TextView welcomeView, headertitle;
-    ImageView ticketButton, projectButton, rendementButton;
-    String session_token, nameUser, idUser, firstnameUser;
+    private TextView welcomeView, headertitle;
+    private Button ticketButton, projectButton, rendementButton;
+    private String session_token, nameUser, idUser, firstnameUser;
     static String nbCount ;
-    RequestQueue queue;
+    private RequestQueue queue;
     private DrawerLayout mDrawerLayout;
     public static Handler handler;
-    ProgressDialog pdlogout ;
+    private ProgressDialog pdlogout ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,30 +90,6 @@ public class AccueilUser extends AppCompatActivity {
         }
 
 
-        /*Thread thread = new Thread() {
-            @Override
-            public void run() {
-                if(ServiceNotificationNewTicket.ServiceIsRunning == false ) {
-                    System.out.println("Service not running");
-                    ServiceNotificationNewTicket.ServiceIsRunning = true ;
-                    //register the services to run in background
-                    Intent intent = new Intent(AccueilUser.this, ServiceNotificationNewTicket.class);
-                    intent.putExtra("id",idUser);
-                    intent.putExtra("session",session_token);
-                    // start the services
-                    startService(intent);
-                    System.out.println("Service started");
-                }
-            }
-        };
-        thread.start();*/
-
-
-        /*ActionBar actionbar = getSupportActionBar();
-        actionbar.setTitle("Accueil");
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);*/
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarDrawer);
         toolbar.setTitle("Accueil");
         setSupportActionBar(toolbar);
@@ -136,10 +112,10 @@ public class AccueilUser extends AppCompatActivity {
         headertitle = (TextView)headerView.findViewById(R.id.header_nav_ID);
 
 
-        welcomeView = (TextView)findViewById(R.id.welcomeTextView);
-        ticketButton = (ImageView) findViewById(R.id.ticketButton);
-        rendementButton = (ImageView) findViewById(R.id.rendementButton);
-        projectButton = (ImageView) findViewById(R.id.projectButton);
+        welcomeView = findViewById(R.id.welcomeTextView);
+        ticketButton = findViewById(R.id.ticketButton);
+        rendementButton = findViewById(R.id.rendementButton);
+        projectButton = findViewById(R.id.projectButton);
 
 
        welcomeView.setText("Bienvenue "+firstnameUser+" "+nameUser);
@@ -204,7 +180,6 @@ public class AccueilUser extends AppCompatActivity {
 
             }
         });
-
 
     }
 
@@ -301,6 +276,10 @@ public class AccueilUser extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), FirstEverActivity.class));
                         pdlogout.dismiss();
                         finish();
+                        MyPreferences.deletePreference(Constants.KEY_USERNAME);
+                        MyPreferences.deletePreference(Constants.KEY_PASSWORD);
+                        Log.v("MyPref", "DELETED THE IDS RPEFS");
+
                         Toast.makeText(getApplicationContext(), "Déconnecté",
                                 Toast.LENGTH_SHORT).show();
 

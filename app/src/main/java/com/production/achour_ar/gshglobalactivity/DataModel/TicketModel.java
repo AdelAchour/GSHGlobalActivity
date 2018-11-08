@@ -1,18 +1,27 @@
 package com.production.achour_ar.gshglobalactivity.DataModel;
 
+import android.os.Bundle;
+
+import com.production.achour_ar.gshglobalactivity.ObservateurModel;
+
+import java.util.ArrayList;
+
 public class TicketModel {
-    String titreTicket;
-    String slaTicket;
-    String DateTicket;
-    String UrgenceTicket;
-    boolean ticketEnRetard;
-    String TempsRestantTicket;
-    String idTicket;
-    String Statut;
-    String TempsResolution;
-    String TempsRetard;
-    String description;
-    String demandeurID;
+    private String titreTicket;
+    private String slaTicket;
+    private String DateTicket;
+    private String UrgenceTicket;
+    private boolean ticketEnRetard;
+    private String TempsRestantTicket;
+    private String idTicket;
+    private String Statut;
+    private String TempsResolution;
+    private String TempsRetard;
+    private String description;
+    private String demandeurID;
+    private ArrayList<String> observerIDsss;
+    private Bundle bundleArray;
+
 
     public TicketModel(String titreTicket, String slaTicket, String dateTicket, String tempsRestantTicket, String idticket, String statut) {
         this.titreTicket = titreTicket;
@@ -91,5 +100,37 @@ public class TicketModel {
 
     public String getDemandeurID() {
         return demandeurID;
+    }
+
+
+    public void setObserverIDs(ArrayList<String> observerIDs) {
+        this.observerIDsss = observerIDs;
+        System.out.println("J'ai reçu une Array_______");
+        AfficheArrayList(observerIDs);
+    }
+
+    public ArrayList<String> getObserverIDs() {
+        System.out.println("Je vais renvoyer l'ArrayList_______");
+        AfficheArrayList(observerIDsss);
+        return this.observerIDsss;
+    }
+
+    public Bundle getBundleArray() {
+        return bundleArray;
+    }
+
+    public void setBundleArray(Bundle bundleArray) {
+        this.bundleArray = bundleArray;
+    }
+
+    private void AfficheArrayList(ArrayList listObservateur) {
+        System.out.println("\n --- ArrayListModel --- \n");
+        for (int i = 0; i < listObservateur.size(); i++){
+            //System.out.println(ticketTab.get(i));
+            String oneObs = (String)listObservateur.get(i);
+            System.out.println(oneObs);
+        }
+
+
     }
 }

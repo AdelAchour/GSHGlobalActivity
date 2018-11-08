@@ -12,18 +12,22 @@
         <LinearLayout
             android:orientation="vertical"
             android:paddingTop="35dp"
-            android:paddingBottom="25dp"
+            android:paddingBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
 
             <TextView
                 android:layout_gravity="center"
+                android:shadowColor="@color/text_shadow"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
                 android:textAlignment="center"
                 android:id="@+id/welcomeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="40dp"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
                 android:textColor="@color/colorPrimary"
@@ -33,56 +37,92 @@
             <!-- Linear Button -->
             <LinearLayout
                 android:id="@+id/LinearButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:orientation="vertical"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_margin="20dp">
 
-
-           <!--     <Button
-                    android:layout_gravity="center"
-                    android:id="@+id/rendementButton"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_marginBottom="7dp"
+                    android:weightSum="100"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
-                    android:scaleType="fitXY"
-                    android:textColor="@android:color/white"
-                    android:text="Mon rendement" />
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_marginTop="30dp"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_width="0dp"
+                        android:layout_weight="70"
+                        android:layout_height="wrap_content"
+                        android:text="@string/descriptionbuttonticket"
+                        />
+                    
+                </LinearLayout>
 
 
                 <Button
-                    android:layout_gravity="center"
                     android:id="@+id/ticketButton"
-                    android:layout_width="260dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
+                    android:background="@drawable/shape_button"
                     android:textColor="@android:color/white"
-                    android:layout_marginTop="50dp"
-                    android:text="Mes tickets" /> -->
+                    android:text="Mes tickets"/>
 
 
-                <ImageView
-                    android:id="@+id/ticketButton"
+
+                <LinearLayout
+                    android:layout_marginBottom="7dp"
+                    android:weightSum="100"
                     android:layout_width="wrap_content"
-                    android:layout_height="314px"
-                    android:src="@drawable/imagebuttonticket" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                <ImageView
+                    <TextView
+                        android:layout_marginTop="40dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="70"
+                        android:layout_height="wrap_content"
+                        android:text="@string/descriptionbuttonproject" />
+
+                </LinearLayout>
+
+
+                <Button
                     android:id="@+id/projectButton"
-                    android:layout_marginTop="20dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="314px"
-                    android:src="@drawable/imagebuttonprojet" />
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_button"
+                    android:textColor="@android:color/white"
+                    android:text="Mes projets"/>
 
-                <ImageView
-                    android:id="@+id/rendementButton"
-                    android:layout_marginTop="20dp"
+
+                <LinearLayout
+                    android:layout_marginBottom="7dp"
+                    android:weightSum="100"
                     android:layout_width="wrap_content"
-                    android:layout_height="314px"
-                    android:src="@drawable/imagebuttonrendementstyle" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    
+                    <TextView
+                        android:layout_marginTop="40dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="70"
+                        android:layout_height="wrap_content"
+                        android:text="@string/descriptionbuttonrendement" />
+
+                </LinearLayout>
+                
+                <Button
+                    android:id="@+id/rendementButton"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_button"
+                    android:textColor="@android:color/white"
+                    android:text="Mon rendement global"/>
 
 
             </LinearLayout>
