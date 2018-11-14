@@ -682,9 +682,8 @@ public class ListTickets extends Fragment {
     private void SendEmailAttenteToObservers(String nowAttente, String prenomObservateur, String emailObservateur, String titreTicket, String attente) {
         String url = Constants.URL_EMAIL_API;
 
-        //final String content = prenomDemandeur+",\\n\\nVotre ticket "+titreTicket+" a été résolu à "+now+".\\n\\nMerci,\\n\\nL'équipe Helpdesk mobile.";
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomObservateur+",<br><br>" +
-                "Le ticket \""+titreTicket+"\" dont vous êtes l'observateur a été mis en attente le "+nowAttente+".<br><br>" +
+                "Le ticket \""+titreTicket+"\" dont vous êtes l'observateur a été <b>mis en attente</b> le "+nowAttente+".<br><br>" +
                 "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br>" +
                 "Motif de mise en attente : "+attente+".<br><br><br>" +
                 "L'équipe Helpdesk Mobile.<br><br><br>" +
@@ -814,9 +813,8 @@ public class ListTickets extends Fragment {
     private void SendEmailAttente(final String nowAttente, final String prenomDemandeur, final String emailDemandeur, final String titreTicket, final String attente) {
         String url = Constants.URL_EMAIL_API;
 
-        //final String content = prenomDemandeur+",\\n\\nVotre ticket "+titreTicket+" a été résolu à "+now+".\\n\\nMerci,\\n\\nL'équipe Helpdesk mobile.";
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomDemandeur+",<br><br>" +
-                "Votre ticket \""+titreTicket+"\" a été mis en attente le "+nowAttente+".<br><br>" +
+                "Votre ticket \""+titreTicket+"\" a été <b>mis en attente</b> le "+nowAttente+".<br><br>" +
                 "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br>" +
                 "Motif de mise en attente : "+attente+"." +
                 "<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
@@ -1096,9 +1094,8 @@ public class ListTickets extends Fragment {
     private void SendEmailResoluToObservers(String nowResolu, String prenomObservateur, String emailObservateur, String titreTicket) {
         String url = Constants.URL_EMAIL_API;
 
-        //final String content = prenomDemandeur+",\\n\\nVotre ticket "+titreTicket+" a été résolu à "+now+".\\n\\nMerci,\\n\\nL'équipe Helpdesk mobile.";
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomObservateur+",<br><br>" +
-                "Le ticket \""+titreTicket+"\" dont vous êtes l'observateur a été résolu le "+nowResolu+".<br><br>" +
+                "Le ticket \""+titreTicket+"\" dont vous êtes l'observateur a été <b>résolu</b> le "+nowResolu+".<br><br>" +
                 "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
                 "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
 
@@ -1227,9 +1224,8 @@ public class ListTickets extends Fragment {
     private void SendEmailResolu(String nowResolu, String prenomDemandeur, String emailDemandeur, String titreTicket) {
         String url = Constants.URL_EMAIL_API;
 
-        //final String content = prenomDemandeur+",\\n\\nVotre ticket "+titreTicket+" a été résolu à "+now+".\\n\\nMerci,\\n\\nL'équipe Helpdesk mobile.";
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomDemandeur+",<br><br>" +
-                "Votre ticket \""+titreTicket+"\" a été résolu le "+nowResolu+".<br><br>" +
+                "Votre ticket \""+titreTicket+"\" a été <b>résolu</b> le "+nowResolu+".<br><br>" +
                 "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
                 "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
 

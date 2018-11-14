@@ -90,7 +90,7 @@ public class AccueilUser extends AppCompatActivity {
         }
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarDrawer);
+        Toolbar toolbar = findViewById(R.id.toolbarDrawer);
         toolbar.setTitle("Accueil");
         setSupportActionBar(toolbar);
 
@@ -101,7 +101,7 @@ public class AccueilUser extends AppCompatActivity {
 
         queue = Volley.newRequestQueue(this);
 
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
@@ -140,6 +140,15 @@ public class AccueilUser extends AppCompatActivity {
                             case R.id.nav_logout:
                                 DialogLogout alert = new DialogLogout();
                                 alert.showDialog(AccueilUser.this, firstnameUser);
+                                break;
+
+                            case R.id.nav_profile:
+                                Intent i = new Intent(getApplicationContext(), MyProfileActivity.class);
+                                i.putExtra("session",session_token);
+                                i.putExtra("nom",nameUser);
+                                i.putExtra("prenom",firstnameUser);
+                                i.putExtra("id",idUser);
+                                startActivity(i);
                                 break;
 
                         }

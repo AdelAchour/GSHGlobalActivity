@@ -80,12 +80,12 @@ public class TicketBackLogAdapter extends ArrayAdapter<TicketModel> implements V
             viewHolder = new TicketBackLogAdapter.ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.row_item_ticket, parent, false);
-            viewHolder.txtName = (TextView) convertView.findViewById(R.id.titreTV);
-            viewHolder.txtDate = (TextView) convertView.findViewById(R.id.dateTV);
-            viewHolder.txtSLA = (TextView) convertView.findViewById(R.id.slaTV);
+            viewHolder.txtName = convertView.findViewById(R.id.titreTV);
+            viewHolder.txtDate =  convertView.findViewById(R.id.dateTV);
+            viewHolder.txtSLA = convertView.findViewById(R.id.slaTV);
             viewHolder.txtTempsRestant = (TextView) convertView.findViewById(R.id.SLARestantTV);
-            viewHolder.info = (ImageView) convertView.findViewById(R.id.item_info);
-            viewHolder.layout = (RelativeLayout) convertView.findViewById(R.id.backgroundRow);
+            viewHolder.info = convertView.findViewById(R.id.item_info);
+            viewHolder.layout = convertView.findViewById(R.id.backgroundRow);
 
 
             result=convertView;
