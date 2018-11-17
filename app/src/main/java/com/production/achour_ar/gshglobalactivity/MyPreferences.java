@@ -15,6 +15,18 @@ public class MyPreferences {
         editor.commit(); // Very important
     }
 
+    public static void SaveProfilPicPath(String key, String value){
+        SharedPreferences.Editor editor = app_preferences.edit();
+        editor.putString(key, value);
+        editor.commit(); // Very important
+    }
+
+    public static void SaveProfilPicName(String key, String value){
+        SharedPreferences.Editor editor = app_preferences.edit();
+        editor.putString(key, value);
+        editor.commit(); // Very important
+    }
+
     public static void SaveInt(String key, int value){
         SharedPreferences.Editor editor = app_preferences.edit();
         editor.putInt(key, value);
@@ -28,6 +40,20 @@ public class MyPreferences {
     }
 
     public static String getMyString(Context context, String key, String defValue){
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        // Get the value for the run counter
+        String value = app_preferences.getString(key, defValue);
+        return value;
+    }
+
+    public static String getMyProfilPicPath(Context context, String key, String defValue){
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        // Get the value for the run counter
+        String value = app_preferences.getString(key, defValue);
+        return value;
+    }
+
+    public static String getMyProfilPicName(Context context, String key, String defValue){
         app_preferences = PreferenceManager.getDefaultSharedPreferences(context);
         // Get the value for the run counter
         String value = app_preferences.getString(key, defValue);

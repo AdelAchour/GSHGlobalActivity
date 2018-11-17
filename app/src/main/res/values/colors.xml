@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#4593a7</color>
+    <color name="colorPrimaryDark">#2c6776</color>
+    <color name="colorAccent">#d3bed4</color>
+    <color name="colorBackgroundList">#8f6caa87</color>
+    <color name="colorBGRowLate">#3caa0000</color>
+    <color name="white">#ffffff</color>
+    <color name="Danger">#ca1f1f</color>
+    <color name="Late">#434343</color>
+    <color name="AttenteBG">#62dea968</color>
+    <color name="bgEDIT">#564b71a2</color>
+    <color name="text_shadow">#7F000000</color>
+    <color name="red_notif">#ae2424</color>
+    <color name="green_notif">#3b8d26</color>
+    <color name="grey_status">#414141</color>
+    <color name="color_card">#cad6d2</color>
+    <color name="color_text_card">#5d6c5d</color>
+</resources>

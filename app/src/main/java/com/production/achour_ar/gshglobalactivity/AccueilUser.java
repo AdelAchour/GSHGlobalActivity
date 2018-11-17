@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Handler;
 import android.os.Message;
@@ -55,6 +56,7 @@ import static com.production.achour_ar.gshglobalactivity.Constants.GLPI_URL;
 public class AccueilUser extends AppCompatActivity {
 
     private TextView welcomeView, headertitle;
+    private ImageView profilePicNav;
     private Button ticketButton, projectButton, rendementButton;
     private String session_token, nameUser, idUser, firstnameUser;
     static String nbCount ;
@@ -109,8 +111,8 @@ public class AccueilUser extends AppCompatActivity {
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        headertitle = (TextView)headerView.findViewById(R.id.header_nav_ID);
-
+        headertitle = headerView.findViewById(R.id.header_nav_ID);
+        profilePicNav = headerView.findViewById(R.id.profilePicNav);
 
         welcomeView = findViewById(R.id.welcomeTextView);
         ticketButton = findViewById(R.id.ticketButton);
@@ -118,10 +120,11 @@ public class AccueilUser extends AppCompatActivity {
         projectButton = findViewById(R.id.projectButton);
 
 
-       welcomeView.setText("Bienvenue "+firstnameUser+" "+nameUser);
+       //welcomeView.setText("Bienvenue "+firstnameUser+" "+nameUser);
 
 
-       headertitle.setText("Profil de "+firstnameUser+" "+nameUser);
+       //headertitle.setText("Profil de "+firstnameUser+" "+nameUser);
+       loadProfilePic();
        
        getTicketsByTechnicien(idUser);
 
@@ -182,6 +185,8 @@ public class AccueilUser extends AppCompatActivity {
 
             }
         });
+
+
 
         projectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -344,6 +349,17 @@ public class AccueilUser extends AppCompatActivity {
 
     }
 
+    private void loadProfilePic() {
+        Bitmap profilePic;
+
+        String path = Constants.PROFILE_PIC_PATH;
+        String picname = MyPreferences.getMyProfilPicName(this, Constants.PROFILE_PIC_NAME__KEY, Constants.PROFILE_PIC_NAME_DEF);
+
+        profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
+        profilePicNav.setImageBitmap(profilePic);
+
+    }
+
 
     private class HandlerAccueil extends Handler {
         @Override
@@ -352,6 +368,10 @@ public class AccueilUser extends AppCompatActivity {
                 case 0: //logout
                     pdlogout.show();
                     killsession();
+                    break;
+
+                case Constants.UPLOAD_PROFILE_PIC_NAV_HEADER: //logout
+                    loadProfilePic();
                     break;
             }
         }

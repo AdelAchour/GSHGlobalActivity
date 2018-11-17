@@ -32,8 +32,21 @@ public class Constants {
 //    final static String requestedLocationTxt = "requestedLocationTxt";
 
 
-    final static String GLPI_URL = "http://helpdesk.groupe-hasnaoui.com/apirest.php/"; //9.3.1 remote (REAL)
-    final static String App_Token = "MvMvBTXzCBLy6qInlcWdbTdxMS2IefVOjlSkPgYi"; //9.3.1 (REAL)
+    //final static String GLPI_URL = "http://10.1.12.55:8189/apirest.php/"; //9.3.1 remote (K10)
+    final static String GLPI_URL = "http://192.168.42.182:8189/apirest.php/"; //9.3.1 remote (104 LGMT)
+    final static String App_Token = "LMvx8O6ABfIhZg7LurEVMd5rBWergPP0fWnEYKPj"; //9.3.1 local
+
+    //final static String GLPI_URL = "http://helpdesk.groupe-hasnaoui.com/apirest.php/"; //9.3.1 remote (REAL)
+    //final static String App_Token = "MvMvBTXzCBLy6qInlcWdbTdxMS2IefVOjlSkPgYi"; //9.3.1 (REAL)
+
+    public static int SHOW_KEYBORD = 100;
+    public static final int PICK_IMAGE = 100;
+    public static final String PicturePath = "picturePath";
+    public static final int RESULT_CROP  = 400;
+    public final static int RESULT_SELECT_IMAGE = 100;
+    public static final int MEDIA_TYPE_IMAGE = 1;
+    public static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL = 200;
+    public static final int UPLOAD_PROFILE_PIC_NAV_HEADER = 201;
 
     public static String from = "fromWhere";
     public static String KEY_USERNAME = "username";
@@ -43,6 +56,12 @@ public class Constants {
     public static String URL_EMAIL_API = "http://10.10.10.18:8180/emailrestapi/mailapi/SendEmail/send";
     public static String KEY_ARRAYLIST_OBSERVERS = "ArrayListObserver";
     public static String KEY_ARRAYLIST_OBSERVERS_ATTENTE = "ArrayListObserverAttente";
-    public static int SHOW_KEYBORD = 100;
-    public static final int PICK_IMAGE = 100;
+
+    public static final String PROFILE_PIC_PATH_KEY = "PROFILE_PIC_PATH";
+    public static final String PROFILE_PIC_NAME__KEY = "PROFILE_PIC_NAME";
+    public static final String PROFILE_PIC_DEF = "defaultProfilePath";
+    public static final String PROFILE_PIC_PATH_DEF = "defaultProfilePath";
+    public static final String PROFILE_PIC_NAME_DEF = "defaultProfileName";
+    public static final String PROFILE_PIC_PATH = "/storage/emulated/0/FourStarsPics";
+
 }

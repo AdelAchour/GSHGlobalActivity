@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">GSH - 4Stars Preformance</string>
+    <string name="title_activity_info_ticket">InfoTicket</string>
+    <string name="large_text">
+        "Material is the metaphor.\n\n"
+
+        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
+        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
+        "technologically advanced and open to imagination and magic.\n"
+        "Surfaces and edges of the material provide visual cues that are grounded in reality. The "
+        "use of familiar tactile attributes helps users quickly understand affordances. Yet the "
+        "flexibility of the material creates new affordances that supercede those in the physical "
+        "world, without breaking the rules of physics.\n"
+        "The fundamentals of light, surface, and movement are key to conveying how objects move, "
+        "interact, and exist in space and in relation to each other. Realistic lighting shows "
+        "seams, divides space, and indicates moving parts.\n\n"
+    </string>
+
+    <string name="searchticket">Rechercher un ticket</string>
+    <string name="newticket">Créer un ticket</string>
+    <string name="setting">Paramètres</string>
+    <string name="about">A propos et FAQ</string>
+    <string name="logout">Se déconnecter</string>
+    <string name="profile">Mon profil</string>
+    <string name="alter_attente">Mettre le ticket en attente</string>
+    <string name="alter_resolu">Mettre le ticket en résolu</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="new_ticket_notification_title_template">Nouveau ticket : %1$s</string>
+
+    <!-- TODO: remove this placeholder text -->
+    <string name="new_ticket_notification_placeholder_text_template">You said %1$s and lorem ipsum
+        dolor sit amet, consectetur adipiscing elit. Etiam non enim magna. Morbi dictum, velit vel
+        semper venenatis, magna odio volutpat velit, at ullamcorper nulla lacus sed turpis.
+        Pellentesque vitae metus elit, nec tincidunt tellus. Integer sed nisl sem, ullamcorper
+        ornare lacus. Duis ac mauris sed massa congue volutpat. Donec sed erat sit amet turpis
+        viverra rhoncus sit amet nec magna. Donec lacinia ligula at libero volutpat volutpat nec nec
+        tortor.
+    </string>
+
+    <string name="action_share">Partager</string>
+    <string name="action_reply">Reply</string>
+    <string name="actualiserTicket">Actualiser la liste</string>
+    <string name="retourAccueil">Retour à l\'accueil</string>
+    <string name="descriptionbuttonticket">Accédez à l\'intégralité de vos tickets, et gérez-les en temps réel. Modifications, visualisations, notifications…</string>
+    <string name="descriptionbuttonproject">Visualisez et ayez un controle total sur l\'ensemble de vos projets. Etat d\'avancement, délais, notifications…</string>
+    <string name="descriptionbuttonrendement">Vérifiez votre rendement personnel en quelques secondes, et gérez vos performances, votre prime, vos statistiques…</string>
+    <string name="no_connection">Pas d\'accès au réseau GSH</string>
+    <string name="connection_success">Connecté au réseau GSH !</string>
+    <string name="retry">Réessayer</string>
+    <string name="status">Etat...</string>
+    <string name="external_permission_revoked">Impossible d\'accéder aux photos</string>
+
+</resources>
