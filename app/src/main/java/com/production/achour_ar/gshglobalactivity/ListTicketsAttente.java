@@ -542,7 +542,7 @@ public class ListTicketsAttente extends Fragment {
 
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomObservateur+",<br><br>" +
                 "Le ticket \""+titreTicket+"\" dont vous êtes l'observateur a été <b>remis en cours</b> le "+nowEnCours+".<br><br>" +
-                "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
+                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
                 "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
@@ -738,7 +738,7 @@ public class ListTicketsAttente extends Fragment {
         //final String content = prenomDemandeur+",\\n\\nVotre ticket "+titreTicket+" a été résolu à "+now+".\\n\\nMerci,\\n\\nL'équipe Helpdesk mobile.";
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomDemandeur+",<br><br>" +
                 "Votre ticket \""+titreTicket+"\" a été <b>remis en cours</b> le "+nowEnCours+".<br><br>" +
-                "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
+                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
                 "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
@@ -867,7 +867,7 @@ public class ListTicketsAttente extends Fragment {
     }
 
     private String getNowTime() {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdfDate = new SimpleDateFormat("dd-MM-yyyy, HH:mm:ss");
         Date now = new Date();
         String strDate = sdfDate.format(now);
 

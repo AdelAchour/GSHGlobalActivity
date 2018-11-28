@@ -56,6 +56,31 @@
 
 
             <LinearLayout
+                android:id="@+id/LinearId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25dp"
+                    android:text="ID "/>
+
+                <TextView
+                    android:id="@+id/IDAnswer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="113dp"
+                    android:textColor="#ff000000"
+                    android:paddingEnd="20dp"
+                    android:text="ID answer "/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:id="@+id/LinearTitre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

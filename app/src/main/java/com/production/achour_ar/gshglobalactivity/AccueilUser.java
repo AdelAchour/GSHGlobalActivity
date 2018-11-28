@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -44,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,10 +123,10 @@ public class AccueilUser extends AppCompatActivity {
         projectButton = findViewById(R.id.projectButton);
 
 
-       //welcomeView.setText("Bienvenue "+firstnameUser+" "+nameUser);
+       welcomeView.setText("Bienvenue "+firstnameUser+" "+nameUser);
 
 
-       //headertitle.setText("Profil de "+firstnameUser+" "+nameUser);
+       headertitle.setText(firstnameUser+" "+nameUser);
        loadProfilePic();
        
        getTicketsByTechnicien(idUser);
@@ -355,9 +358,43 @@ public class AccueilUser extends AppCompatActivity {
         String path = Constants.PROFILE_PIC_PATH;
         String picname = MyPreferences.getMyProfilPicName(this, Constants.PROFILE_PIC_NAME__KEY, Constants.PROFILE_PIC_NAME_DEF);
 
-        profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
-        profilePicNav.setImageBitmap(profilePic);
+        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)){
+            //CASE : NO SHARED PREFERENCE (DOWNLOAD FROM SERVER)
+            //temp case: put a default profile pic
+            loadDefaultProfilePic();
+        }
+        else {
+            // SHARED PREFERENCE EXISTS
+            File picToLoad = new File(path+"/"+picname);
+            if (picToLoad.exists()){
+                // PIC EXISTS
+                Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
+                profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
+                profilePicNav.setImageBitmap(profilePic);
+            }
+            else {
+                //PIC DOES NOT EXIST
+                Log.e("DOES_PIC_EXIST", "NO IT DOES NOT EXIST !");
+                File folderPics = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
+                if (!folderPics.exists()) {
+                    if (folderPics.mkdirs()) {
+                        Log.d("FOLDER_PIC", "DIRECTORY CREATED SUCCESSFULLY !");
+                    }
+                }
+                //download from server and put it in the folder
+                //temp case: put a default profile pic
+                loadDefaultProfilePic();
 
+            }
+
+        }
+
+    }
+
+    private void loadDefaultProfilePic() {
+        Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.man);
+        profilePicNav.setImageBitmap(icon);
     }
 
 
@@ -370,12 +407,17 @@ public class AccueilUser extends AppCompatActivity {
                     killsession();
                     break;
 
-                case Constants.UPLOAD_PROFILE_PIC_NAV_HEADER: //logout
+                case Constants.UPDATE_PROFILE_PIC_NAV_HEADER: //logout
                     loadProfilePic();
+                    break;
+
+                case Constants.UPDATE_DEFAULT_PROFILE_PIC_NAV_HEADER: //logout
+                    loadDefaultProfilePic();
                     break;
             }
         }
     }
+
 
 
 }

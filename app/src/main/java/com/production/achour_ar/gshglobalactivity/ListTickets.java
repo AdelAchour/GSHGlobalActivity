@@ -684,7 +684,7 @@ public class ListTickets extends Fragment {
 
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomObservateur+",<br><br>" +
                 "Le ticket \""+titreTicket+"\" dont vous êtes l'observateur a été <b>mis en attente</b> le "+nowAttente+".<br><br>" +
-                "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br>" +
+                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br>" +
                 "Motif de mise en attente : "+attente+".<br><br><br>" +
                 "L'équipe Helpdesk Mobile.<br><br><br>" +
 
@@ -815,7 +815,7 @@ public class ListTickets extends Fragment {
 
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomDemandeur+",<br><br>" +
                 "Votre ticket \""+titreTicket+"\" a été <b>mis en attente</b> le "+nowAttente+".<br><br>" +
-                "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br>" +
+                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br>" +
                 "Motif de mise en attente : "+attente+"." +
                 "<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
                 "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
@@ -946,7 +946,7 @@ public class ListTickets extends Fragment {
     }
 
     private String getNowTime() {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdfDate = new SimpleDateFormat("dd-MM-yyyy, HH:mm:ss");
         Date now = new Date();
         String strDate = sdfDate.format(now);
 
@@ -1096,7 +1096,7 @@ public class ListTickets extends Fragment {
 
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomObservateur+",<br><br>" +
                 "Le ticket \""+titreTicket+"\" dont vous êtes l'observateur a été <b>résolu</b> le "+nowResolu+".<br><br>" +
-                "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
+                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
                 "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
@@ -1226,7 +1226,7 @@ public class ListTickets extends Fragment {
 
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomDemandeur+",<br><br>" +
                 "Votre ticket \""+titreTicket+"\" a été <b>résolu</b> le "+nowResolu+".<br><br>" +
-                "Technicien chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
+                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
                 "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();

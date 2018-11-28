@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -31,10 +32,11 @@ public class DialogMotifAttente {
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_motif_attente);
 
-        txt = (EditText) dialog.findViewById(R.id.ETmotif);
+        txt = dialog.findViewById(R.id.ETmotif);
         txt.setEnabled(false);
 
-        listeMotif = (TextView) dialog.findViewById(R.id.listeMotif);
+        listeMotif = dialog.findViewById(R.id.listeMotif);
+        listeMotif.setPaintFlags(listeMotif.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
 
         listeMotif.setOnClickListener(new View.OnClickListener() {

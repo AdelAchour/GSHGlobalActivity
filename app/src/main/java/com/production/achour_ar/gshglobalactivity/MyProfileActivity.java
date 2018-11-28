@@ -8,6 +8,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.net.Uri;
@@ -37,7 +39,8 @@ import java.util.Date;
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ImageView profilPicIV;
-    private Button pickImageButton;
+    //private Button pickImageButton;
+    private ImageButton pickImageButton;
     private Uri imageURI;
     private String session_token, nameUser, idUser, firstnameUser;
     private String picturePath;
@@ -69,9 +72,45 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         String path = Constants.PROFILE_PIC_PATH;
         String picname = MyPreferences.getMyProfilPicName(this, Constants.PROFILE_PIC_NAME__KEY, Constants.PROFILE_PIC_NAME_DEF);
 
-        profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
-        profilPicIV.setImageBitmap(profilePic);
+        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)){
+            //CASE : NO SHARED PREFERENCE (DOWNLOAD FROM SERVER)
+                //temp case: put a default profile pic
+                LoadDefaultProfilePic();
+                //AccueilUser.handler.sendEmptyMessage(Constants.UPDATE_DEFAULT_PROFILE_PIC_NAV_HEADER);
+        }
+        else {
+            // SHARED PREFERENCE EXISTS
+            File picToLoad = new File(path+"/"+picname);
+            if (picToLoad.exists()){
+                // PIC EXISTS
+                Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
+                profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
+                profilPicIV.setImageBitmap(profilePic);
+            }
+            else {
+                //PIC DOES NOT EXIST
+                Log.e("DOES_PIC_EXIST", "NO IT DOES NOT EXIST !");
+                File folderPics = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
+                if (!folderPics.exists()) {
+                    if (folderPics.mkdirs()) {
+                        Log.d("FOLDER_PIC", "DIRECTORY CREATED SUCCESSFULLY !");
+                    }
+                }
+                //download from server and put it in the folder
+                    //temp case: put a default profile pic
+                    LoadDefaultProfilePic();
+                    //AccueilUser.handler.sendEmptyMessage(Constants.UPDATE_DEFAULT_PROFILE_PIC_NAV_HEADER);
 
+            }
+
+        }
+
+    }
+
+    private void LoadDefaultProfilePic() {
+        Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.man);
+        profilPicIV.setImageBitmap(icon);
     }
 
     private void getArguments() {
@@ -150,7 +189,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
                 // Set The Bitmap Data To ImageView
                 profilPicIV.setImageBitmap(selectedBitmap);
-                AccueilUser.handler.sendEmptyMessage(Constants.UPLOAD_PROFILE_PIC_NAV_HEADER);
+                AccueilUser.handler.sendEmptyMessage(Constants.UPDATE_PROFILE_PIC_NAV_HEADER);
                 profilPicIV.setScaleType(ScaleType.FIT_XY);
                 System.out.println("Height: "+profilPicIV.getHeight());
                 System.out.println("Width: "+profilPicIV.getWidth());
@@ -163,22 +202,17 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     }
 
     private String saveToInternalStorage(Bitmap bitmapImage){
-        //ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        //File directory = cw.getDir("fourStarsPics", Context.MODE_PRIVATE);
+
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
 
         if (!mediaStorageDir.exists()) {
-            //mediaStorageDir.mkdir();
             if (!mediaStorageDir.mkdirs()) {
                 Log.d("App", "failed to create directory");
             }
         }
         // Create imageDir
-        String picName = nameUser+"_"+firstnameUser+"_"+getNowTime()+"_profilePic.jpg";
+        String picName = nameUser+"_"+firstnameUser+"_"+getNowTime()+"_profilePic.png";
         File mypath = new File(mediaStorageDir,picName);
-
-
 
         FileOutputStream fos = null;
 

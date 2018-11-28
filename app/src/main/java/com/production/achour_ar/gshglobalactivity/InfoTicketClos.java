@@ -38,28 +38,22 @@ import java.util.Map;
 
 public class InfoTicketClos extends AppCompatActivity {
 
-
-    String session_token, nameUser, idUser, firstnameUser;
-
-    String titreTicket, slaTicket, urgenceTicket,
+    private String session_token, nameUser, idUser, firstnameUser;
+    private String titreTicket, slaTicket, urgenceTicket,
             categorieTicket, etatTicket, dateDebutTicket, idTicket, tempsResolution, tempsRetard,
             dateEchanceTicket, descriptionTicket, lieuTicket, dateClotureTicket;
-    boolean ticketEnretard;
-
-    String usernameDemandeur, emailDemandeur, telephoneDemandeur, prenomDemandeur, nomDemandeur, lieuDemandeur,posteDemandeur;
-    String usernameObservateur, emailObservateur, telephoneObservateur, prenomObservateur, nomObservateur, lieuObservateur,posteObservateur;
-
-    TextView titreTV, slaTV, detailtempsTV,
+    private boolean ticketEnretard;
+    private String usernameDemandeur, emailDemandeur, telephoneDemandeur, prenomDemandeur, nomDemandeur, lieuDemandeur,posteDemandeur;
+    private String usernameObservateur, emailObservateur, telephoneObservateur, prenomObservateur, nomObservateur, lieuObservateur,posteObservateur;
+    private TextView titreTV, slaTV, detailtempsTV, idTV,
             demandeurTV, categorieTV, etatTV, dateDebutTV, ObservateurTV,
             dateEchanceTV, descriptionTV, lieuTV, dateClotureTicketTV;
-
-    RequestQueue queue;
-    String observateur;
-
-    ProgressBar progressBarDia;
-    ProgressDialog pd, pdCalcul;
-    ArrayList<ObservateurModel> listObservateur;
-    String[] tabObs;
+    private RequestQueue queue;
+    private String observateur;
+    private ProgressBar progressBarDia;
+    private ProgressDialog pd, pdCalcul;
+    private ArrayList<ObservateurModel> listObservateur;
+    private String[] tabObs;
     private static DateFormat parser ;
     public static Handler handlerInfoClos;
 
@@ -68,49 +62,21 @@ public class InfoTicketClos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info_ticket_clos);
 
+        initView();
+        setupActionBar();
+        setupPDs();
+        getArguments();
+        getTicketInfo();
+
+    }
+
+    private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Information du ticket");
         actionBar.setDisplayHomeAsUpEnabled(true); //show a caret even if android:parentActivityName is not specified.
+    }
 
-        listObservateur = new ArrayList<ObservateurModel>();
-        pd = new ProgressDialog(InfoTicketClos.this);
-        pd.setMessage("Chargement...");
-        pd.show();
-
-        pdCalcul = new ProgressDialog(InfoTicketClos.this);
-        pdCalcul.setMessage("Calcul...");
-
-        handlerInfoClos = new HandlerInfoClos();
-
-        parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        queue = Volley.newRequestQueue(this);
-
-        titreTV = (TextView)findViewById(R.id.titreAnswer);
-        slaTV = (TextView)findViewById(R.id.SLAAnswer);
-        descriptionTV = (TextView)findViewById(R.id.DescriptionAnswer);
-        demandeurTV = (TextView)findViewById(R.id.demandeurAnswer);
-        ObservateurTV = (TextView)findViewById(R.id.ObsAnswer);
-        categorieTV = (TextView)findViewById(R.id.categorieAnswer);
-        etatTV = (TextView)findViewById(R.id.StatutAnswer);
-        dateDebutTV = (TextView)findViewById(R.id.DebutAnswer);
-        dateEchanceTV = (TextView)findViewById(R.id.EcheanceAnswer);
-        lieuTV = (TextView)findViewById(R.id.LieuAnswer);
-        dateClotureTicketTV = (TextView)findViewById(R.id.ClotureAnswer);
-        detailtempsTV = (TextView)findViewById(R.id.DetailTimeAnswer);
-
-        progressBarDia = (ProgressBar) findViewById(R.id.progressBarDialog);
-
-
-        Intent i = getIntent();
-        session_token = i.getStringExtra("session");
-        nameUser = i.getStringExtra("nom");
-        firstnameUser = i.getStringExtra("prenom");
-        idUser = i.getStringExtra("id");
-
-        idTicket = i.getStringExtra("idTicket");
-
-        System.out.println("id t = "+idTicket);
-
+    private void getTicketInfo() {
         //Récupération du ticket
         List<KeyValuePair> paramsTicket = new ArrayList<>();
         paramsTicket.add(new KeyValuePair("criteria[0][field]","2"));
@@ -192,6 +158,7 @@ public class InfoTicketClos extends AppCompatActivity {
                             slaTV.setText(slaTicket);
                             dateEchanceTV.setText(dateEchanceTicket);
                             titreTV.setText(titreTicket);
+                            idTV.setText(idTicket);
                             descriptionTV.setText(descriptionTicket);
                             lieuTV.setText(lieuTicket);
                             dateClotureTicketTV.setText(ClotureText(dateClotureTicket));
@@ -286,6 +253,45 @@ public class InfoTicketClos extends AppCompatActivity {
         };
         queue.add(getRequestTicket);
     }
+
+    private void initView() {
+        listObservateur = new ArrayList<ObservateurModel>();
+        pd = new ProgressDialog(InfoTicketClos.this);
+        pdCalcul = new ProgressDialog(InfoTicketClos.this);
+        handlerInfoClos = new HandlerInfoClos();
+        parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        queue = Volley.newRequestQueue(this);
+        titreTV = findViewById(R.id.titreAnswer);
+        idTV = findViewById(R.id.IDAnswer);
+        slaTV = findViewById(R.id.SLAAnswer);
+        descriptionTV = findViewById(R.id.DescriptionAnswer);
+        demandeurTV = findViewById(R.id.demandeurAnswer);
+        ObservateurTV = findViewById(R.id.ObsAnswer);
+        categorieTV = findViewById(R.id.categorieAnswer);
+        etatTV = findViewById(R.id.StatutAnswer);
+        dateDebutTV = findViewById(R.id.DebutAnswer);
+        dateEchanceTV = findViewById(R.id.EcheanceAnswer);
+        lieuTV = findViewById(R.id.LieuAnswer);
+        dateClotureTicketTV = findViewById(R.id.ClotureAnswer);
+        detailtempsTV = findViewById(R.id.DetailTimeAnswer);
+        progressBarDia = findViewById(R.id.progressBarDialog);
+    }
+
+    private void getArguments() {
+        Intent i = getIntent();
+        session_token = i.getStringExtra("session");
+        nameUser = i.getStringExtra("nom");
+        firstnameUser = i.getStringExtra("prenom");
+        idUser = i.getStringExtra("id");
+        idTicket = i.getStringExtra("idTicket");
+    }
+
+    private void setupPDs() {
+        pdCalcul.setMessage("Calcul...");
+        pd.setMessage("Chargement...");
+        pd.show();
+    }
+
 
     private void getAllObservateursInfo(String[] observateur) {
         //Récupération des informations de tous les observateurs
