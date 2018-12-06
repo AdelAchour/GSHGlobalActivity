@@ -3,142 +3,206 @@
     android:id="@+id/drawer_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#e1e1e1">
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:paddingTop="35dp"
-            android:paddingBottom="10dp"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-
-            <TextView
-                android:layout_gravity="center"
-                android:shadowColor="@color/text_shadow"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
-                android:textAlignment="center"
-                android:id="@+id/welcomeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp"
-                android:textColor="@color/colorPrimary"
-                android:textSize="23sp"
-                android:text="Bienvenue KHADRAOUI Merouane" />
-
-            <!-- Linear Button -->
             <LinearLayout
-                android:id="@+id/LinearButton"
+                android:id="@+id/greenbglayout"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:orientation="vertical"
+                android:background="@color/linearbg">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/imageviewbgprofile"
+                    android:layout_marginTop="70dp"
+                    android:layout_gravity="center"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:civ_border_width="3dp"
+                    app:civ_border_color="@color/linearbghard"
+                    />
+                <TextView
+                    android:id="@+id/welcomeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ACHOUR Adel"
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"/>
+                <TextView
+                    android:id="@+id/jobuserTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Poste"
+                    android:layout_gravity="center"
+                    android:textSize="13sp"
+                    android:textColor="@color/grey_weak"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:layout_margin="13dp">
-
+                android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="235dp"
+                android:weightSum="100"
+                android:orientation="horizontal"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_centerHorizontal="true"
+                >
 
                 <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    app:cardBackgroundColor="@color/color_card"
-                    android:layout_height="150dp"
-                    app:cardCornerRadius="5dp"
+                    android:id="@+id/ticketCard"
+                    android:layout_width="0dp"
+                    android:layout_weight="50"
+                    app:cardBackgroundColor="@color/color_card_profile"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="3dp"
                     app:cardUseCompatPadding="true">
+
                     <LinearLayout
-                        android:layout_margin="10dp"
+                        android:layout_margin="20dp"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:weightSum="100">
+                        <ImageView
+                            android:layout_gravity="center"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:src="@drawable/movietickets"/>
                         <TextView
-                            android:layout_weight="60"
-                            android:textColor="@color/color_text_card"
+                            android:textColor="@color/black"
+                            android:layout_marginTop="15dp"
+                            android:layout_gravity="center"
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:text="@string/descriptionbuttonticket" />
-                        <Button
-                            android:layout_weight="40"
-                            android:id="@+id/ticketButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:background="@drawable/shape_button"
-                            android:textColor="@android:color/white"
-                            android:text="Mes tickets"/>
+                            android:layout_height="wrap_content"
+                            android:text="Mes tickets" />
+
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
-
                 <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    app:cardBackgroundColor="@color/color_card"
-                    android:layout_height="150dp"
-                    app:cardCornerRadius="5dp"
-                    app:cardUseCompatPadding="true">
+                    android:id="@+id/projectCard"
+                    android:layout_width="0dp"
+                    android:layout_weight="50"
+                    app:cardBackgroundColor="@color/color_card_profile"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="3dp"
+                    app:cardUseCompatPadding="true"
+                    android:layout_marginLeft="15dp">
+
                     <LinearLayout
-                        android:layout_margin="10dp"
+                        android:layout_margin="20dp"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:weightSum="100">
+                        <ImageView
+                            android:layout_gravity="center"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:src="@drawable/idea"/>
                         <TextView
-                            android:layout_weight="60"
-                            android:textColor="@color/color_text_card"
+                            android:textColor="@color/black"
+                            android:layout_marginTop="15dp"
+                            android:layout_gravity="center"
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:text="@string/descriptionbuttonproject" />
-                        <Button
-                            android:layout_weight="40"
-                            android:id="@+id/projectButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:background="@drawable/shape_button"
-                            android:textColor="@android:color/white"
-                            android:text="Mes projets"/>
+                            android:layout_height="wrap_content"
+                            android:text="Mes projets" />
+
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
-
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    app:cardBackgroundColor="@color/color_card"
-                    android:layout_height="150dp"
-                    app:cardCornerRadius="5dp"
-                    app:cardUseCompatPadding="true">
-                    <LinearLayout
-                        android:layout_margin="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:weightSum="100">
-                        <TextView
-                            android:layout_weight="60"
-                            android:textColor="@color/color_text_card"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:text="@string/descriptionbuttonrendement" />
-                        <Button
-                            android:layout_weight="40"
-                            android:id="@+id/rendementButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:background="@drawable/shape_button"
-                            android:textColor="@android:color/white"
-                            android:text="Mon rendement global"/>
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
-
 
             </LinearLayout>
 
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:weightSum="100"
+                android:orientation="horizontal"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp">
 
+                <android.support.v7.widget.CardView
+                    android:id="@+id/rendementCard"
+                    android:layout_width="0dp"
+                    android:layout_weight="50"
+                    app:cardBackgroundColor="@color/color_card_profile"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="3dp"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:layout_margin="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:weightSum="100">
+                        <ImageView
+                            android:layout_gravity="center"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:src="@drawable/graphhome"/>
+                        <TextView
+                            android:textColor="@color/black"
+                            android:layout_marginTop="15dp"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mon rendement" />
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/interventionCard"
+                    android:layout_width="0dp"
+                    android:layout_weight="50"
+                    app:cardBackgroundColor="@color/color_card_profile"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="3dp"
+                    app:cardUseCompatPadding="true"
+                    android:layout_marginLeft="15dp">
+
+                    <LinearLayout
+                        android:layout_margin="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:weightSum="100">
+                        <ImageView
+                            android:layout_gravity="center"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:src="@drawable/achievement"/>
+                        <TextView
+                            android:textColor="@color/black"
+                            android:layout_marginTop="15dp"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mes interventions"
+                            android:textSize="13sp"/>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
     </ScrollView>
 
     <include

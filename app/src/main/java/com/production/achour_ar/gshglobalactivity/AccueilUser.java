@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.media.Image;
 import android.os.Environment;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
@@ -56,81 +58,129 @@ import java.util.Map;
 import static com.production.achour_ar.gshglobalactivity.Constants.App_Token;
 import static com.production.achour_ar.gshglobalactivity.Constants.GLPI_URL;
 
-public class AccueilUser extends AppCompatActivity {
+public class AccueilUser extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView welcomeView, headertitle;
-    private ImageView profilePicNav;
+    private TextView welcomeView, headertitle, jobuserTV;
+    private ImageView profilePicNav, profilePicHome;
     private Button ticketButton, projectButton, rendementButton;
+    private CardView ticketCard, projectCard, rendementCard, interventionCard;
     private String session_token, nameUser, idUser, firstnameUser;
     static String nbCount ;
     private RequestQueue queue;
     private DrawerLayout mDrawerLayout;
     public static Handler handler;
-    private ProgressDialog pdlogout ;
+    private ProgressDialog pdlogout;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
+    private View headerView;
+    private String emailUser;
+    private String telephoneUser;
+    private String lieuUser;
+    private String posteUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.accueil_user);
 
-        Intent i = getIntent();
-        session_token = i.getStringExtra("session");
-        nameUser = i.getStringExtra("nom");
-        firstnameUser = i.getStringExtra("prenom");
-        idUser = i.getStringExtra("id");
+        initView();
+        getArguments();
+        serviceNotificationManagement();
+        setupToolbar();
+        setupPDs();
+        setupTVs();
+        setListeners();
+        setupButtons();
+        navigationListener();
+        loadProfilePic();
+        loadProfilePicHome();
+        getInfoUser();
+        getTicketsByTechnicien(idUser);
 
-        System.out.println("Je vais vérifier.");
+    }
 
+    private void getInfoUser() {
+        String url = Constants.GLPI_URL+"search/User";
 
-        if(ServiceNotificationNewTicket.ServiceIsRunning == false ) {
-            System.out.println("Service not running");
-            ServiceNotificationNewTicket.ServiceIsRunning = true ;
-            //register the services to run in background
-            Intent intent = new Intent(AccueilUser.this, ServiceNotificationNewTicket.class);
-            intent.putExtra("id",idUser);
-            intent.putExtra("session",session_token);
-            // start the services
-            startService(intent);
-            System.out.println("Service started with id = "+idUser);
-        }
-
-
-        Toolbar toolbar = findViewById(R.id.toolbarDrawer);
-        toolbar.setTitle("Accueil");
-        setSupportActionBar(toolbar);
-
-        pdlogout = new ProgressDialog(AccueilUser.this);
-        pdlogout.setMessage("Déconnexion...");
-
-        handler = new HandlerAccueil();
-
-        queue = Volley.newRequestQueue(this);
-
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        headertitle = headerView.findViewById(R.id.header_nav_ID);
-        profilePicNav = headerView.findViewById(R.id.profilePicNav);
-
-        welcomeView = findViewById(R.id.welcomeTextView);
-        ticketButton = findViewById(R.id.ticketButton);
-        rendementButton = findViewById(R.id.rendementButton);
-        projectButton = findViewById(R.id.projectButton);
+        List<KeyValuePair> paramsObs = new ArrayList<>();
+        paramsObs.add(new KeyValuePair("criteria[0][field]","2"));
+        paramsObs.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+        paramsObs.add(new KeyValuePair("criteria[0][value]",idUser));
+        paramsObs.add(new KeyValuePair("forcedisplay[0]","9"));
+        paramsObs.add(new KeyValuePair("forcedisplay[1]","34"));
+        paramsObs.add(new KeyValuePair("forcedisplay[2]","5"));
+        paramsObs.add(new KeyValuePair("forcedisplay[3]","6"));
+        paramsObs.add(new KeyValuePair("forcedisplay[4]","81"));
 
 
-       welcomeView.setText("Bienvenue "+firstnameUser+" "+nameUser);
+        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(url, paramsObs), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray Jdata = response.getJSONArray("data");
+                            try {
+                                JSONObject userInfo = Jdata.getJSONObject(0);
+
+                                emailUser = userInfo.getString("5");
+                                telephoneUser = userInfo.getString("6");
+                                lieuUser = userInfo.getString("80");
+                                posteUser = userInfo.getString("81");
 
 
-       headertitle.setText(firstnameUser+" "+nameUser);
-       loadProfilePic();
-       
-       getTicketsByTechnicien(idUser);
+                            } catch (JSONException e) {
+                                Log.e("Error JSONArray : ", e.getMessage());
+                            }
 
+                        } catch (JSONException e) {
+                            Log.e("JSON Error response",e.getMessage());
+                        }
+
+                        jobuserTV.setText(posteUser);
+                    }
+
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //progressBar.setVisibility(View.GONE);
+                        Log.e("Error.Response", error.toString());
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",Constants.App_Token);
+                params.put("Session-Token",session_token);
+                return params;
+            }
+        };
+
+        queue.add(getRequestDemandeur);
+
+    }
+
+    private void setupButtons() {
+        //projectButton.setEnabled(false);
+        //rendementButton.setEnabled(false);
+    }
+
+    private void setListeners() {
+        /*ticketButton.setOnClickListener(this);
+        projectButton.setOnClickListener(this);
+        rendementButton.setOnClickListener(this);*/
+
+        ticketCard.setOnClickListener(this);
+        projectCard.setOnClickListener(this);
+        rendementCard.setOnClickListener(this);
+        interventionCard.setOnClickListener(this);
+    }
+
+    private void navigationListener() {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -154,50 +204,119 @@ public class AccueilUser extends AppCompatActivity {
                                 i.putExtra("nom",nameUser);
                                 i.putExtra("prenom",firstnameUser);
                                 i.putExtra("id",idUser);
+
+                                i.putExtra(Constants.EMAIL_USER,emailUser);
+                                i.putExtra(Constants.TEL_USER,telephoneUser);
+                                i.putExtra(Constants.LIEU_USER,lieuUser);
+                                i.putExtra(Constants.POSTE_USER,posteUser);
+
                                 startActivity(i);
                                 break;
-
                         }
 
-
                         mDrawerLayout.closeDrawers();
-
                         // Add code here to update the UI based on the item selected
                         // For example, swap UI fragments here
-
                         return true;
                     }
                 });
+    }
 
-       ticketButton.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               Intent i = new Intent(getApplicationContext(), TabLayoutActivity.class);
-               i.putExtra("session",session_token);
-               i.putExtra("nom",nameUser);
-               i.putExtra("prenom",firstnameUser);
-               i.putExtra("id",idUser);
-               i.putExtra("nb",nbCount);
-               startActivity(i);
-           }
-       });
+    private void setupTVs() {
+        String name = firstnameUser+" "+nameUser;
+        welcomeView.setText(name);
+        headertitle.setText(name);
+    }
 
-        rendementButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    private void initView() {
+        toolbar = findViewById(R.id.toolbarDrawer);
+        pdlogout = new ProgressDialog(AccueilUser.this);
+        handler = new HandlerAccueil();
+        queue = Volley.newRequestQueue(this);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
-            }
-        });
+        toggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView = findViewById(R.id.nav_view);
+        headerView = navigationView.getHeaderView(0);
+        headertitle = headerView.findViewById(R.id.header_nav_ID);
+        profilePicNav = headerView.findViewById(R.id.profilePicNav);
+
+        profilePicHome = findViewById(R.id.imageviewbgprofile);
+
+        welcomeView = findViewById(R.id.welcomeTextView);
+        jobuserTV = findViewById(R.id.jobuserTV);
+
+        /*ticketButton = findViewById(R.id.ticketButton);
+        rendementButton = findViewById(R.id.rendementButton);
+        projectButton = findViewById(R.id.projectButton);*/
+
+        ticketCard = findViewById(R.id.ticketCard);
+        projectCard = findViewById(R.id.projectCard);
+        rendementCard = findViewById(R.id.rendementCard);
+        interventionCard = findViewById(R.id.interventionCard);
+    }
+
+    private void setupPDs() {
+        pdlogout.setMessage("Déconnexion...");
+    }
+
+    private void setupToolbar() {
+        toolbar.setTitle("Accueil");
+        setSupportActionBar(toolbar);
+    }
+
+    private void serviceNotificationManagement() {
+        if(ServiceNotificationNewTicket.ServiceIsRunning == false ) {
+            System.out.println("Service not running");
+            ServiceNotificationNewTicket.ServiceIsRunning = true ;
+            //register the services to run in background
+            Intent intent = new Intent(AccueilUser.this, ServiceNotificationNewTicket.class);
+            intent.putExtra("id",idUser);
+            intent.putExtra("session",session_token);
+            // start the services
+            startService(intent);
+            System.out.println("Service started with id = "+idUser);
+        }
+    }
+
+    private void getArguments() {
+        Intent i = getIntent();
+        session_token = i.getStringExtra("session");
+        nameUser = i.getStringExtra("nom");
+        firstnameUser = i.getStringExtra("prenom");
+        idUser = i.getStringExtra("id");
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ticketCard:
+                Intent i = new Intent(getApplicationContext(), TabLayoutActivity.class);
+                i.putExtra("session",session_token);
+                i.putExtra("nom",nameUser);
+                i.putExtra("prenom",firstnameUser);
+                i.putExtra("id",idUser);
+                i.putExtra("nb",nbCount);
+
+                startActivity(i);
+                break;
+
+            case R.id.projectCard:
+                break;
+
+            case R.id.rendementCard:
+                break;
+
+            case R.id.interventionCard:
+                break;
 
 
 
-        projectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
+        }
     }
 
 
@@ -237,8 +356,6 @@ public class AccueilUser extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-                        //System.out.println("Titre = "+titreTicket +"\n SLA = "+slaTicket);
                     }
                 },
                 new Response.ErrorListener()
@@ -258,10 +375,8 @@ public class AccueilUser extends AppCompatActivity {
                 params.put("Session-Token",session_token);
                 return params;
             }
-
         };
 
-        // add it to the RequestQueue
         queue.add(getRequest);
 
     }
@@ -391,10 +506,55 @@ public class AccueilUser extends AppCompatActivity {
 
     }
 
+    private void loadProfilePicHome() {
+        Bitmap profilePic;
+
+        String path = Constants.PROFILE_PIC_PATH;
+        String picname = MyPreferences.getMyProfilPicName(this, Constants.PROFILE_PIC_NAME__KEY, Constants.PROFILE_PIC_NAME_DEF);
+
+        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)){
+            //CASE : NO SHARED PREFERENCE (DOWNLOAD FROM SERVER)
+            //temp case: put a default profile pic
+            loadDefaultProfilePicHome();
+        }
+        else {
+            // SHARED PREFERENCE EXISTS
+            File picToLoad = new File(path+"/"+picname);
+            if (picToLoad.exists()){
+                // PIC EXISTS
+                Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
+                profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
+                profilePicHome.setImageBitmap(profilePic);
+            }
+            else {
+                //PIC DOES NOT EXIST
+                Log.e("DOES_PIC_EXIST", "NO IT DOES NOT EXIST !");
+                File folderPics = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
+                if (!folderPics.exists()) {
+                    if (folderPics.mkdirs()) {
+                        Log.d("FOLDER_PIC", "DIRECTORY CREATED SUCCESSFULLY !");
+                    }
+                }
+                //download from server and put it in the folder
+                //temp case: put a default profile pic
+                loadDefaultProfilePicHome();
+
+            }
+
+        }
+
+    }
+
     private void loadDefaultProfilePic() {
         Bitmap icon = BitmapFactory.decodeResource(getResources(),
                 R.drawable.man);
         profilePicNav.setImageBitmap(icon);
+    }
+
+    private void loadDefaultProfilePicHome() {
+        Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.man);
+        profilePicHome.setImageBitmap(icon);
     }
 
 

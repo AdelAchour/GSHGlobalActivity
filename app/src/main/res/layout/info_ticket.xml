@@ -1,396 +1,528 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ScrollView01"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="#cccccc">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/RelativeBigBoss"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <ProgressBar
-            android:id="@+id/progressBarInfo"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="102dp"
-            android:layout_height="72dp"
-            android:layout_marginTop="05dp"
-            android:layout_alignParentTop="true"
-            android:visibility="gone"
-            android:layout_centerHorizontal="true" />
-
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_info_blue_54dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="170dp"/>
-
-
-        <LinearLayout
+        <!-- Basic Info -->
+        <android.support.v7.widget.CardView
+            android:id="@+id/basicinfo"
             android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
-            android:layout_marginTop="120dp"
-            android:orientation="vertical">
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:id="@+id/LinearTimerRetard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:weightSum="100">
 
-                <TextView
-                    android:id="@+id/retardtimerAnswer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="152dp"
-                    android:paddingEnd="20dp"
-                    android:text="Temps de retard"
-                    android:textColor="#692222"
-                    android:textStyle="bold"
-                    android:visibility="gone"/>
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_info_outline_grey_24dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/basicinfo"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF909090" />
+
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical"
+                   android:layout_margin="5dp">
+                   <TextView
+                       android:id="@+id/IDAnswer"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="4920"
+                       android:textColor="@color/black"/>
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="ID"
+                       android:textSize="10sp"/>
+               </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/titreAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Installation logiciel"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Titre"
+                        android:textSize="10sp"/>
+                </LinearLayout>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
 
+
+        <!-- Actors -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:id="@+id/LinearId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
+                android:orientation="vertical"
+                android:weightSum="100">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="ID "/>
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_person_grey_20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/actors"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/IDAnswer"
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF909090" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="113dp"
-                    android:textColor="#ff000000"
-                    android:paddingEnd="20dp"
-                    android:text="ID answer "/>
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/demandeurAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ACHOUR Adel"
+                        android:textColor="#172b60"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/requester"
+                        android:textSize="10sp"/>
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/ObsAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BOUCHENTOUF Hanane"
+                        android:textColor="#172b60"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/observer"
+                        android:textSize="10sp"/>
+                </LinearLayout>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
 
+
+        <!-- Category -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:id="@+id/LinearTitre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:weightSum="100">
 
-                <TextView
-                    android:id="@+id/titreLabel"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Titre "/>
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_folder_grey_20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/category"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/titreAnswer"
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF909090" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="95dp"
-                    android:textColor="#ff000000"
-                    android:paddingEnd="20dp"
-                    android:text="Titre answer "/>
-
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/categorieAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MAINTENANE D'EQUIPEMENT INFORMATIQUES > Installation Software"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/category"
+                        android:textSize="10sp"/>
+                </LinearLayout>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <!-- Dates -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:id="@+id/LinearDemandeur"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:weightSum="100">
 
-                <TextView
-                    android:id="@+id/demandeurLabel"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Demandeur "/>
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_event_note_grey_20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dates"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/demandeurAnswer"
-                    android:textColor="#172b60"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF909090" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="52dp"
-                    android:paddingEnd="20dp"
-                    android:text="demandeur answer" />
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/DebutAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2018-09-13 14:46:33"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/debutdate"
+                        android:textSize="10sp"/>
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/EcheanceAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2018-09-17 07:25:13"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/echeancedate"
+                        android:textSize="10sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/ResolutionAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2018-09-17 07:25:13"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/resolutiondate"
+                        android:textSize="10sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/ClotureAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2018-09-17 07:25:13"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cloturedate"
+                        android:textSize="10sp"/>
+                </LinearLayout>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <!-- Status & SLA -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:id="@+id/LinearObs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:weightSum="100">
 
-                <TextView
-                    android:id="@+id/ObsLabel"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Observateur "/>
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_more_horiz_grey_24dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/StatusAndSLA"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/ObsAnswer"
-                    android:textColor="#172b60"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF909090" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="46dp"
-                    android:paddingEnd="20dp"
-                    android:text="observateur answer" />
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/StatutAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="En cours"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/etat"
+                        android:textSize="10sp"/>
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/SLAAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="LEVEL 1 (2H/16H)"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/SLA"
+                        android:textSize="10sp"/>
+                </LinearLayout>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <!-- Lieu -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:id="@+id/LinearCategorie"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:weightSum="100">
 
-                <TextView
-                    android:id="@+id/categorieLabel"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Catégorie "/>
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_location_on_location_20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lieu"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/categorieAnswer"
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF909090" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="62dp"
-                    android:paddingEnd="20dp"
-                    android:textColor="#ff000000"
-                    android:text="Catégorie answer" />
-
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/LieuAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SBA > Direction Générale du Groupe (K10)"
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lieu"
+                        android:textSize="10sp"/>
+                </LinearLayout>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
 
+        <!-- Description -->
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:id="@+id/LinearStatut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:weightSum="100">
 
-                <TextView
-                    android:id="@+id/StatutLabel"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Statut"/>
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_edit_grey_20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/content"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/StatutAnswer"
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#FF909090" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="86dp"
-                    android:textColor="#ff000000"
-                    android:paddingEnd="20dp"
-                    android:text="Statut answer" />
-
+                    android:orientation="vertical"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:id="@+id/DescriptionAnswer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bonjour, merci."
+                        android:textColor="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/content"
+                        android:textSize="10sp"/>
+                </LinearLayout>
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LinearDebut"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/DebutLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Date de début"/>
-
-                <TextView
-                    android:id="@+id/DebutAnswer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="35dp"
-                    android:textColor="#ff000000"
-                    android:paddingEnd="20dp"
-                    android:text="date de début answer" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LinearEcheance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/EcheanceLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Date d'échéance"/>
-
-                <TextView
-                    android:id="@+id/EcheanceAnswer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:textColor="#ff000000"
-                    android:paddingEnd="20dp"
-                    android:text="date d'échéance answer" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LinearResolution"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/ResolutionLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Date de résolution"/>
-
-                <TextView
-                    android:id="@+id/ResolutionAnswer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="09dp"
-                    android:textColor="#ff000000"
-                    android:paddingEnd="20dp"
-                    android:text="date d'échéance answer" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LinearCloture"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/ClotureLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Date de cloture"/>
-
-                <TextView
-                    android:id="@+id/ClotureAnswer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="27dp"
-                    android:textColor="#ff000000"
-                    android:paddingEnd="20dp"
-                    android:text="date de cloture answer" />
-
-            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
 
-            <LinearLayout
-                android:id="@+id/LinearSLA"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/SLALabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="SLA"/>
-
-                <TextView
-                    android:id="@+id/SLAAnswer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="98dp"
-                    android:textColor="#ff000000"
-                    android:paddingEnd="20dp"
-                    android:text="SLA answer" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LinearLieu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/LieuLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Lieu"/>
-
-                <TextView
-                    android:id="@+id/LieuAnswer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="97dp"
-                    android:textColor="#ff000000"
-                    android:paddingEnd="20dp"
-                    android:text="Lieu answer" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LinearDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/DescriptionLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:text="Description"/>
-
-                <TextView
-                    android:id="@+id/DescriptionAnswer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:textColor="#ff000000"
-                    android:text="Description answer" />
-
-            </LinearLayout>
-
-
-
-        </LinearLayout>
-
-
-
-    </RelativeLayout>
-
-
-
+    </LinearLayout>
 
 </ScrollView>

@@ -51,6 +51,7 @@ public class FirstEverActivity extends AppCompatActivity implements View.OnClick
     private Button connect;
     private String session_token ;
     private String directionUser;
+    private String jobUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,7 +187,7 @@ public class FirstEverActivity extends AppCompatActivity implements View.OnClick
                             e.printStackTrace();
                         }
 
-                        //UIRedirection(idUser);
+                        //getJobUser(idUser);
                         pdAuth.dismiss();
                         Intent i = new Intent(getApplicationContext(), AccueilUser.class);
                         i.putExtra("nom", nameUser);
@@ -215,6 +216,58 @@ public class FirstEverActivity extends AppCompatActivity implements View.OnClick
 
                 return params;
             }
+        };
+
+        queue.add(getRequest);
+    }
+
+    private void getJobUser(String idUser) {
+        String url = Constants.GLPI_URL+"search/User";
+
+        List<KeyValuePair> params = new ArrayList<>();
+        //TECHNICIEN = IDUSER
+        params.add(new KeyValuePair("criteria[0][field]","2"));
+        params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+        params.add(new KeyValuePair("criteria[0][value]",idUser));
+
+        //AFFICHAGE
+        params.add(new KeyValuePair("forcedisplay[0]","82"));
+        params.add(new KeyValuePair("forcedisplay[0]","81"));
+
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray Jdata = response.getJSONArray("data");
+                            JSONObject user = Jdata.getJSONObject(0);
+                            jobUser = user.getString("81");
+
+                        } catch (JSONException e) {
+                            Log.e("Error User ",e.getMessage());
+                            //progressBar.setVisibility(View.GONE);
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //progressBar.setVisibility(View.GONE);
+                        Log.e("Error. Direction", error.toString());
+                    }
+
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",Constants.App_Token);
+                params.put("Session-Token",session_token);
+                return params;
+            }
+
         };
 
         queue.add(getRequest);

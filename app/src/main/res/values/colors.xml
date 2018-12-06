@@ -6,6 +6,7 @@
     <color name="colorBackgroundList">#8f6caa87</color>
     <color name="colorBGRowLate">#3caa0000</color>
     <color name="white">#ffffff</color>
+    <color name="almost_white">#b8b8b8</color>
     <color name="Danger">#ca1f1f</color>
     <color name="Late">#434343</color>
     <color name="AttenteBG">#62dea968</color>
@@ -14,6 +15,14 @@
     <color name="red_notif">#ae2424</color>
     <color name="green_notif">#3b8d26</color>
     <color name="grey_status">#414141</color>
+    <color name="grey_info">#6e6e6e</color>
+    <color name="grey_weak">#e8e8e8</color>
     <color name="color_card">#cad6d2</color>
+    <color name="color_card_profile">#f1f1f1</color>
     <color name="color_text_card">#5d6c5d</color>
+    <color name="color_text_card_profile">#191919</color>
+    <color name="bg_button_weak_opacity">#d31b1b1b</color>
+    <color name="black">#000000</color>
+    <color name="linearbg">#42be6c</color>
+    <color name="linearbghard">#379c5a</color>
 </resources>

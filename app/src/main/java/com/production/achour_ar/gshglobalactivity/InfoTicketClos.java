@@ -41,13 +41,13 @@ public class InfoTicketClos extends AppCompatActivity {
     private String session_token, nameUser, idUser, firstnameUser;
     private String titreTicket, slaTicket, urgenceTicket,
             categorieTicket, etatTicket, dateDebutTicket, idTicket, tempsResolution, tempsRetard,
-            dateEchanceTicket, descriptionTicket, lieuTicket, dateClotureTicket;
+            dateEchanceTicket, descriptionTicket, lieuTicket, dateClotureTicket, dateResolutionTicket;
     private boolean ticketEnretard;
     private String usernameDemandeur, emailDemandeur, telephoneDemandeur, prenomDemandeur, nomDemandeur, lieuDemandeur,posteDemandeur;
     private String usernameObservateur, emailObservateur, telephoneObservateur, prenomObservateur, nomObservateur, lieuObservateur,posteObservateur;
     private TextView titreTV, slaTV, detailtempsTV, idTV,
             demandeurTV, categorieTV, etatTV, dateDebutTV, ObservateurTV,
-            dateEchanceTV, descriptionTV, lieuTV, dateClotureTicketTV;
+            dateEchanceTV, descriptionTV, lieuTV, dateClotureTicketTV, dateResolutionTicketTV;
     private RequestQueue queue;
     private String observateur;
     private ProgressBar progressBarDia;
@@ -97,6 +97,7 @@ public class InfoTicketClos extends AppCompatActivity {
         paramsTicket.add(new KeyValuePair("forcedisplay[11]","12"));
         paramsTicket.add(new KeyValuePair("forcedisplay[12]","2"));
         paramsTicket.add(new KeyValuePair("forcedisplay[13]","66"));
+        paramsTicket.add(new KeyValuePair("forcedisplay[14]","17"));
 
 
         String urlTicket = Constants.GLPI_URL+"search/Ticket";
@@ -127,6 +128,7 @@ public class InfoTicketClos extends AppCompatActivity {
 
                                     lieuTicket = oneTicket.getString("83");
                                     dateClotureTicket = oneTicket.getString("16");
+                                    dateResolutionTicket = oneTicket.getString("17");
                                     ticketEnretard = getBooleanFromSt(oneTicket.getString("82"));
                                     observateur = oneTicket.getString("66");
 
@@ -162,6 +164,7 @@ public class InfoTicketClos extends AppCompatActivity {
                             descriptionTV.setText(descriptionTicket);
                             lieuTV.setText(lieuTicket);
                             dateClotureTicketTV.setText(ClotureText(dateClotureTicket));
+                            dateResolutionTicketTV.setText(dateResolutionTicket);
 
                             detailtempsTV.setPaintFlags(detailtempsTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                             detailtempsTV.setOnClickListener(new View.OnClickListener() {
@@ -212,7 +215,7 @@ public class InfoTicketClos extends AppCompatActivity {
                             });
 
 
-                            Log.d("get Observateur",observateur);
+                            Log.d("get Observateur", ""+observateur);
                             if (tabObs==null){
                                 getObservateurInfo(observateur);
                             }
@@ -274,7 +277,8 @@ public class InfoTicketClos extends AppCompatActivity {
         lieuTV = findViewById(R.id.LieuAnswer);
         dateClotureTicketTV = findViewById(R.id.ClotureAnswer);
         detailtempsTV = findViewById(R.id.DetailTimeAnswer);
-        progressBarDia = findViewById(R.id.progressBarDialog);
+        dateResolutionTicketTV = findViewById(R.id.ResolutionAnswer);
+        //progressBarDia = findViewById(R.id.progressBarDialog);
     }
 
     private void getArguments() {

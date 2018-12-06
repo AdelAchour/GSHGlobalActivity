@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Veuillez donner une raison"
+            android:text="@string/pickmotiftext"
             android:id="@+id/messagealert"
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
@@ -33,7 +33,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Liste de motif"
+            android:text="@string/displaylistmotiftext"
             android:id="@+id/listeMotif"
             android:textStyle="bold"
             android:shadowColor="@color/text_shadow"
@@ -54,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Motif de mise en attente"
+            android:inputType="textCapSentences"
             android:id="@+id/ETmotif"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"

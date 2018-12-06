@@ -1,56 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="#d4d4d4">
 
+    <RelativeLayout
+        android:id="@+id/relativern"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".MyProfileActivity"
-    android:orientation="vertical"
-    android:layout_margin="10dp">
+        <ImageView
+            android:id="@+id/profilePic"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="visible"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/profilePic"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        app:civ_border_width="0dp"
-        app:civ_border_color="@color/colorPrimaryDark"
-        />
+        <Button
+            android:id="@+id/buttonPickImage"
+            android:layout_width="66dp"
+            android:layout_height="27dp"
+            android:text="@string/changeprofilepicbutton"
+            android:background="@drawable/bg_button_change_profile_pic"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/profilePic"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="8dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adel ACHOUR"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:layout_alignBottom="@+id/profilePic"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="8dp"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="3"/>
 
-  <!--  <ImageView
-        android:id="@+id/profilePic"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:layout_width="120dp"
-        android:layout_height="120dp"/>
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/buttonPickImage"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_button_primary"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:textColor="@color/white"/> -->
+        android:orientation="vertical"
+        android:layout_below="@+id/relativern"
+        android:layout_marginTop="20dp">
 
-    <ImageButton
-        android:id="@+id/buttonPickImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_button_primary"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_photo_camera_white_24dp"
-        />
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="100">
+                <LinearLayout
+                    android:layout_weight="50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:textColor="@color/grey_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nom:" />
+                    <TextView
+                        android:id="@+id/nomprofile"
+                        android:textColor="@color/color_text_card_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="OZIL" />
+                </LinearLayout>
 
-</LinearLayout>
-</ScrollView>
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:textColor="@color/grey_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Prénom:" />
+                    <TextView
+                        android:id="@+id/prenomprofile"
+                        android:textColor="@color/color_text_card_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="Adel" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="100">
+                <LinearLayout
+                    android:layout_weight="50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:textColor="@color/grey_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email:" />
+                    <TextView
+                        android:id="@+id/emailprofile"
+                        android:textColor="@color/color_text_card_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="OZIL" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:textColor="@color/grey_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Téléphone:" />
+                    <TextView
+                        android:id="@+id/telephoneprofile"
+                        android:textColor="@color/color_text_card_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="Adel" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="100">
+                <LinearLayout
+                    android:layout_weight="100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:textColor="@color/grey_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Poste:" />
+                    <TextView
+                        android:id="@+id/posteprofile"
+                        android:textColor="@color/color_text_card_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="OZIL" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="3dp"
+            app:cardUseCompatPadding="true">
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="100">
+                <LinearLayout
+                    android:layout_weight="100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:textColor="@color/grey_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lieu:" />
+                    <TextView
+                        android:id="@+id/lieuprofile"
+                        android:textColor="@color/color_text_card_profile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="OZIL" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</RelativeLayout>

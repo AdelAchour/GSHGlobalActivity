@@ -65,4 +65,9 @@ public class Constants {
     public static final String PROFILE_PIC_NAME_DEF = "defaultProfileName";
     public static final String PROFILE_PIC_PATH = "/storage/emulated/0/FourStarsPics";
 
+    public static final String EMAIL_USER = "emailuser";
+    public static final String TEL_USER = "teluser";
+    public static final String LIEU_USER = "lieuuser";
+    public static final String POSTE_USER = "posteuser";
+
 }

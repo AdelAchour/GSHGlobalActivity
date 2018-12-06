@@ -175,7 +175,7 @@ public class InfoTicket extends AppCompatActivity {
                                 dateResolutionTicketTV.setTypeface(dateResolutionTicketTV.getTypeface(), Typeface.ITALIC);
                             }
 
-                            infoRetardTV.setPaintFlags(infoRetardTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                            /*infoRetardTV.setPaintFlags(infoRetardTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                             infoRetardTV.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -188,7 +188,7 @@ public class InfoTicket extends AppCompatActivity {
                                         alert.showDialog(InfoTicket.this, dateEchanceTicket, false);
                                     }
                                 }
-                            });
+                            });*/
 
 
                         } catch (JSONException e) {
@@ -249,8 +249,8 @@ public class InfoTicket extends AppCompatActivity {
         dateResolutionTicketTV = findViewById(R.id.ResolutionAnswer);
         lieuTV = findViewById(R.id.LieuAnswer);
         dateClotureTicketTV = findViewById(R.id.ClotureAnswer);
-        infoRetardTV = findViewById(R.id.retardtimerAnswer);
-        infoRetardTV.setVisibility(View.GONE);
+        //infoRetardTV = findViewById(R.id.retardtimerAnswer);
+        //infoRetardTV.setVisibility(View.GONE);
     }
 
     private void getObservateurInfo(final String observateur) {

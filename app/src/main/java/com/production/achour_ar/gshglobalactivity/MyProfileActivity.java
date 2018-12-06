@@ -21,11 +21,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.net.Uri;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -40,10 +43,22 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     private ImageView profilPicIV;
     //private Button pickImageButton;
-    private ImageButton pickImageButton;
+    private Button pickImageButton;
     private Uri imageURI;
     private String session_token, nameUser, idUser, firstnameUser;
     private String picturePath;
+    private View view;
+    private Animation anim;
+    private String emailUser;
+    private String telephoneUser;
+    private String lieuUser;
+    private String posteUser;
+    private TextView nomInfo;
+    private TextView prenomInfo;
+    private TextView emailInfo;
+    private TextView telInfo;
+    private TextView posteInfo;
+    private TextView lieuInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +71,41 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         setListener();
         getArguments();
         loadProfilePic();
+        setTVs();
 
+    }
+
+    private void setTVs() {
+        nomInfo.setText(nameUser);
+        prenomInfo.setText(firstnameUser);
+        emailInfo.setText(emailUser);
+        posteInfo.setText(posteUser);
+        lieuInfo.setText(lieuUser);
+        setTVtel(telephoneUser);
+    }
+
+    private void setTVtel(String telephoneUser) {
+        if (telephoneUser.length()==9){
+            telInfo.setText(DisplayNumber(telephoneUser));
+        }
+        else {
+            telInfo.setText(telephoneUser);
+        }
+    }
+
+    private String DisplayNumber(String telNumber) {
+        String number = "";
+        number = "0"+telNumber; //0560 93 14 79
+
+        String part1 = number.substring(0,4);
+        String part2 = number.substring(4,6);
+        String part3 = number.substring(6,8);
+        String part4 = number.substring(8,10);
+
+        number = part1 + " " + part2 + " " + part3 + " " + part4;
+
+
+        return number;
     }
 
     private void setupActionBar() {
@@ -85,7 +134,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 // PIC EXISTS
                 Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
                 profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
-                profilPicIV.setImageBitmap(profilePic);
+                setProfilePicToImageView(profilPicIV, profilePic);
+
             }
             else {
                 //PIC DOES NOT EXIST
@@ -107,6 +157,13 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    private void setProfilePicToImageView(ImageView profilPicIV, Bitmap profilePic) {
+        profilPicIV.setImageBitmap(profilePic);
+        Log.d("PROFILE PIC", "setProfilePicToImageView: I'M ADJUSTING BRO");
+        profilPicIV.setAdjustViewBounds(true);
+        profilPicIV.setScaleType(ScaleType.CENTER_CROP);
+    }
+
     private void LoadDefaultProfilePic() {
         Bitmap icon = BitmapFactory.decodeResource(getResources(),
                 R.drawable.man);
@@ -119,6 +176,12 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         nameUser = i.getStringExtra("nom");
         firstnameUser = i.getStringExtra("prenom");
         idUser = i.getStringExtra("id");
+
+        emailUser = i.getStringExtra(Constants.EMAIL_USER);
+        telephoneUser = i.getStringExtra(Constants.TEL_USER);
+        lieuUser = i.getStringExtra(Constants.LIEU_USER);
+        posteUser = i.getStringExtra(Constants.POSTE_USER);
+
     }
 
     private void SDKTestFileURI() {
@@ -134,11 +197,20 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     private void setListener() {
         pickImageButton.setOnClickListener(this);
+        profilPicIV.setOnClickListener(this);
     }
 
     private void initView() {
         profilPicIV = findViewById(R.id.profilePic);
         pickImageButton = findViewById(R.id.buttonPickImage);
+        view = findViewById(R.id.profilePic);
+        anim = AnimationUtils.loadAnimation(this, R.anim.animation_imageview);
+        nomInfo = findViewById(R.id.nomprofile);
+        prenomInfo = findViewById(R.id.prenomprofile);
+        emailInfo = findViewById(R.id.emailprofile);
+        telInfo = findViewById(R.id.telephoneprofile);
+        posteInfo = findViewById(R.id.posteprofile);
+        lieuInfo = findViewById(R.id.lieuprofile);
     }
 
     @Override
@@ -148,6 +220,10 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 if (isStoragePermissionGranted()) openGallery();
                 else askForPermission();
                 break;
+
+            case R.id.profilePic:
+                Log.d("ANIMATION", "onClick: CLICKED");
+                view.startAnimation(anim);
         }
     }
 
@@ -188,9 +264,10 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 }
 
                 // Set The Bitmap Data To ImageView
-                profilPicIV.setImageBitmap(selectedBitmap);
+                //profilPicIV.setImageBitmap(selectedBitmap);
+                setProfilePicToImageView(profilPicIV, selectedBitmap);
                 AccueilUser.handler.sendEmptyMessage(Constants.UPDATE_PROFILE_PIC_NAV_HEADER);
-                profilPicIV.setScaleType(ScaleType.FIT_XY);
+                //profilPicIV.setScaleType(ScaleType.FIT_XY);
                 System.out.println("Height: "+profilPicIV.getHeight());
                 System.out.println("Width: "+profilPicIV.getWidth());
 

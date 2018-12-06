@@ -51,5 +51,26 @@
     <string name="retry">Réessayer</string>
     <string name="status">Etat...</string>
     <string name="external_permission_revoked">Impossible d\'accéder aux photos</string>
+    <string name="changeprofilepicbutton">Changer</string>
+    <string name="actors">Acteurs</string>
+    <string name="basicinfo">Info de base</string>
+    <string name="requester">Demandeur</string>
+    <string name="observer">Observateur</string>
+    <string name="category">Catégorie</string>
+    <string name="dates">Dates</string>
+    <string name="debutdate">Date de début</string>
+    <string name="echeancedate">Date d\'échéance</string>
+    <string name="cloturedate">Date de clôture</string>
+    <string name="StatusAndSLA">État et SLA</string>
+    <string name="etat">État</string>
+    <string name="SLA">SLA</string>
+    <string name="lieu">Lieu</string>
+    <string name="content">Description</string>
+    <string name="resolutiondate">Date de résolution</string>
+    <string name="resolutiontime">Temps de traitement du ticket</string>
+    <string name="displaytreatmentime">Afficher le temps de traitement</string>
+    <string name="resolutionlatetime">Temps de résolution et de retard</string>
+    <string name="pickmotiftext">Veuillez choisir un motif</string>
+    <string name="displaylistmotiftext">Afficher la liste des motifs</string>
 
 </resources>
