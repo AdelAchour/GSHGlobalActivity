@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingStart="10dp"
-    android:paddingEnd="10dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,55 +8,65 @@
     tools:context=".Setting">
 
     <LinearLayout
+        android:id="@+id/ticketlinear"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="10dp"
         android:orientation="horizontal">
+        <ImageView
+            android:layout_marginStart="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/movietickets"/>
         <TextView
+            android:textSize="16sp"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Afficher les x derniers tickets "/>
-
-        <EditText
-            android:id="@+id/rangeticketmax"
-            android:layout_marginLeft="40dp"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
+            android:text="Tickets"
             />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/projectlinear"
+        android:layout_marginTop="13dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="10dp"
         android:orientation="horizontal">
+        <ImageView
+            android:layout_marginStart="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/idea"/>
         <TextView
+            android:textSize="16sp"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Temps d'actualisation automatique"/>
-
-        <EditText
-            android:id="@+id/timeactualisation"
-            android:layout_marginLeft="10dp"
-            android:paddingEnd="20dp"
-            android:layout_width="100dp"
-            android:hint="en minute frfe"
-            android:layout_height="wrap_content"
-            android:inputType="number"
+            android:text="Projets"
             />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonSaveSetting"
-        android:layout_marginTop="50dp"
-        android:text="Enregistrer les modifications"
-        android:background="@drawable/rounded_button_solid"
-        android:textColor="@color/white"
+    <LinearLayout
+        android:id="@+id/interventionlinear"
+        android:layout_marginTop="13dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_marginStart="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/achievement"/>
+        <TextView
+            android:textSize="16sp"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Interventions"
+            />
+    </LinearLayout>
 </LinearLayout>
