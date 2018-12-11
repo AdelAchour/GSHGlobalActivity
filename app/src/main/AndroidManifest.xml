@@ -23,18 +23,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".FirstEverActivity"
             android:screenOrientation="portrait">
 
         </activity>
-
-
         <activity
             android:name=".GalleryUtil"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".AccueilUser"
             android:screenOrientation="portrait"
@@ -82,8 +78,17 @@
         <activity
             android:name=".SearchTicket"
             android:parentActivityName=".TabLayoutActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".MyProfileActivity"></activity>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".MyProfileActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".SettingTicket"
+            android:screenOrientation="portrait">
+        </activity>
+
     </application>
 
 </manifest>

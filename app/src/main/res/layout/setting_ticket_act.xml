@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Setting"
+    android:background="#cccccc">
+
+    <LinearLayout
+        android:id="@+id/greenbglayout"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:orientation="vertical"
+        android:background="@color/colorPrimary">
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="85dp"
+            android:weightSum="100"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/ticketCard"
+                android:layout_width="0dp"
+                android:layout_weight="100"
+                app:cardBackgroundColor="@color/color_card_profile"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="6dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_margin="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/numberticket"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="15dp"
+                        android:weightSum="100">
+                        <TextView
+                            android:layout_weight="100"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_marginTop="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:text="Le nombre de tickets récents à afficher"
+                            android:textStyle="bold"
+                            android:paddingEnd="15dp"
+                            android:textSize="13sp"/>
+
+                        <EditText android:id="@+id/rangeticketmax"
+                            android:singleLine="true"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:hint="Nombre"
+                            android:inputType="number" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:weightSum="100"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/rendementCard"
+                android:layout_width="0dp"
+                android:layout_weight="100"
+                app:cardBackgroundColor="@color/color_card_profile"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="6dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_margin="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/chronometer"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="15dp"
+                        android:weightSum="100">
+                        <TextView
+                            android:layout_weight="100"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_marginTop="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:text="Temps d'actualisation automatique"
+                            android:textStyle="bold"
+                            android:paddingEnd="15dp"
+                            android:textSize="13sp"/>
+
+                        <EditText android:id="@+id/timeactualisation"
+                            android:singleLine="true"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:hint="En minute"
+                            android:inputType="number" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonSaveSetting"
+            android:text="Enregistrer les modifications"
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button_solid"/>
+    </LinearLayout>
+
+</RelativeLayout>
