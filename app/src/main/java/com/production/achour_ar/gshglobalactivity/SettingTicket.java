@@ -28,7 +28,6 @@ public class SettingTicket extends AppCompatActivity implements View.OnClickList
         setListener();
         getValuesAndPopulateTVs();
 
-
     }
 
     private void getValuesAndPopulateTVs() {
