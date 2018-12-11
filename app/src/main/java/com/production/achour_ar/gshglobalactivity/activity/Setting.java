@@ -1,17 +1,14 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
+import com.production.achour_ar.gshglobalactivity.R;
 
 public class Setting extends AppCompatActivity implements View.OnClickListener {
 

@@ -1,7 +1,6 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -13,12 +12,18 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.adapter.ViewPagerAdapter;
+import com.production.achour_ar.gshglobalactivity.fragment.ListTicketBackLog;
+import com.production.achour_ar.gshglobalactivity.fragment.ListTicketsAttente;
+import com.production.achour_ar.gshglobalactivity.fragment.ListTicketsClos;
+import com.production.achour_ar.gshglobalactivity.fragment.ListTicketsResolu;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -73,7 +78,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
                 System.out.println("Tab " + position + " selected ");
                 switch (position) {
                     case 0: //ListTicket
-                        ListTickets.handlerticket.sendEmptyMessage(0); //stp vérifie si la listview est vide et dabar rassek
+                        ListTicketBackLog.ListTickets.handlerticket.sendEmptyMessage(0); //stp vérifie si la listview est vide et dabar rassek
                         break;
 
                     case 1: //ListTicketClos
@@ -119,7 +124,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
 
                 switch (position){
                     case 0: //en cours
-                        ListTickets.handlerticket.sendEmptyMessage(3);
+                        ListTicketBackLog.ListTickets.handlerticket.sendEmptyMessage(3);
                         break;
                     case 1: //clos
                         ListTicketsClos.handlerticketClos.sendEmptyMessage(3);
@@ -178,7 +183,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void initOtherViews() {
-        new ListTickets();
+        new ListTicketBackLog.ListTickets();
         new ListTicketsClos();
         new ListTicketsResolu();
         new ListTicketsAttente();
@@ -240,7 +245,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
 
                 switch (position){
                     case 0: //en cours
-                        ListTickets.handlerticket.sendEmptyMessage(3);
+                        ListTicketBackLog.ListTickets.handlerticket.sendEmptyMessage(3);
                         break;
                     case 1: //clos
                         ListTicketsClos.handlerticketClos.sendEmptyMessage(3);
@@ -323,7 +328,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
         bundle.putString("id", idUser);
         bundle.putInt("range", range);
 
-        ListTickets listTickets = new ListTickets();
+        ListTicketBackLog.ListTickets listTickets = new ListTicketBackLog.ListTickets();
         ListTicketsClos listTicketsClos = new ListTicketsClos();
         ListTicketsResolu listTicketsResolu = new ListTicketsResolu();
         ListTicketsAttente listTicketsAttente = new ListTicketsAttente();
@@ -361,7 +366,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
 
         switch (position){
             case 0: //en cours
-                ListTickets.handlerticket.sendEmptyMessage(3);
+                ListTicketBackLog.ListTickets.handlerticket.sendEmptyMessage(3);
                 break;
             case 1: //clos
                 ListTicketsClos.handlerticketClos.sendEmptyMessage(3);

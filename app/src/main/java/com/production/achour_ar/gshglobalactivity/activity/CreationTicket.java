@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -22,9 +22,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.data_model.CategorieTicketModel;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.production.achour_ar.gshglobalactivity.AccueilUser.generateUrl;
+import static com.production.achour_ar.gshglobalactivity.activity.AccueilUser.generateUrl;
 
 public class CreationTicket extends AppCompatActivity {
 

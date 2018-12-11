@@ -1,10 +1,8 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -24,12 +22,18 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.net.Uri;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.activity.AccueilUser;
+import com.production.achour_ar.gshglobalactivity.activity.GalleryUtil;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.manager.LoadProfilePic;
+import com.production.achour_ar.gshglobalactivity.manager.MyPreferences;
 
 import java.io.File;
 import java.io.FileOutputStream;

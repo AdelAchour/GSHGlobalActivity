@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;

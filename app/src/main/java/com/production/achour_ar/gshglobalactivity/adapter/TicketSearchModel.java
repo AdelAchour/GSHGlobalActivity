@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.adapter;
 
 public class TicketSearchModel {
     String TitreTicket, dateTicket, idTicket, statutTicket;

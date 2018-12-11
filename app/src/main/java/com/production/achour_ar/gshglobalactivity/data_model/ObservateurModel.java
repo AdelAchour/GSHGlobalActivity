@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.data_model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

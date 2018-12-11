@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.support.v7.app.ActionBar;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -20,6 +19,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
+import com.production.achour_ar.gshglobalactivity.data_model.ObservateurModel;
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.dialog.DialogDemandeur;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 
 import android.widget.TextView;
+
+import com.production.achour_ar.gshglobalactivity.data_model.ChartModel;
+import com.production.achour_ar.gshglobalactivity.R;
 
 import java.util.ArrayList;
 

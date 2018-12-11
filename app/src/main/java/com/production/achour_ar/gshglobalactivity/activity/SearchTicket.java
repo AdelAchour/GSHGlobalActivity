@@ -1,11 +1,10 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +25,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.adapter.TicketSearchAdapter;
+import com.production.achour_ar.gshglobalactivity.adapter.TicketSearchModel;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static com.production.achour_ar.gshglobalactivity.AccueilUser.generateUrl;
+import static com.production.achour_ar.gshglobalactivity.activity.AccueilUser.generateUrl;
 
 public class SearchTicket extends AppCompatActivity {
 

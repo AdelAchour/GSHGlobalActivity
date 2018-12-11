@@ -1,10 +1,9 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.manager;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -13,18 +12,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.AbstractQueue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.production.achour_ar.gshglobalactivity.ListTickets.generateUrl;
+import static com.production.achour_ar.gshglobalactivity.fragment.ListTicketBackLog.ListTickets.generateUrl;
 
 public class ServiceNotificationNewTicket extends IntentService {
     public static boolean ServiceIsRunning = false;

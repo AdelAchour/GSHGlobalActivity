@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import java.io.File;
 import android.app.Activity;
@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
 
 public class GalleryUtil extends Activity{
 

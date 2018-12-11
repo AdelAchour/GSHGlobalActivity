@@ -1,7 +1,6 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.support.v7.app.ActionBar;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +18,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
+import com.production.achour_ar.gshglobalactivity.manager.MyPreferences;
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.manager.URLGenerator;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
+import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
 
 public class TicketAttenteAdapter extends ArrayAdapter<TicketModel> implements View.OnClickListener{

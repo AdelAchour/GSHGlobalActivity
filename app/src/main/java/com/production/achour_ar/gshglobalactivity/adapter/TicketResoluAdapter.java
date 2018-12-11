@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
 
 import java.util.ArrayList;

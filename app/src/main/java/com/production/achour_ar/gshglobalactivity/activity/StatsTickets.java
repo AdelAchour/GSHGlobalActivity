@@ -1,17 +1,15 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +22,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.manager.WorkTimeCalculator;
+import com.production.achour_ar.gshglobalactivity.adapter.ChartAdapter;
+import com.production.achour_ar.gshglobalactivity.data_model.ChartModel;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
+import com.production.achour_ar.gshglobalactivity.dialog.DialogChoixDate;
 
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.models.BarModel;
@@ -41,7 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.production.achour_ar.gshglobalactivity.ListTickets.generateUrl;
+import static com.production.achour_ar.gshglobalactivity.fragment.ListTicketBackLog.ListTickets.generateUrl;
 
 public class StatsTickets extends AppCompatActivity {
 

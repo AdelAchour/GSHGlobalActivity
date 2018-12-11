@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.manager;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -10,7 +10,7 @@ import java.util.*;
  * between two dates.
 
  */
-class WorkTimeCalculator {
+public class WorkTimeCalculator {
 
     private Date startDate, endDate, dayStartTime, dayEndTime;
 
@@ -23,7 +23,7 @@ class WorkTimeCalculator {
     private Integer weekendDay2 = Calendar.SATURDAY;
     private int minutes, workingMinutes;
 
-    WorkTimeCalculator(Date startDate, Date endDate) {
+    public WorkTimeCalculator(Date startDate, Date endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
 

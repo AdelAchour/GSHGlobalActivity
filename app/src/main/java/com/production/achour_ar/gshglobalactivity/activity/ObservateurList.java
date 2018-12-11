@@ -1,11 +1,15 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.production.achour_ar.gshglobalactivity.data_model.ObservateurModel;
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.adapter.ObservateurAdapter;
+import com.production.achour_ar.gshglobalactivity.dialog.DialogDemandeur;
 
 import java.util.ArrayList;
 

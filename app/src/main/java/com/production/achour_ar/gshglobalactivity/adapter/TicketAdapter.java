@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -27,6 +27,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 
+import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
 
 public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnClickListener{

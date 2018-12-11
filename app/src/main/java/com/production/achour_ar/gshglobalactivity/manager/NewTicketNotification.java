@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.manager;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+
+import com.production.achour_ar.gshglobalactivity.R;
 
 /**
  * Helper class for showing and canceling new ticket

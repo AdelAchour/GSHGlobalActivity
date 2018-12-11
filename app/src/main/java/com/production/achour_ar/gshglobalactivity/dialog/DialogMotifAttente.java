@@ -1,8 +1,7 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Paint;
@@ -17,6 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.fragment.ListTicketBackLog;
 
 import java.util.ArrayList;
 
@@ -127,7 +130,7 @@ public class DialogMotifAttente {
                     Message msg = new Message();
                     msg.what = 6;
                     msg.setData(bundle);
-                    ListTickets.handlerticket.sendMessage(msg); //Save motif
+                    ListTicketBackLog.ListTickets.handlerticket.sendMessage(msg); //Save motif
                     dialog.dismiss();
                 }
             }

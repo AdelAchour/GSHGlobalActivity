@@ -1,6 +1,8 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.production.achour_ar.gshglobalactivity.R;
 
 public class SettingTicket extends AppCompatActivity implements View.OnClickListener {
 
@@ -46,6 +50,7 @@ public class SettingTicket extends AppCompatActivity implements View.OnClickList
     private void setupActionBar() {
         actionBar.setTitle("Paramètres des tickets");
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setElevation(0);//Big up adam !
     }
 
     private void initView() {

@@ -1,4 +1,4 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,7 +23,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.activity.TabLayoutActivity;
+import com.production.achour_ar.gshglobalactivity.adapter.TicketClosAdapter;
+import com.production.achour_ar.gshglobalactivity.manager.WorkTimeCalculator;
+import com.production.achour_ar.gshglobalactivity.activity.InfoTicketClos;
+import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
 import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,34 +1,25 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Paint;
-import android.media.Image;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,8 +32,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.dialog.DialogLogout;
+import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
+import com.production.achour_ar.gshglobalactivity.manager.LoadProfilePic;
+import com.production.achour_ar.gshglobalactivity.manager.MyPreferences;
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.manager.ServiceNotificationNewTicket;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,8 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.production.achour_ar.gshglobalactivity.Constants.App_Token;
-import static com.production.achour_ar.gshglobalactivity.Constants.GLPI_URL;
+import static com.production.achour_ar.gshglobalactivity.data_model.Constants.GLPI_URL;
 
 public class AccueilUser extends AppCompatActivity implements View.OnClickListener {
 
