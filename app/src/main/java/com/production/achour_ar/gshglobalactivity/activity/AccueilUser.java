@@ -482,6 +482,8 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                 Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
                 profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
                 profilePicNav.setImageBitmap(profilePic);
+                profilePicHome.setImageBitmap(profilePic);
+
             }
             else {
                 //PIC DOES NOT EXIST
