@@ -1,13 +1,9 @@
 package com.production.achour_ar.gshglobalactivity;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,8 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -31,10 +25,9 @@ import java.util.regex.Pattern;
 
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 
-import com.production.achour_ar.gshglobalactivity.DataModel.TicketModel;
+import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
 
 public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnClickListener{
 

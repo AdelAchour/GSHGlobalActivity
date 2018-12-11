@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.production.achour_ar.gshglobalactivity.DataModel.TicketModel;
+import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
 
 import java.util.ArrayList;
 

@@ -1,8 +1,6 @@
-package com.production.achour_ar.gshglobalactivity.DataModel;
+package com.production.achour_ar.gshglobalactivity.data_model;
 
 import android.os.Bundle;
-
-import com.production.achour_ar.gshglobalactivity.ObservateurModel;
 
 import java.util.ArrayList;
 

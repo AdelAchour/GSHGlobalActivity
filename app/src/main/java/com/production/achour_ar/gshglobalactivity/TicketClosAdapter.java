@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-import com.production.achour_ar.gshglobalactivity.DataModel.TicketModel;
+import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
 
 public class TicketClosAdapter extends ArrayAdapter<TicketModel> implements View.OnClickListener{
 

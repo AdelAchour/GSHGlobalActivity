@@ -22,7 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.production.achour_ar.gshglobalactivity.DataModel.TicketModel;
+import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
