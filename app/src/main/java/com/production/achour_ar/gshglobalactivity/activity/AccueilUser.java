@@ -40,6 +40,7 @@ import com.production.achour_ar.gshglobalactivity.manager.LoadProfilePic;
 import com.production.achour_ar.gshglobalactivity.manager.MyPreferences;
 import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.manager.ServiceNotificationNewTicket;
+import com.production.achour_ar.gshglobalactivity.manager.URLGenerator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -110,7 +111,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         paramsObs.add(new KeyValuePair("forcedisplay[4]","81"));
 
 
-        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(url, paramsObs), null,
+        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, paramsObs), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -342,7 +343,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
             params.add(new KeyValuePair("forcedisplay[6]","18"));
             params.add(new KeyValuePair("forcedisplay[7]","21"));
 
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override

@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.production.achour_ar.gshglobalactivity.fragment.ListTicketBackLog.ListTickets.generateUrl;
+import static com.production.achour_ar.gshglobalactivity.fragment.ListTickets.generateUrl;
 
 
 public class FirstEverActivity extends AppCompatActivity implements View.OnClickListener {
@@ -227,7 +227,7 @@ public class FirstEverActivity extends AppCompatActivity implements View.OnClick
         params.add(new KeyValuePair("forcedisplay[0]","82"));
         params.add(new KeyValuePair("forcedisplay[0]","81"));
 
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -278,7 +278,7 @@ public class FirstEverActivity extends AppCompatActivity implements View.OnClick
         //AFFICHAGE
         params.add(new KeyValuePair("forcedisplay[0]","82"));
 
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override

@@ -30,6 +30,7 @@ import com.production.achour_ar.gshglobalactivity.adapter.TicketSearchAdapter;
 import com.production.achour_ar.gshglobalactivity.adapter.TicketSearchModel;
 import com.production.achour_ar.gshglobalactivity.data_model.Constants;
 import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
+import com.production.achour_ar.gshglobalactivity.manager.URLGenerator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -124,7 +125,7 @@ public class SearchTicket extends AppCompatActivity {
 
         params.add(new KeyValuePair("range","0-200"));
 
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.production.achour_ar.gshglobalactivity.fragment.ListTicketBackLog.ListTickets.generateUrl;
+import static com.production.achour_ar.gshglobalactivity.fragment.ListTickets.generateUrl;
 
 public class ServiceNotificationNewTicket extends IntentService {
     public static boolean ServiceIsRunning = false;
@@ -67,7 +67,7 @@ public class ServiceNotificationNewTicket extends IntentService {
         params.add(new KeyValuePair("order", "DESC"));
         params.add(new KeyValuePair("range", "0-0"));
 
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -138,7 +138,7 @@ public class ServiceNotificationNewTicket extends IntentService {
         params.add(new KeyValuePair("order", "DESC"));
         params.add(new KeyValuePair("range", "0-0"));
 
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

@@ -29,6 +29,7 @@ import com.production.achour_ar.gshglobalactivity.activity.InfoTicket;
 import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
 import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
 import com.production.achour_ar.gshglobalactivity.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.manager.URLGenerator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -153,7 +154,7 @@ public class ListTicketsResolu extends Fragment {
         params.add(new KeyValuePair("order","DESC"));
         params.add(new KeyValuePair("range","0-"+maxRange+""));
 
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.data_model.Constants;
 import com.production.achour_ar.gshglobalactivity.fragment.ListTicketBackLog;
+import com.production.achour_ar.gshglobalactivity.fragment.ListTickets;
 
 import java.util.ArrayList;
 
@@ -130,7 +131,7 @@ public class DialogMotifAttente {
                     Message msg = new Message();
                     msg.what = 6;
                     msg.setData(bundle);
-                    ListTicketBackLog.ListTickets.handlerticket.sendMessage(msg); //Save motif
+                    ListTickets.handlerticket.sendMessage(msg); //Save motif
                     dialog.dismiss();
                 }
             }

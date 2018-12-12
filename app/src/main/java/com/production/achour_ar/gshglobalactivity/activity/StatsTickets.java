@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.manager.URLGenerator;
 import com.production.achour_ar.gshglobalactivity.manager.WorkTimeCalculator;
 import com.production.achour_ar.gshglobalactivity.adapter.ChartAdapter;
 import com.production.achour_ar.gshglobalactivity.data_model.ChartModel;
@@ -46,7 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.production.achour_ar.gshglobalactivity.fragment.ListTicketBackLog.ListTickets.generateUrl;
+import static com.production.achour_ar.gshglobalactivity.fragment.ListTickets.generateUrl;
 
 public class StatsTickets extends AppCompatActivity {
 
@@ -203,7 +204,7 @@ public class StatsTickets extends AppCompatActivity {
         //RANGE
         params.add(new KeyValuePair("range","0-200"));
 
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override

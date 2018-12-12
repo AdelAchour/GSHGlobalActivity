@@ -175,7 +175,7 @@ public class ListTicketsAttente extends Fragment {
         params.add(new KeyValuePair("order", "DESC"));
         params.add(new KeyValuePair("range", "0-" + maxRange + ""));
 
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -556,7 +556,7 @@ public class ListTicketsAttente extends Fragment {
         paramsEmail.add(new KeyValuePair("subject","Ticket en cours"));
         paramsEmail.add(new KeyValuePair("content",content));
 
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, generateUrl(url, paramsEmail), null,
+        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -629,7 +629,7 @@ public class ListTicketsAttente extends Fragment {
         paramsEmail.add(new KeyValuePair("subject","LOG ERROR Admin"));
         paramsEmail.add(new KeyValuePair("content",ContentMessage));
 
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, generateUrl(url, paramsEmail), null,
+        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -691,7 +691,7 @@ public class ListTicketsAttente extends Fragment {
         paramsDemandeur.add(new KeyValuePair("forcedisplay[1]","34"));
         paramsDemandeur.add(new KeyValuePair("forcedisplay[2]","5"));
 
-        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlDemandeur, paramsDemandeur), null,
+        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(urlDemandeur, paramsDemandeur), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -752,7 +752,7 @@ public class ListTicketsAttente extends Fragment {
         paramsEmail.add(new KeyValuePair("subject","Ticket en cours"));
         paramsEmail.add(new KeyValuePair("content",content));
 
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, generateUrl(url, paramsEmail), null,
+        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -825,7 +825,7 @@ public class ListTicketsAttente extends Fragment {
         paramsEmail.add(new KeyValuePair("subject","Notif Admin"));
         paramsEmail.add(new KeyValuePair("content",ContentMessage));
 
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, generateUrl(url, paramsEmail), null,
+        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override

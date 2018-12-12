@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
 import com.production.achour_ar.gshglobalactivity.data_model.ObservateurModel;
 import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.manager.URLGenerator;
 import com.production.achour_ar.gshglobalactivity.manager.WorkTimeCalculator;
 import com.production.achour_ar.gshglobalactivity.data_model.Constants;
 import com.production.achour_ar.gshglobalactivity.dialog.DialogDemandeur;
@@ -109,7 +110,7 @@ public class InfoTicketClos extends AppCompatActivity {
 
         String urlTicket = Constants.GLPI_URL+"search/Ticket";
 
-        final JsonObjectRequest getRequestTicket = new JsonObjectRequest(Request.Method.GET, generateUrl(urlTicket, paramsTicket), null,
+        final JsonObjectRequest getRequestTicket = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(urlTicket, paramsTicket), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -323,7 +324,7 @@ public class InfoTicketClos extends AppCompatActivity {
             paramsObs.add(new KeyValuePair("forcedisplay[4]","81"));
 
 
-            final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlObs, paramsObs), null,
+            final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(urlObs, paramsObs), null,
                     new Response.Listener<JSONObject>()
                     {
                         @Override
@@ -425,7 +426,7 @@ public class InfoTicketClos extends AppCompatActivity {
         paramsObs.add(new KeyValuePair("forcedisplay[3]","6"));
         paramsObs.add(new KeyValuePair("forcedisplay[4]","81"));
 
-        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlObs, paramsObs), null,
+        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(urlObs, paramsObs), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -603,7 +604,7 @@ public class InfoTicketClos extends AppCompatActivity {
         paramsDemandeur.add(new KeyValuePair("forcedisplay[3]","6"));
         paramsDemandeur.add(new KeyValuePair("forcedisplay[4]","81"));
 
-        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, generateUrl(urlDemandeur, paramsDemandeur), null,
+        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(urlDemandeur, paramsDemandeur), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override

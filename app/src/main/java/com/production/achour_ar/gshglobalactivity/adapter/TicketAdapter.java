@@ -19,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,13 +30,32 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
 import com.production.achour_ar.gshglobalactivity.data_model.TicketModel;
+import com.production.achour_ar.gshglobalactivity.fragment.ListTickets;
+import com.production.achour_ar.gshglobalactivity.manager.URLGenerator;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnClickListener{
 
     private ArrayList<TicketModel> dataSet;
     Context mContext;
+    private String etatTicket;
+    private RequestQueue queue;
+    private int cpt;
+    private CountDownTimer countDownTimer;
 
 
     // View lookup cache
@@ -101,7 +123,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                     Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),
                             R.drawable.haute2);
 
-                    NotifyUser("Urgence haute", ""+Nom+" : 75% du SLA viennent de s'écrouler", bitmap, idNotif);
+                    NotifyUser("Urgence haute", ""+Nom+" : 75% du SLA viennent de s'écouler", bitmap, idNotif);
 
                 }
 
@@ -111,7 +133,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                             R.drawable.moyenne2);
                     int idNotif = Integer.valueOf(idTicket) + 000000002 ;
 
-                    NotifyUser("Urgence moyenne", ""+Nom+" : 50% du SLA viennent de s'écrouler", bitmap, idNotif);
+                    NotifyUser("Urgence moyenne", ""+Nom+" : 50% du SLA viennent de s'écouler", bitmap, idNotif);
 
                 }
 
@@ -121,7 +143,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                             R.drawable.basse2);
                     int idNotif = Integer.valueOf(idTicket) + 000000003 ;
 
-                    NotifyUser("Urgence faible", ""+Nom+" : 25% du SLA viennent de s'écrouler", bitmap, idNotif);
+                    NotifyUser("Urgence faible", ""+Nom+" : 25% du SLA viennent de s'écouler", bitmap, idNotif);
 
                 }
 
@@ -174,6 +196,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
 
 
         public void startTimer(long timeLeftMS, final String SLA, final String Nom, final String idTicket) {
+
             if (timeLeftMS<0){
                 //handlerLate.sendEmptyMessage(0);
                 Bundle bundle = new Bundle();
@@ -183,9 +206,15 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 handlerLate.sendMessage(message);
             }
             else{
-                CountDownTimer countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
+                  countDownTimer = new CountDownTimer(timeLeftMS, 1000) {
                     @Override
                     public void onTick(long l) {
+                        cpt++;
+                        Log.d("TIK", "onTick: " + l);
+                        if(cpt == 10){
+                            getEtatTicket(idTicket);
+                            cpt = 0;
+                        }
                         Bundle bundle = new Bundle();
                         bundle.putLong("time", l);
                         bundle.putString("name", Nom);
@@ -511,6 +540,73 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         return between;
     }
 
+    private boolean doEveryX(long x, long timeLeft){
+        return timeLeft%x == 0;
+    }
 
+    private void getEtatTicket(final String idTicket) {
+        queue = Volley.newRequestQueue(mContext);
+        //Récupération du ticket
+        List<KeyValuePair> paramsTicket = new ArrayList<>();
+        paramsTicket.add(new KeyValuePair("criteria[0][field]","2"));
+        paramsTicket.add(new KeyValuePair("criteria[0][searchtype]","equals"));
+        paramsTicket.add(new KeyValuePair("criteria[0][value]",idTicket));
+        paramsTicket.add(new KeyValuePair("forcedisplay[0]","12"));
+
+
+
+        String urlTicket = Constants.GLPI_URL+"search/Ticket";
+
+        final JsonObjectRequest getRequestTicket = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(urlTicket, paramsTicket), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray Jdata = response.getJSONArray("data");
+                            for (int i=0; i < Jdata.length(); i++) {
+                                try {
+                                    JSONObject oneTicket = Jdata.getJSONObject(i);
+
+                                    etatTicket = oneTicket.getString("12");
+
+                                    Log.d("Etat ticket ", etatTicket + "   " + idTicket);
+
+                                } catch (JSONException e) {
+                                    Log.e("Error ticket ", e.getMessage());
+                                }
+                            }
+
+                            if(!etatTicket.equals("2")){
+                                Log.d("LOLI", "onResponse: " );
+                                countDownTimer.cancel();
+                            }
+
+                        } catch (JSONException e) {
+                            Log.e("Error ticket ",e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //progressBar.setVisibility(View.GONE);
+                        Log.e("Eeeeeh ticket ", error.toString());
+                    }
+
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("App-Token",Constants.App_Token);
+                params.put("Session-Token",ListTickets.session_token);
+                return params;
+            }
+
+        };
+        queue.add(getRequestTicket);
+    }
 
 }

@@ -26,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.activity.TabLayoutActivity;
 import com.production.achour_ar.gshglobalactivity.adapter.TicketClosAdapter;
+import com.production.achour_ar.gshglobalactivity.manager.URLGenerator;
 import com.production.achour_ar.gshglobalactivity.manager.WorkTimeCalculator;
 import com.production.achour_ar.gshglobalactivity.activity.InfoTicketClos;
 import com.production.achour_ar.gshglobalactivity.data_model.KeyValuePair;
@@ -128,7 +129,7 @@ public class ListTicketsClos extends Fragment {
 
 
     private void getTicketsHTTP() {
-        String url = Constants.GLPI_URL+"search/Ticket";
+        String url = Constants.GLPI_URL + "search/Ticket";
 
         int maxRange = range-1;
         List<KeyValuePair> params = new ArrayList<>();
@@ -158,7 +159,7 @@ public class ListTicketsClos extends Fragment {
         params.add(new KeyValuePair("order","DESC"));
         params.add(new KeyValuePair("range","0-"+maxRange+""));
 
-        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, generateUrl(url, params), null,
+        final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
