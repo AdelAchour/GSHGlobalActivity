@@ -44,8 +44,10 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
         TextView txtSLA;
         ImageView info;
         RelativeLayout layout;
+        Handler handler = new HandlerTicketAdapter();
 
-        Handler handler = new Handler(){
+
+        public class HandlerTicketAdapter extends Handler{
             @Override
             public void handleMessage(Message msg) {
                 //Log.d("I'm here ",String.valueOf(System.currentTimeMillis()));
@@ -53,7 +55,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
                 String pourcentage25;
                 String pourcentage50;
                 String pourcentage75;
-                
+
                 Bundle bundle = msg.getData();
                 long timeLeftMS = bundle.getLong("time");
                 String Nom = bundle.getString("name");
@@ -130,7 +132,8 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             }
         };
 
-        Handler handlerLate = new Handler(){
+        Handler handlerLate = new HandlerRetard();
+               public class HandlerRetard extends Handler{
             @Override
             public void handleMessage(Message msg) {
                 Bundle bundle = msg.getData();
@@ -148,7 +151,8 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             }
         };
 
-        Handler handlerFinishLate = new Handler(){
+        Handler handlerFinishLate = new HandlerFinishLate();
+        public class HandlerFinishLate extends  Handler{
             @Override
             public void handleMessage(Message msg) {
                 Bundle bundle = msg.getData();
