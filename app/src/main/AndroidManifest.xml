@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".CheckAuth"
+            android:name=".activity.CheckAuth"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,49 +24,51 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FirstEverActivity"
-            android:screenOrientation="portrait"></activity>
+            android:name=".activity.FirstEverActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
-            android:name=".GalleryUtil"
+            android:name=".activity.GalleryUtil"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AccueilUser"
+            android:name=".activity.AccueilUser"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".InfoTicket"
+            android:name=".activity.InfoTicket"
             android:screenOrientation="portrait" />
         <!-- android:parentActivityName=".TabLayoutActivity" -->
 
         <activity
-            android:name=".TabLayoutActivity"
-            android:parentActivityName=".AccueilUser"
+            android:name=".activity.TabLayoutActivity"
+            android:parentActivityName=".activity.AccueilUser"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".InfoTicketClos"
+            android:name=".activity.InfoTicketClos"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Setting"
-            android:parentActivityName=".TabLayoutActivity"
+            android:name=".activity.Setting"
+            android:parentActivityName=".activity.TabLayoutActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ObservateurList"
+            android:name=".activity.ObservateurList"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".StatsTickets"
-            android:parentActivityName=".TabLayoutActivity"
+            android:name=".activity.StatsTickets"
+            android:parentActivityName=".activity.TabLayoutActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CreationTicket"
-            android:parentActivityName=".TabLayoutActivity"
+            android:name=".activity.CreationTicket"
+            android:parentActivityName=".activity.TabLayoutActivity"
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".ServiceNotificationNewTicket"
+            android:name=".manager.ServiceNotificationNewTicket"
             android:enabled="true" />
 
         <receiver
-            android:name=".MyReceiver"
+            android:name=".manager.MyReceiver"
             android:priority="2147483647">
             <intent-filter>
                 <action android:name="com.example.Broadcast" />
@@ -74,16 +76,22 @@
         </receiver>
 
         <activity
-            android:name=".SearchTicket"
-            android:parentActivityName=".TabLayoutActivity"
+            android:name=".activity.SearchTicket"
+            android:parentActivityName=".activity.TabLayoutActivity"
             android:screenOrientation="portrait" />
+
         <activity
-            android:name=".MyProfileActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activity.MyProfileActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".SettingTicket"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".AboutActivity"></activity>
+            android:name=".activity.SettingTicket"
+            android:screenOrientation="portrait">
+        </activity>
+
     </application>
 
 </manifest>
