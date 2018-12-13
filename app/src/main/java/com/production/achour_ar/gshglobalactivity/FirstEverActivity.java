@@ -99,9 +99,9 @@ public class FirstEverActivity extends AppCompatActivity implements View.OnClick
 
         List<KeyValuePair> params = new ArrayList<>();
 
-        params.add(new KeyValuePair("app_token",Constants.App_Token));
-        params.add(new KeyValuePair("login",username));
-        params.add(new KeyValuePair("password",password));
+        //params.add(new KeyValuePair("app_token",Constants.App_Token));
+        //params.add(new KeyValuePair("login",username));
+        //params.add(new KeyValuePair("password",password));
 
         // prepare the Request
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
@@ -140,10 +140,10 @@ public class FirstEverActivity extends AppCompatActivity implements View.OnClick
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                //String creds = String.format("%s:%s",username,password);
-                //String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
-                //params.put("Authorization", auth);
-                //params.put("App-Token",Constants.App_Token);
+                String creds = String.format("%s:%s",username,password);
+                String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
+                params.put("Authorization", auth);
+                params.put("App-Token",Constants.App_Token);
                 return params;
             }
         };

@@ -72,5 +72,23 @@
     <string name="resolutionlatetime">Temps de résolution et de retard</string>
     <string name="pickmotiftext">Veuillez choisir un motif</string>
     <string name="displaylistmotiftext">Afficher la liste des motifs</string>
+    <string name="appgoalquestion">Quel est le but de cette application?</string>
+    <string name="appgoalanswer">Cette application a été conçue dans le but d’améliorer la visibilité de l’IT sur ses performances (selon sa participation Helpdesk et ses projets), et dans le but de faciliter la gestion de ses interventions.</string>
+    <string name="networkquestion">Avec quel réseau travailler?</string>
+    <string name="networkanswer">Pour l’instant l’application marche avec le réseau local du groupe. Elle sera néanmoins très bientôt accessible via les réseaux Wi-Fi et 4G.</string>
+    <string name="authquestion">Comment m’authentifier?</string>
+    <string name="authanswer">Sur l’interface d’authentification, entrez votre email et mot de passe de votre session. L’authentification ne sera par la suite plus demandé, sauf dans le cas de déconnexion.</string>
+    <string name="logoutquestion">Comment me déconnecter?</string>
+    <string name="logoutlanswer">Sur l’interface d’accueil, glissez l’écran vers la droite afin d’afficher le panneau de navigation, tout en bas appuyez sur «Se déconnecter».</string>
+    <string name="profilepicquestion">Comment changer ma photo de profil?</string>
+    <string name="profilepicanswer">Sur l’interface d’accueil, glissez l’écran vers la droite afin d’afficher le panneau de navigation, appuyez sur «Profil» puis «Changer».</string>
+    <string name="seeprofilequestion">Qui peut voir mon profil?</string>
+    <string name="seeprofileanswer">Personne à part vous. Dans les prochaines versions, un classement de performances sera établi entre vous et vos homologues, vos photos de profils pourraient être inclus dans le classement.</string>
+    <string name="majquestion">Dois-je télécharger les MAJ?</string>
+    <string name="majanswer">Il est impératif de télécharger les mises à jour après leur sortie, afin de régler les bugs et avoir les nouvelles fonctionnalités. Ne désactivez surtout pas le téléchargement des MAJ automatiques sur votre téléphone (si vous devez le faire faites attention à bien télécharger les MAJ de l’app).</string>
+    <string name="apppartsquestion">Quelles parties de l’application sont achevées?</string>
+    <string name="apppartsanswer">Pour l’instant la partie Helpdesk est achevée, des réparations de bugs ou de nouvelles fonctionnalités viendront surement s’y ajouter.\nLes parties projets et interventions sont en cours d’implémentation.</string>
+    <string name="appbugquestion">Que faire en cas de bug de l’application?</string>
+    <string name="appbuganswer">Il est vivement conseillé d’envoyer un email à Adel ACHOUR (adel.achour@groupe-hasnaoui.com) avec des explications relatifs au bug, afin que celui-ci soit réglé au plus vite.</string>
 
 </resources>

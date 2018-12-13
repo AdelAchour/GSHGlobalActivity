@@ -66,9 +66,11 @@ public class Setting extends AppCompatActivity implements View.OnClickListener {
                 break;
 
             case R.id.projectlinear:
+                Toast.makeText(this, "En cours d'implémentation", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.interventionlinear:
+                Toast.makeText(this, "En cours d'implémentation", Toast.LENGTH_SHORT).show();
                 break;
 
         }

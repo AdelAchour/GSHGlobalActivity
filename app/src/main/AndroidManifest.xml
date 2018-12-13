@@ -25,9 +25,7 @@
         </activity>
         <activity
             android:name=".FirstEverActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".GalleryUtil"
             android:screenOrientation="portrait" />
@@ -79,16 +77,13 @@
             android:name=".SearchTicket"
             android:parentActivityName=".TabLayoutActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".MyProfileActivity"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SettingTicket"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>
