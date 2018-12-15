@@ -14,7 +14,8 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/logo_global_gsh_"
+        <ImageView
+            android:src="@drawable/logo_global_gsh_"
             android:layout_width="wrap_content"
             android:layout_height="155dp"
             android:layout_marginBottom="24dp"

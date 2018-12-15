@@ -91,4 +91,6 @@
     <string name="appbugquestion">Que faire en cas de bug de l’application?</string>
     <string name="appbuganswer">Il est vivement conseillé d’envoyer un email à Adel ACHOUR (adel.achour@groupe-hasnaoui.com) avec des explications relatifs au bug, afin que celui-ci soit réglé au plus vite.</string>
 
+    <string name="copyright">© 2018 GSH Inc.\nDSI.\nAdel ACHOUR.</string>
+
 </resources>

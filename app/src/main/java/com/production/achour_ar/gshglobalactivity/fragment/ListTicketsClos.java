@@ -135,7 +135,7 @@ public class ListTicketsClos extends Fragment {
         List<KeyValuePair> params = new ArrayList<>();
         params.add(new KeyValuePair("criteria[0][field]","5"));
         params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
-        params.add(new KeyValuePair("criteria[0][value]",idUser));
+        params.add(new KeyValuePair("criteria[0][value]","1346"));
 
         params.add(new KeyValuePair("criteria[1][link]","AND"));
         params.add(new KeyValuePair("criteria[1][field]","12"));

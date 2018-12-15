@@ -1,19 +1,37 @@
-package com.production.achour_ar.gshglobalactivity;
+package com.production.achour_ar.gshglobalactivity.activity;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.production.achour_ar.gshglobalactivity.R;
+import com.production.achour_ar.gshglobalactivity.data_model.Constants;
 
 public class AboutActivity extends AppCompatActivity {
+
+    private TextView VersionTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_activity);
 
+        initView();
         setupActionBar();
+        setupTVs();
+
+    }
+
+    private void setupTVs() {
+        String version = "Version "+ Constants.APP_VERSION;
+        VersionTV.setText(version);
+    }
+
+    private void initView() {
+        VersionTV = findViewById(R.id.versionstring);
     }
 
 

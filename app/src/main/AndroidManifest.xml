@@ -85,9 +85,11 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".SettingTicket"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".AboutActivity"></activity>
+            android:name=".activity.SettingTicket"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".activity.AboutActivity">
             android:name=".activity.SettingTicket"
             android:screenOrientation="portrait">
         </activity>

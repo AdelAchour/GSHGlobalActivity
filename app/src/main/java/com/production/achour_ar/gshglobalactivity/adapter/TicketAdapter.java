@@ -600,7 +600,7 @@ public class TicketAdapter extends ArrayAdapter<TicketModel> implements View.OnC
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",Constants.App_Token);
+                params.put("App-Token", Constants.App_Token);
                 params.put("Session-Token",ListTickets.session_token);
                 return params;
             }
