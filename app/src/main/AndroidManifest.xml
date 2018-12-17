@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.CheckAuth"
+            android:name=".ITs.activity.CheckAuth"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,51 +24,51 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.FirstEverActivity"
+            android:name=".ITs.activity.FirstEverActivity"
             android:screenOrientation="portrait">
 
         </activity>
         <activity
-            android:name=".activity.GalleryUtil"
+            android:name=".ITs.activity.GalleryUtil"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.AccueilUser"
+            android:name=".ITs.activity.AccueilUser"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.InfoTicket"
+            android:name=".ITs.activity.InfoTicket"
             android:screenOrientation="portrait" />
         <!-- android:parentActivityName=".TabLayoutActivity" -->
 
         <activity
-            android:name=".activity.TabLayoutActivity"
-            android:parentActivityName=".activity.AccueilUser"
+            android:name=".ITs.activity.TabLayoutActivity"
+            android:parentActivityName=".ITs.activity.AccueilUser"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.InfoTicketClos"
+            android:name=".ITs.activity.InfoTicketClos"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.Setting"
-            android:parentActivityName=".activity.TabLayoutActivity"
+            android:name=".ITs.activity.Setting"
+            android:parentActivityName=".ITs.activity.TabLayoutActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ObservateurList"
+            android:name=".ITs.activity.ObservateurList"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.StatsTickets"
-            android:parentActivityName=".activity.TabLayoutActivity"
+            android:name=".ITs.activity.StatsTickets"
+            android:parentActivityName=".ITs.activity.TabLayoutActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CreationTicket"
-            android:parentActivityName=".activity.TabLayoutActivity"
+            android:name=".ITs.activity.CreationTicket"
+            android:parentActivityName=".ITs.activity.TabLayoutActivity"
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".manager.ServiceNotificationNewTicket"
+            android:name=".ITs.manager.ServiceNotificationNewTicket"
             android:enabled="true" />
 
         <receiver
-            android:name=".manager.MyReceiver"
+            android:name=".ITs.manager.MyReceiver"
             android:priority="2147483647">
             <intent-filter>
                 <action android:name="com.example.Broadcast" />
@@ -76,20 +76,20 @@
         </receiver>
 
         <activity
-            android:name=".activity.SearchTicket"
-            android:parentActivityName=".activity.TabLayoutActivity"
+            android:name=".ITs.activity.SearchTicket"
+            android:parentActivityName=".ITs.activity.TabLayoutActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.MyProfileActivity"
+            android:name=".ITs.activity.MyProfileActivity"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".activity.SettingTicket"
+            android:name=".ITs.activity.SettingTicket"
             android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".activity.AboutActivity">
+        <activity android:name=".ITs.activity.AboutActivity">
             android:name=".activity.SettingTicket"
             android:screenOrientation="portrait">
         </activity>
