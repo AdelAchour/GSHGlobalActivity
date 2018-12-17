@@ -260,7 +260,7 @@ public class CreationTicket extends AppCompatActivity {
 
         //ORDRE ET RANGE
         params.add(new KeyValuePair("sort","2"));
-        params.add(new KeyValuePair("range","0-"+maxRange+""));
+        params.add(new KeyValuePair("range", "0-" + maxRange + ""));
 
         final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()

@@ -165,10 +165,8 @@ public class FirstEverActivity extends AppCompatActivity implements View.OnClick
                         String nameUser = "";
                         String idUser = "";
                         String firstnameUser = "";
-
                         System.out.println("Dans get User");
                         Log.d("Response User : ", response.toString());
-
                         try {
                             JSONObject sessionObj = response.getJSONObject("session");
                             nameUser = sessionObj.getString("glpirealname");

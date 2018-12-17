@@ -32,12 +32,12 @@ public class Constants {
 //    final static String requestedLocationTxt = "requestedLocationTxt";
 
 
-    public final static String GLPI_URL = "http://10.1.12.55:8189/apirest.php/"; //9.3.1 remote (K10)
+   // public final static String GLPI_URL = "http://10.1.12.55:8189/apirest.php/"; //9.3.1 remote (K10)
     //final static String GLPI_URL = "http://192.168.137.206:8189/apirest.php/"; //9.3.1 remote (104 LGMT)
-    public final static String App_Token = "LMvx8O6ABfIhZg7LurEVMd5rBWergPP0fWnEYKPj"; //9.3.1 local
+    //public final static String App_Token = "LMvx8O6ABfIhZg7LurEVMd5rBWergPP0fWnEYKPj"; //9.3.1 local
 
-    //final static String GLPI_URL = "http://helpdesk.groupe-hasnaoui.com/apirest.php/"; //9.3.1 remote (REAL)
-    //final static String App_Token = "MvMvBTXzCBLy6qInlcWdbTdxMS2IefVOjlSkPgYi"; //9.3.1 (REAL)
+    public final static String GLPI_URL = "http://helpdesk.groupe-hasnaoui.com/apirest.php/"; //9.3.1 remote (REAL)
+    public final static String App_Token = "MvMvBTXzCBLy6qInlcWdbTdxMS2IefVOjlSkPgYi"; //9.3.1 (REAL)
 
     public static int SHOW_KEYBORD = 100;
     public static final int PICK_IMAGE = 100;
