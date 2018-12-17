@@ -187,7 +187,11 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                         int id = menuItem.getItemId();
                         switch (id){
                             case R.id.nav_setting:
-                                startActivity(new Intent(getApplicationContext(), Setting.class));
+                                startActivity(new Intent(AccueilUser.this, Setting.class));
+                                break;
+
+                            case R.id.nav_about:
+                                startActivity(new Intent(AccueilUser.this, AboutActivity.class));
                                 break;
 
                             case R.id.nav_logout:
@@ -196,7 +200,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                                 break;
 
                             case R.id.nav_profile:
-                                Intent i = new Intent(getApplicationContext(), MyProfileActivity.class);
+                                Intent i = new Intent(AccueilUser.this, MyProfileActivity.class);
                                 i.putExtra("session",session_token);
                                 i.putExtra("nom",nameUser);
                                 i.putExtra("prenom",firstnameUser);

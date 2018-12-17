@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.production.achour_ar.gshglobalactivity.R;
 
@@ -63,9 +64,11 @@ public class Setting extends AppCompatActivity implements View.OnClickListener {
                 break;
 
             case R.id.projectlinear:
+                Toast.makeText(this, "En cours d'implémentation", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.interventionlinear:
+                Toast.makeText(this, "En cours d'implémentation", Toast.LENGTH_SHORT).show();
                 break;
 
         }
