@@ -181,13 +181,14 @@ public class FirstEverActivity extends AppCompatActivity implements View.OnClick
 
                         //getJobUser(idUser);
                         pdAuth.dismiss();
-                        Intent i = new Intent(getApplicationContext(), AccueilUser.class);
+                      /*  Intent i = new Intent(getApplicationContext(), AccueilUser.class);
                         i.putExtra("nom", nameUser);
                         i.putExtra("prenom", firstnameUser);
                         i.putExtra("id", idUser);
                         i.putExtra("session", Token_Session);
                         startActivity(i);
-                        finish();
+                        finish();*/
+                        UIRedirection(idUser);
                     }
                 },
                 new Response.ErrorListener()
