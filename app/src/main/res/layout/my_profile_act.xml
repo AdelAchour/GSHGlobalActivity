@@ -33,6 +33,7 @@
             android:layout_marginBottom="8dp" />
 
         <TextView
+            android:id="@+id/namefirsnameprofile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Adel ACHOUR"
@@ -82,8 +83,7 @@
                         android:textColor="@color/color_text_card_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="OZIL" />
+                        android:layout_marginStart="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -102,8 +102,7 @@
                         android:textColor="@color/color_text_card_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="Adel" />
+                        android:layout_marginStart="15dp" />
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -136,8 +135,7 @@
                         android:textColor="@color/color_text_card_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="OZIL" />
+                        android:layout_marginStart="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -156,8 +154,7 @@
                         android:textColor="@color/color_text_card_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="Adel" />
+                        android:layout_marginStart="15dp" />
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -189,8 +186,7 @@
                         android:textColor="@color/color_text_card_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="OZIL" />
+                        android:layout_marginStart="15dp" />
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -222,8 +218,7 @@
                         android:textColor="@color/color_text_card_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:text="OZIL" />
+                        android:layout_marginStart="15dp" />
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>

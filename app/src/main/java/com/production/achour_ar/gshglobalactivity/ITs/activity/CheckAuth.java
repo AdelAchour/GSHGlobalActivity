@@ -1,10 +1,13 @@
 package com.production.achour_ar.gshglobalactivity.ITs.activity;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.production.achour_ar.gshglobalactivity.ITs.data_model.KeyValuePair;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.MyPreferences;
+import com.production.achour_ar.gshglobalactivity.ITs.manager.NukeSSLCerts;
 import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.URLGenerator;
 import com.production.achour_ar.gshglobalactivity.ITs.data_model.Constants;
@@ -41,11 +45,16 @@ public class CheckAuth extends AppCompatActivity implements View.OnClickListener
     private RequestQueue queue;
     private TextView noConnection;
     private Button retryConnection;
+    private Button goLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_auth);
+
+        if (Build.VERSION.SDK_INT < 24){
+            NukeSSLCerts.nuke();
+        }
 
         initView();
         setListener();
@@ -61,6 +70,7 @@ public class CheckAuth extends AppCompatActivity implements View.OnClickListener
 
     private void setListener() {
         retryConnection.setOnClickListener(this);
+        goLogin.setOnClickListener(this);
     }
 
     private void setupPDs() {
@@ -74,6 +84,7 @@ public class CheckAuth extends AppCompatActivity implements View.OnClickListener
 
     private void initView() {
         retryConnection = findViewById(R.id.retry_button);
+        goLogin = findViewById(R.id.goto_login);
         noConnection = findViewById(R.id.no_connection_tv);
         queue = Volley.newRequestQueue(this);
         pdAuth = new ProgressDialog(CheckAuth.this);
@@ -88,7 +99,7 @@ public class CheckAuth extends AppCompatActivity implements View.OnClickListener
         if ((username.equals(Constants.USERNAME_DEF_VALUE))||(password.equals(Constants.PASSWORD_DEF_VALUE))){ //no auto auth
             pdAuth.dismiss();
             Log.d("CheckAuth", "NO auto auth.");
-            startActivity(new Intent(CheckAuth.this, FirstEverActivity.class));
+            startActivity(new Intent(CheckAuth.this, LoginActivity.class));
         }
         else{ //got the ids successfully
             Log.d("CheckAuth", "Got the IDs successfully | "+username);
@@ -97,16 +108,16 @@ public class CheckAuth extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    private void Login(String username, String password) {
+    private void Login(final String username, final String password) {
         pdAuth.setMessage("Authentification...");
 
         String url = Constants.GLPI_URL+"initSession";
 
         List<KeyValuePair> params = new ArrayList<>();
 
-        params.add(new KeyValuePair("app_token",Constants.App_Token));
-        params.add(new KeyValuePair("login",username));
-        params.add(new KeyValuePair("password",password));
+        //params.add(new KeyValuePair("app_token",Constants.App_Token));
+        //params.add(new KeyValuePair("login",username));
+        //params.add(new KeyValuePair("password",password));
 
         // prepare the Request
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
@@ -145,10 +156,10 @@ public class CheckAuth extends AppCompatActivity implements View.OnClickListener
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                //String creds = String.format("%s:%s",username,password);
-                //String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
-                //params.put("Authorization", auth);
-                //params.put("App-Token",Constants.App_Token);
+                String creds = String.format("%s:%s",username,password);
+                String auth = "Basic " + Base64.encodeToString(creds.getBytes(), Base64.NO_WRAP);
+                params.put("Authorization", auth);
+                params.put("App-Token",Constants.App_Token);
                 return params;
             }
         };
@@ -159,12 +170,22 @@ public class CheckAuth extends AppCompatActivity implements View.OnClickListener
 
     private void connectionSuccess() {
         noConnection.setText(R.string.connection_success);
-        noConnection.setTextColor(getColor(R.color.green_notif));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            noConnection.setTextColor(getColor(R.color.green_notif));
+        }
+        else {
+            noConnection.setTextColor(Color.parseColor("#3b8d26"));
+        }
     }
 
     private void connectionError() {
         noConnection.setText(R.string.no_connection);
-        noConnection.setTextColor(getColor(R.color.red_notif));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            noConnection.setTextColor(getColor(R.color.red_notif));
+        }
+        else {
+            noConnection.setTextColor(Color.parseColor("#ae2424"));
+        }
     }
 
     private void getUser(final String Token_Session) {
@@ -231,6 +252,9 @@ public class CheckAuth extends AppCompatActivity implements View.OnClickListener
             case R.id.retry_button:
                 checkAutoAuth();
                 break;
+            case R.id.goto_login:
+                startActivity(new Intent(CheckAuth.this, LoginActivity.class));
+                finish();
         }
     }
 }

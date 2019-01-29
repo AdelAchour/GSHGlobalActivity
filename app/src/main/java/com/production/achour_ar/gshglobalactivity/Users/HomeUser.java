@@ -34,7 +34,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.production.achour_ar.gshglobalactivity.ITs.activity.AboutActivity;
-import com.production.achour_ar.gshglobalactivity.ITs.activity.FirstEverActivity;
+import com.production.achour_ar.gshglobalactivity.ITs.activity.LoginActivity;
 import com.production.achour_ar.gshglobalactivity.ITs.activity.MyProfileActivity;
 import com.production.achour_ar.gshglobalactivity.ITs.activity.Setting;
 import com.production.achour_ar.gshglobalactivity.ITs.activity.TabLayoutActivity;
@@ -65,7 +65,7 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
     private TextView welcomeView, headertitle, jobuserTV;
     private ImageView profilePicNav, profilePicHome;
     private Button ticketButton, projectButton, rendementButton;
-    private CardView ticketCard, projectCard, rendementCard, interventionCard;
+    private CardView ticketCard, newticketCard;
     private String session_token, nameUser, idUser, firstnameUser;
     static String nbCount ;
     private RequestQueue queue;
@@ -177,9 +177,7 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
         rendementButton.setOnClickListener(this);*/
 
         ticketCard.setOnClickListener(this);
-        projectCard.setOnClickListener(this);
-        rendementCard.setOnClickListener(this);
-        interventionCard.setOnClickListener(this);
+        newticketCard.setOnClickListener(this);
     }
 
     private void navigationListener() {
@@ -256,14 +254,8 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
         welcomeView = findViewById(R.id.welcomeTextView);
         jobuserTV = findViewById(R.id.jobuserTV);
 
-        /*ticketButton = findViewById(R.id.ticketButton);
-        rendementButton = findViewById(R.id.rendementButton);
-        projectButton = findViewById(R.id.projectButton);*/
-
         ticketCard = findViewById(R.id.ticketCard);
-        projectCard = findViewById(R.id.projectCard);
-        rendementCard = findViewById(R.id.rendementCard);
-        interventionCard = findViewById(R.id.interventionCard);
+        newticketCard = findViewById(R.id.newticketCard);
     }
 
     private void setupPDs() {
@@ -411,7 +403,7 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        startActivity(new Intent(getApplicationContext(), FirstEverActivity.class));
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         pdlogout.dismiss();
                         finish();
                         MyPreferences.deletePreference(Constants.KEY_USERNAME);

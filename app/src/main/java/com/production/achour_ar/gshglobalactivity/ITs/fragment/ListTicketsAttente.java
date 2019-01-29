@@ -240,19 +240,6 @@ public class ListTicketsAttente extends Fragment {
                                 }
                                 // ------------------------
 
-                                /* Remplissage du tableau des tickets pour le row item */
-//                                ticketTab[i][0] = titreTicket;
-//                                ticketTab[i][1] = slaTicket;
-//                                ticketTab[i][2] = dateDebutTicket;
-//                                ticketTab[i][3] = urgenceText(urgenceTicket);
-//                                ticketTab[i][4] = calculTempsRestant(dateDebutTicket, slaTicket);
-//                                ticketTab[i][5] = String.valueOf(ticketEnretard);
-//                                ticketTab[i][6] = statutTicket;
-//                                ticketTab[i][7] = idTicket;
-//                                ticketTab[i][8] = calculTempsResolution(dateClotureTicket, dateDebutTicket);
-//                                ticketTab[i][9] = calculTempsRetard(dateEchanceTicket, dateClotureTicket);
-
-
                                 /* ---------  Creating a TicketModel object  --------- */
 
                                 TicketModel ticket = new TicketModel(titreTicket, slaTicket, dateDebutTicket,

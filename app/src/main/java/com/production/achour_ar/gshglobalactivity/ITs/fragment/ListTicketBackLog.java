@@ -147,6 +147,7 @@ public class ListTicketBackLog extends Fragment {
         //Substract 30 days to current date.
         cal.add(Calendar.DATE, -30);
         String minus30 = editTime(sdfDate.format(cal.getTime()));
+        Log.d("BACKLOG", "minus30: "+minus30);
         
         int maxRange = range-1;
         List<KeyValuePair> params = new ArrayList<>();
@@ -336,7 +337,7 @@ public class ListTicketBackLog extends Fragment {
                                                     Toast.makeText(getActivity(), "Procédez à cette action via l'onglet \"ticket en cours.\"",Toast.LENGTH_SHORT).show();
                                                     break;
                                                 case "Mettre le ticket en résolu":
-                                                    Toast.makeText(getActivity(), "Procédez à cette action via l'onglet \"ticket en cours.\".",Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity(), "Procédez à cette action via l'onglet \"ticket en cours.\"",Toast.LENGTH_SHORT).show();
                                                     //pdChangement.show();
                                                     //TicketEnResoluHTTP(TicketModel.getIdTicket());
                                                     break;
@@ -358,8 +359,6 @@ public class ListTicketBackLog extends Fragment {
                             handlerticketbackLog.sendEmptyMessage(4);
                             TabLayoutActivity.handler.sendEmptyMessage(0);
                         }
-
-
                     }
                 },
                 new Response.ErrorListener()
@@ -367,7 +366,8 @@ public class ListTicketBackLog extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Error.Response!", error.toString());
-                        Toast.makeText(getActivity(), "Vérifiez votre connexion", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), "Vérifiez votre connexion", Toast.LENGTH_LONG).show();
+                        handlerticketbackLog.sendEmptyMessage(1);
                     }
 
                 }
@@ -669,87 +669,6 @@ public class ListTicketBackLog extends Fragment {
         return urgence;
     }
 
-    private String etatText(String etatTicket) {
-        String etat = "";
-        int et = Integer.valueOf(etatTicket);
-        switch (et){
-            case 1:
-                etat = "Nouveau";
-                break;
-            case 2:
-                etat = "En cours (Attribué)";
-                break;
-            case 3:
-                etat = "En cours (Planifié)";
-                break;
-            case 4:
-                etat = "En attente";
-                break;
-            case 5:
-                etat = "Résolu";
-                break;
-            case 6:
-                etat = "Clos";
-                break;
-        }
-
-        return etat;
-    }
-
-
-    public static String generateUrl(String baseUrl, List<KeyValuePair> params) {
-        if (params.size() > 0) {
-            int cpt = 1 ;
-            for (KeyValuePair parameter: params) {
-                if (cpt==1){
-                    baseUrl += "?" + parameter.getKey() + "=" + parameter.getValue();
-                }
-                else{
-                    baseUrl += "&" + parameter.getKey() + "=" + parameter.getValue();
-                }
-                cpt++;
-            }
-        }
-        return baseUrl;
-    }
-
-    public static void triTableauTicketParUrgence(String tableau[][]) {
-        int longueur = tableau.length;
-        boolean foundRetard = false;
-
-        // ---- Tri par retard ---
-        for (int i = 0; i < longueur; i++) {
-            if (Long.valueOf(tableau[i][4]) >= 0) {
-                for (int k = i+1; k< longueur; k++){
-                    if ((Long.valueOf(tableau[k][4]) < 0)){
-                        foundRetard = true;
-                        permuter(k,i,tableau);
-                    }
-                }
-                foundRetard = false;
-            }
-        }
-
-        // ---- Tri par temps min ---
-
-
-        int tampon = 0;
-        boolean permut;
-
-        do {
-            // hypothèse : le tableau est trié
-            permut = false;
-            for (int i = nbRetard(tableau); i < longueur - 1; i++) {
-                // Teste si 2 éléments successifs sont dans le bon ordre ou non
-                if (Long.valueOf(tableau[i][4]) > Long.valueOf(tableau[i + 1][4])) {
-                    // s'ils ne le sont pas, on échange leurs positions
-                    permuter(i, i+1, tableau);
-                    permut = true;
-                }
-            }
-        } while (permut);
-
-    }
 
     private static int nbRetard(String[][] tableau) {
         int nbTickets = 0;
@@ -762,50 +681,6 @@ public class ListTicketBackLog extends Fragment {
         return nbTickets;
     }
 
-
-    private static int nbHauteUrgences(String[][] tableau) {
-        int nbTickets = 0;
-        for(int i = 0; i < tableau.length; i++){
-            if ((tableau[i][3].equals("Haute"))||(tableau[i][3].equals("Très haute"))){
-                nbTickets++;
-            }
-        }
-
-        return nbTickets;
-    }
-
-    private static void permuter(int k, int i, String[][] tableau) {
-        String[] tampon = new String[8] ;
-
-        tampon[0] = tableau[k][0];
-        tampon[1] = tableau[k][1];
-        tampon[2] = tableau[k][2];
-        tampon[3] = tableau[k][3];
-        tampon[4] = tableau[k][4];
-        tampon[5] = tableau[k][5];
-        tampon[6] = tableau[k][6];
-        tampon[7] = tableau[k][7];
-
-
-        tableau[k][0] = tableau[i][0];
-        tableau[k][1] = tableau[i][1];
-        tableau[k][2] = tableau[i][2];
-        tableau[k][3] = tableau[i][3];
-        tableau[k][4] = tableau[i][4];
-        tableau[k][5] = tableau[i][5];
-        tableau[k][6] = tableau[i][6];
-        tableau[k][7] = tableau[i][7];
-
-
-        tableau[i][0] = tampon[0];
-        tableau[i][1] = tampon[1];
-        tableau[i][2] = tampon[2];
-        tableau[i][3] = tampon[3];
-        tableau[i][4] = tampon[4];
-        tableau[i][5] = tampon[5];
-        tableau[i][6] = tampon[6];
-        tableau[i][7] = tampon[7];
-    }
 
     class HandlerTicketBackLog extends Handler{
         Bundle bundle;

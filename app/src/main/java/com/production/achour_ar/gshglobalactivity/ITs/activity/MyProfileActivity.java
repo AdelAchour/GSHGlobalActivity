@@ -63,6 +63,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     private TextView telInfo;
     private TextView posteInfo;
     private TextView lieuInfo;
+    private TextView nomprenomTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,20 +81,30 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void setTVs() {
-        nomInfo.setText(nameUser);
-        prenomInfo.setText(firstnameUser);
-        emailInfo.setText(emailUser);
-        posteInfo.setText(posteUser);
-        lieuInfo.setText(lieuUser);
-        setTVtel(telephoneUser);
+        try {
+            nomInfo.setText(nameUser);
+            prenomInfo.setText(firstnameUser);
+            emailInfo.setText(emailUser);
+            posteInfo.setText(posteUser);
+            lieuInfo.setText(lieuUser);
+            String name = nameUser + " " + firstnameUser;
+            nomprenomTV.setText(name);
+            setTVtel(telephoneUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setTVtel(String telephoneUser) {
-        if (telephoneUser.length()==9){
-            telInfo.setText(DisplayNumber(telephoneUser));
-        }
-        else {
-            telInfo.setText(telephoneUser);
+        try {
+            if (telephoneUser.length()==9){
+                telInfo.setText(DisplayNumber(telephoneUser));
+            }
+            else {
+                telInfo.setText(telephoneUser);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -215,6 +226,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         telInfo = findViewById(R.id.telephoneprofile);
         posteInfo = findViewById(R.id.posteprofile);
         lieuInfo = findViewById(R.id.lieuprofile);
+        nomprenomTV = findViewById(R.id.namefirsnameprofile);
     }
 
     @Override

@@ -135,7 +135,11 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                             Log.e("JSON Error response",e.getMessage());
                         }
 
-                        jobuserTV.setText(posteUser);
+                        try {
+                            jobuserTV.setText(posteUser);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
                 },
@@ -406,7 +410,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        startActivity(new Intent(getApplicationContext(), FirstEverActivity.class));
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         pdlogout.dismiss();
                         finish();
                         MyPreferences.deletePreference(Constants.KEY_USERNAME);

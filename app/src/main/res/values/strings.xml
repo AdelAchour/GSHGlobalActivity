@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GSH - 4Stars Preformance</string>
+    <string name="app_name">GSH - IT\'s Global Activity</string>
     <string name="title_activity_info_ticket">InfoTicket</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -46,10 +46,10 @@
     <string name="descriptionbuttonticket">Accédez à l\'intégralité de vos tickets, et gérez-les en temps réel. Modifications, visualisations, notifications…</string>
     <string name="descriptionbuttonproject">Visualisez et ayez un controle total sur l\'ensemble de vos projets. Etat d\'avancement, délais, notifications…</string>
     <string name="descriptionbuttonrendement">Vérifiez votre rendement personnel en quelques secondes, et gérez vos performances, votre prime, vos statistiques…</string>
-    <string name="no_connection">Pas d\'accès au réseau GSH</string>
-    <string name="connection_success">Connecté au réseau GSH !</string>
+    <string name="no_connection">Pas d\'accès à internet</string>
+    <string name="connection_success">Connexion internet établie !</string>
     <string name="retry">Réessayer</string>
-    <string name="status">Etat...</string>
+    <string name="status">Etat…</string>
     <string name="external_permission_revoked">Impossible d\'accéder aux photos</string>
     <string name="changeprofilepicbutton">Changer</string>
     <string name="actors">Acteurs</string>
@@ -75,7 +75,7 @@
     <string name="appgoalquestion">Quel est le but de cette application?</string>
     <string name="appgoalanswer">Cette application a été conçue dans le but d’améliorer la visibilité de l’IT sur ses performances (selon sa participation Helpdesk et ses projets), et dans le but de faciliter la gestion de ses interventions.</string>
     <string name="networkquestion">Avec quel réseau travailler?</string>
-    <string name="networkanswer">Pour l’instant l’application marche avec le réseau local du groupe. Elle sera néanmoins très bientôt accessible via les réseaux Wi-Fi et 4G.</string>
+    <string name="networkanswer">L’application fonctionne avec le réseau local du groupe ainsi qu’avec les réseaux Wi-Fi et 4G.</string>
     <string name="authquestion">Comment m’authentifier?</string>
     <string name="authanswer">Sur l’interface d’authentification, entrez votre email et mot de passe de votre session. L’authentification ne sera par la suite plus demandé, sauf dans le cas de déconnexion.</string>
     <string name="logoutquestion">Comment me déconnecter?</string>
@@ -92,5 +92,6 @@
     <string name="appbuganswer">Il est vivement conseillé d’envoyer un email à Adel ACHOUR (adel.achour@groupe-hasnaoui.com) avec des explications relatifs au bug, afin que celui-ci soit réglé au plus vite.</string>
 
     <string name="copyright">© 2018 GSH Inc.\nDSI.\nAdel ACHOUR.</string>
+    <string name="gotologin">Se reconnecter manuellement</string>
 
 </resources>
