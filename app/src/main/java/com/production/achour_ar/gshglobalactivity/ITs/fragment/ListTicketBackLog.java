@@ -44,6 +44,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,7 +94,11 @@ public class ListTicketBackLog extends Fragment {
         setupListener();
         getArgmts();
         registerForContextMenu(listView);
-        getTicketsHTTP();
+        try {
+            getTicketsHTTP();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         return view;
 
@@ -112,10 +118,18 @@ public class ListTicketBackLog extends Fragment {
             public void onRefresh() {
                 if (!TicketModels.isEmpty()){ //pleins
                     adapter.clear();
-                    getTicketsHTTP();
+                    try {
+                        getTicketsHTTP();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else{ //vide
-                    getTicketsHTTP();
+                    try {
+                        getTicketsHTTP();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -139,7 +153,7 @@ public class ListTicketBackLog extends Fragment {
         listView = view.findViewById(R.id.list);
     }
 
-    private void getTicketsHTTP() {
+    private void getTicketsHTTP() throws UnsupportedEncodingException {
         String url = Constants.GLPI_URL+"search/Ticket";
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -164,7 +178,7 @@ public class ListTicketBackLog extends Fragment {
         params.add(new KeyValuePair("criteria[2][link]","AND"));
         params.add(new KeyValuePair("criteria[2][field]","15"));
         params.add(new KeyValuePair("criteria[2][searchtype]","lessthan"));
-        params.add(new KeyValuePair("criteria[2][value]",minus30));
+        params.add(new KeyValuePair("criteria[2][value]", URLEncoder.encode(minus30, "UTF-8")));
         //OU TECHNICIEN = IDUSER
         params.add(new KeyValuePair("criteria[3][link]","OR"));
         params.add(new KeyValuePair("criteria[3][field]","5"));
@@ -179,7 +193,7 @@ public class ListTicketBackLog extends Fragment {
         params.add(new KeyValuePair("criteria[5][link]","AND"));
         params.add(new KeyValuePair("criteria[5][field]","15"));
         params.add(new KeyValuePair("criteria[5][searchtype]","lessthan"));
-        params.add(new KeyValuePair("criteria[5][value]",minus30));
+        params.add(new KeyValuePair("criteria[5][value]",URLEncoder.encode(minus30, "UTF-8")));
         //AFFICHAGE
         params.add(new KeyValuePair("forcedisplay[0]","4"));
         params.add(new KeyValuePair("forcedisplay[1]","10"));
@@ -724,11 +738,19 @@ public class ListTicketBackLog extends Fragment {
                     if (!TicketModels.isEmpty()){ //pleins
                         swipeLayout.setRefreshing(true);
                         adapter.clear();
-                        getTicketsHTTP();
+                        try {
+                            getTicketsHTTP();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
                     else{
                         swipeLayout.setRefreshing(true);
-                        getTicketsHTTP();
+                        try {
+                            getTicketsHTTP();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
 
@@ -743,7 +765,11 @@ public class ListTicketBackLog extends Fragment {
                         pdChangement.dismiss();
                     }
                     adapter.clear();
-                    getTicketsHTTP();
+                    try {
+                        getTicketsHTTP();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     break;
 
                 case 6: //set Motif

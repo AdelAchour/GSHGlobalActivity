@@ -37,6 +37,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -146,7 +148,11 @@ public class StatsTickets extends AppCompatActivity {
         intervalDateTV.setText(initializeDateText(debutMoisDate, finMoisDate));
 
         //Call the big HTTP REQUEST BRO
-        bigStatRequest(debutMoisDate, finMoisDate);
+        try {
+            bigStatRequest(debutMoisDate, finMoisDate);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         intervalDateTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +164,7 @@ public class StatsTickets extends AppCompatActivity {
 
     }
 
-    private void bigStatRequest(final String debutMoisDate, final String finMoisDate) {
+    private void bigStatRequest(final String debutMoisDate, final String finMoisDate) throws UnsupportedEncodingException {
         nbCount = "0";
         nbTicketCours = 0;
         nbTicketCours_Retard = 0;
@@ -181,12 +187,12 @@ public class StatsTickets extends AppCompatActivity {
         params.add(new KeyValuePair("criteria[1][link]","AND"));
         params.add(new KeyValuePair("criteria[1][field]","15"));
         params.add(new KeyValuePair("criteria[1][searchtype]","morethan"));
-        params.add(new KeyValuePair("criteria[1][value]",debutMoisDate));
+        params.add(new KeyValuePair("criteria[1][value]", URLEncoder.encode(debutMoisDate, "UTF-8")));
         //AND DATE INFERIEUR A
         params.add(new KeyValuePair("criteria[2][link]","AND"));
         params.add(new KeyValuePair("criteria[2][field]","15"));
         params.add(new KeyValuePair("criteria[2][searchtype]","lessthan"));
-        params.add(new KeyValuePair("criteria[2][value]",finMoisDate));
+        params.add(new KeyValuePair("criteria[2][value]",URLEncoder.encode(finMoisDate, "UTF-8")));
         //AFFICHAGE
         params.add(new KeyValuePair("forcedisplay[0]","4"));
         params.add(new KeyValuePair("forcedisplay[1]","10"));
@@ -648,7 +654,11 @@ public class StatsTickets extends AppCompatActivity {
                     initializeDateTextAfter(datedebut, datefin);
 
                     pd.show();
-                    bigStatRequest(debutMoisDate, finMoisDate);
+                    try {
+                        bigStatRequest(debutMoisDate, finMoisDate);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     break;
 
                 case 1:
