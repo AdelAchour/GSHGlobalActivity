@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-
     <TextView
         android:id="@+id/titreTV"
         android:textStyle="bold"
@@ -13,39 +12,30 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:paddingEnd="40dp"
-        android:text="Ceci est le titre du ticket il peut etre long ou alors mem"
+        android:text="Panne serveur"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/black" />
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/slaTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/titreTV"
-        android:orientation="horizontal">
+        android:text="LEVEL 1 (8H/16H)"
+        android:textSize="13sp"
+        android:textColor="@android:color/black" />
 
-        <TextView
-            android:id="@+id/slaTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Priorité et tout"
-            android:textSize="13dp"
-            android:textColor="@android:color/black"
-            />
-
-        <TextView
-            android:id="@+id/SLARestantTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:text="Il reste 2min"
-            android:textSize="13dp"
-            android:gravity="center"
-            android:textColor="@android:color/holo_green_dark"
-            />
-
-
-    </LinearLayout>
-
+    <TextView
+        android:id="@+id/SLARestantTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titreTV"
+        android:layout_centerHorizontal="true"
+        android:text="02:13:10:41"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:textColor="@android:color/holo_green_dark" />
 
     <TextView
         android:id="@+id/dateTV"
@@ -53,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/titreTV"
         android:layout_marginTop="19dp"
-        android:text="Date Date Date Date Date "
+        android:text="2018-03-28 15:14:01"
         android:textColor="@color/colorPrimaryDark" />
 
     <ImageView
@@ -61,10 +51,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_battery_75_green_30dp" />
-
 
 </RelativeLayout>
 

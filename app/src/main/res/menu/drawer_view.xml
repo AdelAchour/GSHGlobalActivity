@@ -4,7 +4,7 @@
 
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/utilisateur"
+            android:icon="@drawable/ic_person_grey_18dp"
             android:title="@string/profile" />
      <!--   <item
             android:id="@+id/nav_newticket"
@@ -16,15 +16,15 @@
             android:title="@string/searchticket" /> -->
         <item
             android:id="@+id/nav_setting"
-            android:icon="@drawable/setting"
+            android:icon="@drawable/ic_settings_grey_18dp"
             android:title="@string/setting" />
         <item
             android:id="@+id/nav_about"
-            android:icon="@drawable/about"
+            android:icon="@drawable/ic_info_outline_grey_18dp"
             android:title="@string/about" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/logout"
+            android:icon="@drawable/ic_exit_to_app_grey_18dp"
             android:title="@string/logout" />
     </group>
 </menu>

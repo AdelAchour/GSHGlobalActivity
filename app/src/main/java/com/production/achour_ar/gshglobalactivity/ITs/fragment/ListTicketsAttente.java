@@ -41,6 +41,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -499,7 +501,11 @@ public class ListTicketsAttente extends Fragment {
                                 Log.e("JSON Error response",e.getMessage());
                             }
 
-                            SendEmailEnCoursToObservers(nowEnCours, prenomObservateur,emailObservateur, titreTicket);
+                            try {
+                                SendEmailEnCoursToObservers(nowEnCours, prenomObservateur,emailObservateur, titreTicket);
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
 
                         }
 
@@ -529,7 +535,7 @@ public class ListTicketsAttente extends Fragment {
 
     }
 
-    private void SendEmailEnCoursToObservers(String nowEnCours, String prenomObservateur, String emailObservateur, String titreTicket) {
+    private void SendEmailEnCoursToObservers(String nowEnCours, String prenomObservateur, String emailObservateur, String titreTicket) throws UnsupportedEncodingException {
         String url = Constants.URL_EMAIL_API;
 
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomObservateur+",<br><br>" +
@@ -538,10 +544,10 @@ public class ListTicketsAttente extends Fragment {
                 "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
-        paramsEmail.add(new KeyValuePair("from","helpdesk-mobile@groupe-hasnaoui.com"));
-        paramsEmail.add(new KeyValuePair("to",emailObservateur)); //emailObservateur
-        paramsEmail.add(new KeyValuePair("subject","Ticket en cours"));
-        paramsEmail.add(new KeyValuePair("content",content));
+        paramsEmail.add(new KeyValuePair("from", URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode(emailObservateur, "UTF-8"))); //emailObservateur
+        paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("Ticket en cours", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(content, "UTF-8")));
 
         final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
                 new Response.Listener<JSONObject>()
@@ -568,7 +574,7 @@ public class ListTicketsAttente extends Fragment {
 
                             notifyAdminByEmail(state, from, to, content);
 
-                        } catch (JSONException e) { e.printStackTrace(); }
+                        } catch (JSONException | UnsupportedEncodingException e) { e.printStackTrace(); }
 
                     }
                 },
@@ -578,7 +584,11 @@ public class ListTicketsAttente extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Error.Response Email", error.toString());
                         //Toast.makeText(getActivity(), "Envoi de l'email au demandeur impossible", Toast.LENGTH_SHORT).show();
-                        notifyAdminErrorByEmail(content, error.toString(), error.getMessage(), error.getLocalizedMessage());
+                        try {
+                            notifyAdminErrorByEmail(content, error.toString(), error.getMessage(), error.getLocalizedMessage());
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
         ){
@@ -600,7 +610,7 @@ public class ListTicketsAttente extends Fragment {
 
     }
 
-    private void notifyAdminErrorByEmail(String content, String errortoString, String message, String localizedMessage) {
+    private void notifyAdminErrorByEmail(String content, String errortoString, String message, String localizedMessage) throws UnsupportedEncodingException {
         String url = Constants.URL_EMAIL_API;
 
         final String ContentMessage = "<h2>--- LOG Admin ERROR ---</h2> <br><br><br><br>" +
@@ -611,10 +621,10 @@ public class ListTicketsAttente extends Fragment {
                 "Content: <br> __________________ <br> "+content+" <br> __________________ <br><br><br>";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
-        paramsEmail.add(new KeyValuePair("from","helpdesk-mobile@groupe-hasnaoui.com"));
-        paramsEmail.add(new KeyValuePair("to","adel.achour@groupe-hasnaoui.com")); //Admin
-        paramsEmail.add(new KeyValuePair("subject","LOG ERROR Admin"));
-        paramsEmail.add(new KeyValuePair("content",ContentMessage));
+        paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode("adel.achour@groupe-hasnaoui.com", "UTF-8"))); //Admin
+        paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("LOG ERROR Admin", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(ContentMessage, "UTF-8")));
 
         final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
                 new Response.Listener<JSONObject>()
@@ -698,7 +708,11 @@ public class ListTicketsAttente extends Fragment {
                             }
                         } catch (JSONException e) { e.printStackTrace(); }
 
-                        SendEmailEnCoursToRequester(nowEnCours, prenomDemandeur,emailDemandeur, titreTicket);
+                        try {
+                            SendEmailEnCoursToRequester(nowEnCours, prenomDemandeur,emailDemandeur, titreTicket);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
 
                     }
                 },
@@ -724,7 +738,7 @@ public class ListTicketsAttente extends Fragment {
 
     }
 
-    private void SendEmailEnCoursToRequester(String nowEnCours, String prenomDemandeur, String emailDemandeur, String titreTicket) {
+    private void SendEmailEnCoursToRequester(String nowEnCours, String prenomDemandeur, String emailDemandeur, String titreTicket) throws UnsupportedEncodingException {
         String url = Constants.URL_EMAIL_API;
 
         //final String content = prenomDemandeur+",\\n\\nVotre ticket "+titreTicket+" a été résolu à "+now+".\\n\\nMerci,\\n\\nL'équipe Helpdesk mobile.";
@@ -734,10 +748,10 @@ public class ListTicketsAttente extends Fragment {
                 "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
-        paramsEmail.add(new KeyValuePair("from","helpdesk-mobile@groupe-hasnaoui.com"));
-        paramsEmail.add(new KeyValuePair("to",emailDemandeur)); //emailDemandeur
-        paramsEmail.add(new KeyValuePair("subject","Ticket en cours"));
-        paramsEmail.add(new KeyValuePair("content",content));
+        paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode(emailDemandeur, "UTF-8"))); //emailDemandeur
+        paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("Ticket en cours", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(content, "UTF-8")));
 
         final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
                 new Response.Listener<JSONObject>()
@@ -764,7 +778,7 @@ public class ListTicketsAttente extends Fragment {
 
                             notifyAdminByEmail(state, from, to, content);
 
-                        } catch (JSONException e) { e.printStackTrace(); }
+                        } catch (JSONException | UnsupportedEncodingException e) { e.printStackTrace(); }
 
                     }
                 },
@@ -774,7 +788,11 @@ public class ListTicketsAttente extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Error.Response Email", error.toString());
                         //Toast.makeText(getActivity(), "Envoi de l'email au demandeur impossible", Toast.LENGTH_SHORT).show();
-                        notifyAdminErrorByEmail(content, error.toString(), error.getMessage(), error.getLocalizedMessage());
+                        try {
+                            notifyAdminErrorByEmail(content, error.toString(), error.getMessage(), error.getLocalizedMessage());
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
         ){
@@ -796,7 +814,7 @@ public class ListTicketsAttente extends Fragment {
 
     }
 
-    private void notifyAdminByEmail(String state, String from, String to, String content) {
+    private void notifyAdminByEmail(String state, String from, String to, String content) throws UnsupportedEncodingException {
         String url = Constants.URL_EMAIL_API;
 
         final String ContentMessage = "<h2>--- Message Admin ---</h2> <br><br><br>" +
@@ -807,10 +825,10 @@ public class ListTicketsAttente extends Fragment {
                 "Content: <br> __________________ <br> "+content+" <br> __________________ <br><br><br>";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
-        paramsEmail.add(new KeyValuePair("from","helpdesk-mobile@groupe-hasnaoui.com"));
-        paramsEmail.add(new KeyValuePair("to","adel.achour@groupe-hasnaoui.com")); //Admin
-        paramsEmail.add(new KeyValuePair("subject","Notif Admin"));
-        paramsEmail.add(new KeyValuePair("content",ContentMessage));
+        paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode("adel.achour@groupe-hasnaoui.com", "UTF-8"))); //Admin
+        paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("Notif Admin", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(ContentMessage, "UTF-8")));
 
         final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
                 new Response.Listener<JSONObject>()

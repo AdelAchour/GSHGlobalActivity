@@ -93,5 +93,10 @@
 
     <string name="copyright">© 2018 GSH Inc.\nDSI.\nAdel ACHOUR.</string>
     <string name="gotologin">Se reconnecter manuellement</string>
+    <string name="createticket">Créer le ticket</string>
+    <string name="tickettitlechart">Choisissez un titre court et compréhensible</string>
+    <string name="categoryticketchart">Choisissez la catégorie adéquate au problème</string>
+    <string name="typeticketchart">Est-ce une demande ou un incident?</string>
+    <string name="contentticketchart">Décrivez votre problème</string>
 
 </resources>
