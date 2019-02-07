@@ -560,19 +560,25 @@ public class InfoTicket extends AppCompatActivity {
                         }
 
                         final String NomPrenomAsker = nomDemandeur+" "+prenomDemandeur;
-                        demandeurTV.setText(NomPrenomAsker);
-                        demandeurTV.setPaintFlags(demandeurTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        if (nomDemandeur == null){
+                            demandeurTV.setText("Aucun demandeur");
+                        }
+                        else {
+                            demandeurTV.setText(NomPrenomAsker);
+                            demandeurTV.setPaintFlags(demandeurTV.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+
+                            demandeurTV.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    DialogDemandeur alert = new DialogDemandeur();
+                                    alert.showDialog(InfoTicket.this, NomPrenomAsker, emailDemandeur, telephoneDemandeur, lieuDemandeur, posteDemandeur);
+                                }
+                            });
+                        }
+
                         //progressBarInfo.setVisibility(View.GONE);
                         pd.dismiss();
-
-
-                        demandeurTV.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                DialogDemandeur alert = new DialogDemandeur();
-                                alert.showDialog(InfoTicket.this, NomPrenomAsker, emailDemandeur, telephoneDemandeur, lieuDemandeur, posteDemandeur);
-                            }
-                        });
 
                     }
                 },

@@ -98,5 +98,7 @@
     <string name="categoryticketchart">Choisissez la catégorie adéquate au problème</string>
     <string name="typeticketchart">Est-ce une demande ou un incident?</string>
     <string name="contentticketchart">Décrivez votre problème</string>
+    <string name="shareStat">Partager mes statistiques</string>
+    <string name="pickpersontext">A qui voulez-vous envoyer votre rapport Helpdesk?</string>
 
 </resources>

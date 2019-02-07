@@ -306,6 +306,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                 i.putExtra("prenom",firstnameUser);
                 i.putExtra("id",idUser);
                 i.putExtra("nb",nbCount);
+                i.putExtra("email",emailUser);
 
                 startActivity(i);
                 break;

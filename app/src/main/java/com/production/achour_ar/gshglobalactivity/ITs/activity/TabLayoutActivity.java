@@ -42,6 +42,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
     private Timer timer = new Timer();
     private ImageView homebutton;
     private ImageView refreshbutton;
+    private String emailUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +163,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
         nameUser = i.getStringExtra("nom");
         firstnameUser = i.getStringExtra("prenom");
         idUser = i.getStringExtra("id");
+        emailUser = i.getStringExtra("email");
     }
 
     private void SetupActionBar() {
@@ -279,6 +281,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
                 intent.putExtra("nom",nameUser);
                 intent.putExtra("prenom",firstnameUser);
                 intent.putExtra("id",idUser);
+                intent.putExtra("email",emailUser);
                 startActivity(intent);
                 break;
 

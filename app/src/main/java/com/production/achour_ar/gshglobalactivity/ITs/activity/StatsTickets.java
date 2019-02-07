@@ -1,27 +1,35 @@
 package com.production.achour_ar.gshglobalactivity.ITs.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.ITs.dialog.DialogChoixPersonStat;
+import com.production.achour_ar.gshglobalactivity.ITs.dialog.DialogMotifAttente;
 import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.URLGenerator;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.WorkTimeCalculator;
@@ -51,117 +59,130 @@ import java.util.Map;
 
 import static com.production.achour_ar.gshglobalactivity.ITs.fragment.ListTickets.generateUrl;
 
-public class StatsTickets extends AppCompatActivity {
+public class StatsTickets extends AppCompatActivity implements View.OnClickListener {
 
-    ArrayList<ChartModel> ChartModelsTicket, ChartModelsParTicket;
-    ListView listChartTickets, listChartParTickets;
+    private ArrayList<ChartModel> ChartModelsTicket, ChartModelsParTicket;
+    private ListView listChartTickets, listChartParTickets;
     private static ChartAdapter chartTicketAdapter, chartParTicketAdapter;
-    String nbCount;
-    int nbTicketCours = 0, nbTicketCours_Retard = 0, nbTicketAttente = 0,
+    private String nbCount;
+    private int nbTicketCours = 0, nbTicketCours_Retard = 0, nbTicketAttente = 0,
             nbTicketResolu = 0, nbTicketClos = 0,
-            nbTicketClos_Temps = 0, nbTicketClos_Retard = 0;
+            nbTicketClos_Temps = 0, nbTicketClos_Retard = 0, nbTicketCours_A_Temps = 0;
 
-    String session_token, nameUser, idUser, firstnameUser;
-    BarChart BarOuvertClos, BarParEtat;
-    String actualDate, debutMoisDate, finMoisDate;
-    TextView intervalDateTV, changeDateTV, presentationNameTV, presentationTextTV, nbTicketCoursTV, nbTicketsCoursRetardTV,
-            nbTicketAttenteTV, nbTicketResoluTV, nbTicketClosATempsTV, nbTicketClosRetardTV,
+    private String session_token, nameUser, idUser, firstnameUser;
+    private BarChart BarOuvertClos, BarParEtat;
+    private String actualDate, debutMoisDate, finMoisDate;
+    private TextView intervalDateTV, changeDateTV, presentationNameTV, presentationTextTV, nbTicketCoursTV, nbTicketsCoursRetardTV,
+            nbTicketAttenteTV, nbTicketResoluTV, nbTicketClosATempsTV, nbTicketClosRetardTV, successRateTV,
     tempsResolutionMoyenTV, tempsRetardMoyenTV;
 
-    RequestQueue queue;
-    String idTicket, dateDebutTicket, dateResolutionTicket , statutTicket, dateEchanceTicket, dateClotureTicket;
-    boolean ticketEnretard;
+    private RequestQueue queue;
+    private String idTicket, dateDebutTicket, dateResolutionTicket , statutTicket, dateEchanceTicket, dateClotureTicket;
+    private boolean ticketEnretard;
     public static Handler handlerDate;
-    ProgressDialog pd;
+    private ProgressDialog pd, pdShare;
     private static DateFormat parser ;
-    ArrayList<String> listDateDebut;
-    ArrayList<String> listDateCloture;
-    ArrayList<Long> listTempsResolution;
+    private ArrayList<String> listDateDebut;
+    private ArrayList<String> listDateCloture;
+    private ArrayList<Long> listTempsResolution;
 
-    ArrayList<String> listDateEcheanceRetard;
-    ArrayList<String> listDateClotureRetard;
-    ArrayList<Long> listTempsRetard;
+    private ArrayList<String> listDateEcheanceRetard;
+    private ArrayList<String> listDateClotureRetard;
+    private ArrayList<Long> listTempsRetard;
 
-    ProgressBar progressBarTempsMoyen;
+    private String pourcentageReussite;
+    private String emailUser;
+
+    public static Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stats_tickets);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Stats de mes tickets");
-        actionBar.setHomeButtonEnabled(true); //show a caret only if android:parentActivityName is specified.
+        initView();
+        setupActionBar();
+        setupPD();
+        getArguments();
+        initDate();
+        setupTVs();
+        setListener();
 
-        queue = Volley.newRequestQueue(getApplicationContext());
+        try { bigStatRequest(debutMoisDate, finMoisDate); }
+        catch (UnsupportedEncodingException e) { e.printStackTrace(); }
 
-        handlerDate = new HandlerDate();
-        parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
 
-        listDateDebut = new ArrayList<String>();
-        listDateCloture = new ArrayList<String>();
-        listTempsResolution = new ArrayList<Long>();
+    private void setListener() {
+        intervalDateTV.setOnClickListener(this);
+        changeDateTV.setOnClickListener(this);
+    }
 
-        listDateEcheanceRetard = new ArrayList<String>();
-        listDateClotureRetard = new ArrayList<String>();
-        listTempsRetard = new ArrayList<Long>();
+    private void setupTVs() {
+        //Initialiser le texte du début
+        String fullname = nameUser+" "+firstnameUser;
+        presentationNameTV.setText(fullname);
+        intervalDateTV.setText(initializeDateText(debutMoisDate, finMoisDate));
+    }
 
-        progressBarTempsMoyen = (ProgressBar) findViewById(R.id.progressBarTempsMoyen);
+    private void initDate() {
+        //initialisation des dates (intervalle)
+        //actualDate = getActualDate(); //yyyy-MM-dd HH:mm:ss
+        debutMoisDate = getDebutDate(); //yyyy-MM-01 00:00:00
+        finMoisDate = getActualDate(); //yyyy-MM-dd HH:mm:ss
+    }
 
-        intervalDateTV = (TextView)findViewById(R.id.presentationDateTicket);
-        changeDateTV = (TextView)findViewById(R.id.changeDateStat);
-        presentationNameTV = (TextView)findViewById(R.id.presentationName);
-        presentationTextTV = (TextView)findViewById(R.id.presentationTextStat);
-        nbTicketCoursTV = (TextView)findViewById(R.id.nbticketencours);
-        nbTicketsCoursRetardTV = (TextView)findViewById(R.id.dontticketenretard);
-        nbTicketAttenteTV = (TextView)findViewById(R.id.nbticketenattente);
-        nbTicketResoluTV = (TextView)findViewById(R.id.nbticketresolu);
-        nbTicketClosATempsTV = (TextView)findViewById(R.id.nbticketclos);
-        nbTicketClosRetardTV = (TextView)findViewById(R.id.nbticketclosretard);
-        tempsResolutionMoyenTV = (TextView)findViewById(R.id.tempsresolutionMoyen);
-        tempsRetardMoyenTV = (TextView)findViewById(R.id.tempsretardMoyen);
-
+    private void getArguments() {
         Intent i = getIntent();
         session_token = i.getStringExtra("session");
         nameUser = i.getStringExtra("nom");
         firstnameUser = i.getStringExtra("prenom");
         idUser = i.getStringExtra("id");
+        emailUser = i.getStringExtra("email");
+    }
+
+    private void setupPD() {
+        //ProgressDialog
+        pd.setMessage("Requete en cours...");
+        pdShare.setMessage("Envoi du rapport...");
+        pd.show();
+    }
+
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Stats de mes tickets");
+        actionBar.setHomeButtonEnabled(true); //show a caret only if android:parentActivityName is specified.
+    }
+
+    private void initView() {
+        handler = new HandlerStats();
+        pd = new ProgressDialog(this);
+        pdShare = new ProgressDialog(this);
+        queue = Volley.newRequestQueue(getApplicationContext());
+        handlerDate = new HandlerDate();
+        parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        listDateDebut = new ArrayList<String>();
+        listDateCloture = new ArrayList<String>();
+        listTempsResolution = new ArrayList<Long>();
+        listDateEcheanceRetard = new ArrayList<String>();
+        listDateClotureRetard = new ArrayList<String>();
+        listTempsRetard = new ArrayList<Long>();
+
+        intervalDateTV = findViewById(R.id.presentationDateTicket);
+        changeDateTV = findViewById(R.id.changeDateStat);
+        presentationNameTV = findViewById(R.id.presentationName);
+        presentationTextTV = findViewById(R.id.presentationTextStat);
+        nbTicketCoursTV = findViewById(R.id.nbticketencours);
+        nbTicketsCoursRetardTV = findViewById(R.id.dontticketenretard);
+        nbTicketAttenteTV = findViewById(R.id.nbticketenattente);
+        nbTicketResoluTV = findViewById(R.id.nbticketresolu);
+        nbTicketClosATempsTV = findViewById(R.id.nbticketclos);
+        nbTicketClosRetardTV = findViewById(R.id.nbticketclosretard);
+        successRateTV = findViewById(R.id.statSuccessTicket);
 
         //Initialisation des graphes
-        BarOuvertClos = (BarChart) findViewById(R.id.barOuvertClos);
-        BarParEtat = (BarChart) findViewById(R.id.barParEtat);
-
-
-        //initialisation des dates (intervalle)
-        //actualDate = getActualDate(); //yyyy-MM-dd HH:mm:ss
-
-        debutMoisDate = getDebutDate(); //yyyy-MM-01 00:00:00
-        finMoisDate = getActualDate(); //yyyy-MM-dd HH:mm:ss
-
-        //ProgressDialog
-        pd = new ProgressDialog(this);
-        pd.setMessage("Requete en cours...");
-        pd.show();
-
-        //Initialiser le texte du début
-        presentationNameTV.setText(nameUser+" "+firstnameUser);
-        intervalDateTV.setText(initializeDateText(debutMoisDate, finMoisDate));
-
-        //Call the big HTTP REQUEST BRO
-        try {
-            bigStatRequest(debutMoisDate, finMoisDate);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        intervalDateTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogChoixDate alert = new DialogChoixDate();
-                alert.showDialog(StatsTickets.this, debutMoisDate, finMoisDate);
-            }
-        });
-
+        BarOuvertClos = findViewById(R.id.barOuvertClos);
+        BarParEtat = findViewById(R.id.barParEtat);
     }
 
     private void bigStatRequest(final String debutMoisDate, final String finMoisDate) throws UnsupportedEncodingException {
@@ -173,6 +194,7 @@ public class StatsTickets extends AppCompatActivity {
         nbTicketClos = 0;
         nbTicketClos_Temps = 0;
         nbTicketClos_Retard = 0;
+        nbTicketCours_A_Temps = 0;
         BarOuvertClos.clearChart();
         BarParEtat.clearChart();
 
@@ -208,7 +230,7 @@ public class StatsTickets extends AppCompatActivity {
         params.add(new KeyValuePair("forcedisplay[11]","2"));
         params.add(new KeyValuePair("forcedisplay[12]","17"));
         //RANGE
-        params.add(new KeyValuePair("range","0-200"));
+        params.add(new KeyValuePair("range","0-300"));
 
         final JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
                 new Response.Listener<JSONObject>()
@@ -239,11 +261,6 @@ public class StatsTickets extends AppCompatActivity {
                                 }
                                 // ------------------------
 
-                                // Remplissage du tableau pour le temps moyen de résolution/retard
-
-                                //ticketTab[i][0] = titreTicket; //temps de résolution
-                                //ticketTab[i][1] = slaTicket; //temps de retard
-
                                 if (statutTicket.equals("6")){
                                     //Here, i'm gonna create a list of ticket_clos_date object (with date debut & date cloture variables)
                                     listDateDebut.add(dateDebutTicket);
@@ -272,8 +289,6 @@ public class StatsTickets extends AppCompatActivity {
                         catch (JSONException e){
                             Log.e("malkach",e.getMessage());
                             PopulateZeroTextViews();
-                            tempsResolutionMoyenTV.setText("00h 00m 00s");
-                            tempsRetardMoyenTV.setText("00h 00m 00s");
                             if (pd.isShowing()) pd.dismiss();
                             PopulateZeroGraphs();
                         }
@@ -310,15 +325,6 @@ public class StatsTickets extends AppCompatActivity {
         BarOuvertClos.addBar(new BarModel(0.f,  0xFF292929));
         BarOuvertClos.startAnimation();
 
-        //Initialisation de sa chart
-        listChartTickets = (ListView)findViewById(R.id.ListChartTicket);
-        ChartModelsTicket = new ArrayList<>();
-
-        ChartModelsTicket.add(new ChartModel("Ouvert","Ticket ouvert"));
-        ChartModelsTicket.add(new ChartModel("Clos","Ticket clos"));
-
-        chartTicketAdapter = new ChartAdapter(ChartModelsTicket,getApplicationContext());
-        listChartTickets.setAdapter(chartTicketAdapter);
 
         //Graphes par état
         BarParEtat.addBar(new BarModel(0.f, 0xFF247c8f));
@@ -328,50 +334,35 @@ public class StatsTickets extends AppCompatActivity {
         BarParEtat.addBar(new BarModel(0.f,  0xFF292929));
         BarParEtat.addBar(new BarModel(0.f,  0xFF7b1d6e));
         BarParEtat.startAnimation();
-
-        //Initialisation de sa chart
-        listChartParTickets = (ListView)findViewById(R.id.ListChartParTicket);
-        ChartModelsParTicket = new ArrayList<>();
-
-        ChartModelsParTicket.add(new ChartModel("Ouvert","Ticket en cours"));
-        ChartModelsParTicket.add(new ChartModel("Retard","Ticket en cours (en retard)"));
-        ChartModelsParTicket.add(new ChartModel("Attente","Ticket en attente"));
-        ChartModelsParTicket.add(new ChartModel("Resolu","Ticket résolus"));
-        ChartModelsParTicket.add(new ChartModel("Clos","Ticket clos à temps"));
-        ChartModelsParTicket.add(new ChartModel("ClosRetard","Ticket clos en retard"));
-
-        chartParTicketAdapter = new ChartAdapter(ChartModelsParTicket,getApplicationContext());
-        listChartParTickets.setAdapter(chartParTicketAdapter);
     }
 
     private void PopulateZeroTextViews() {
         presentationTextTV.setText("0 ticket");
         nbTicketCoursTV.setText("0");
-        nbTicketsCoursRetardTV.setText("("+0+" en retard)");
+        //nbTicketsCoursRetardTV.setText("("+0+" en retard)");
+        nbTicketsCoursRetardTV.setText("");
         nbTicketAttenteTV.setText("0");
         nbTicketResoluTV.setText("0");
         nbTicketClosATempsTV.setText("0");
-        nbTicketClosRetardTV.setText("("+0+" à temps - "+0+" en retard)");
+        //nbTicketClosRetardTV.setText("("+0+" à temps - "+0+" en retard)");
+        nbTicketClosRetardTV.setText("");
+        String successZero = "0 sur 0 - 0,00% de réussite" ;
+        successRateTV.setText(successZero);
     }
 
     private void PopulateGraphs() {
         //Graph par ticket
         BarOuvertClos.addBar(new BarModel(Float.valueOf(nbCount), 0xFF247c8f));
-        BarOuvertClos.addBar(new BarModel(Float.valueOf(nbTicketClos),  0xFF292929));
+        BarOuvertClos.addBar(new BarModel((float) nbTicketClos,  0xFF292929));
         BarOuvertClos.startAnimation();
-
-        //Initialisation de sa chart
-        listChartTickets = (ListView)findViewById(R.id.ListChartTicket);
-        ChartModelsTicket = new ArrayList<>();
-
 
         System.out.println("ticket en cours "+nbTicketCours);
         System.out.println("ticket clos "+nbTicketClos);
         float pourcentageCalcul ;
-        String pourcentageReussite = "" ;
+        //String pourcentageReussite = "" ;
         int nbOuvert = Integer.valueOf(nbCount);
         if (nbOuvert>0){
-            pourcentageCalcul = ((Float.valueOf(nbTicketClos)/Float.valueOf(nbOuvert))*100);
+            pourcentageCalcul = (((float) nbTicketClos / (float) nbOuvert)*100);
             pourcentageReussite = String.format("%.02f", pourcentageCalcul);
         }
         else{
@@ -380,15 +371,10 @@ public class StatsTickets extends AppCompatActivity {
         }
 
         String success = nbTicketClos + " sur " +nbOuvert + " - " + pourcentageReussite + "% de réussite" ;
-        ChartModelsTicket.add(new ChartModel("Ouvert","Ticket ouvert"));
-        ChartModelsTicket.add(new ChartModel("Clos","Ticket clos"));
-        ChartModelsTicket.add(new ChartModel("Stat",success));
-
-        chartTicketAdapter = new ChartAdapter(ChartModelsTicket,getApplicationContext());
-        listChartTickets.setAdapter(chartTicketAdapter);
+        successRateTV.setText(success);
 
         //Graphes par état
-        BarParEtat.addBar(new BarModel(Float.valueOf(nbTicketCours), 0xFF247c8f));
+        BarParEtat.addBar(new BarModel(Float.valueOf(nbTicketCours_A_Temps), 0xFF41a378));
         BarParEtat.addBar(new BarModel(Float.valueOf(nbTicketCours_Retard),  0xFF5e1212));
         BarParEtat.addBar(new BarModel(Float.valueOf(nbTicketAttente),  0xFFa95516));
         BarParEtat.addBar(new BarModel(Float.valueOf(nbTicketResolu),  0xFF1b2a6b));
@@ -396,42 +382,177 @@ public class StatsTickets extends AppCompatActivity {
         BarParEtat.addBar(new BarModel(Float.valueOf(nbTicketClos_Retard),  0xFF7b1d6e));
         BarParEtat.startAnimation();
 
-        //Initialisation de sa chart
-        listChartParTickets = (ListView)findViewById(R.id.ListChartParTicket);
-        ChartModelsParTicket = new ArrayList<>();
-
-        ChartModelsParTicket.add(new ChartModel("Ouvert","Ticket en cours"));
-        ChartModelsParTicket.add(new ChartModel("Retard","Ticket en cours (en retard)"));
-        ChartModelsParTicket.add(new ChartModel("Attente","Ticket en attente"));
-        ChartModelsParTicket.add(new ChartModel("Resolu","Ticket résolus"));
-        ChartModelsParTicket.add(new ChartModel("Clos","Ticket clos à temps"));
-        ChartModelsParTicket.add(new ChartModel("ClosRetard","Ticket clos en retard"));
-
-        chartParTicketAdapter = new ChartAdapter(ChartModelsParTicket,getApplicationContext());
-        listChartParTickets.setAdapter(chartParTicketAdapter);
-
-        //get temps résolution moyen
     }
 
     private void PopulateTextViews() {
         presentationTextTV.setText(""+nbCount+" tickets");
         nbTicketCoursTV.setText(String.valueOf(nbTicketCours));
-        nbTicketsCoursRetardTV.setText("("+nbTicketCours_Retard+" en retard)");
+        //nbTicketsCoursRetardTV.setText("("+nbTicketCours_Retard+" en retard)");
+        nbTicketsCoursRetardTV.setText("");
         nbTicketAttenteTV.setText(String.valueOf(nbTicketAttente));
         nbTicketResoluTV.setText(String.valueOf(nbTicketResolu));
         nbTicketClosATempsTV.setText(String.valueOf(nbTicketClos));
-        nbTicketClosRetardTV.setText("("+nbTicketClos_Temps+" à temps - "+nbTicketClos_Retard+" en retard)");
+        //nbTicketClosRetardTV.setText("("+nbTicketClos_Temps+" à temps - "+nbTicketClos_Retard+" en retard)");
+        nbTicketClosRetardTV.setText("");
+    }
 
-        progressBarTempsMoyen.setVisibility(View.VISIBLE);
-        Thread mThread = new Thread() {
+    private void shareStat(final String prenomReceiver, String emailReceiver) throws UnsupportedEncodingException {
+        String url = Constants.URL_STAT_API;
+
+        String dateDebut = editformatdate(debutMoisDate);
+        String datefin = editformatdate(finMoisDate);
+
+        String fullnameIngenieur = firstnameUser+ " " +nameUser;
+        final String msgcontent = "<h2>Rapport Helpdesk</h2> <br><br>"+prenomReceiver+",<br><br>Vous trouverez en pièce jointe un fichier PDF contenant le rapport " +
+                "Helpdesk de <b>"+fullnameIngenieur+"</b> du " +
+                "<u><font color=#2e3e68>"+dateDebut+"</font></u> au <u><font color=#2e3e68>"+datefin+"</font></u>.<br><br>Pour un éventuel échange, veuillez contacter directement l'ingénieur.<br><br><br>" +
+                "L'équipe Helpdesk Mobile.<br><br><br>" +
+                "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
+
+        List<KeyValuePair> paramsEmail = new ArrayList<>();
+        paramsEmail.add(new KeyValuePair("fullname", URLEncoder.encode(fullnameIngenieur, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("datedebut",URLEncoder.encode(dateDebut, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("datefin",URLEncoder.encode(datefin, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbouvert",URLEncoder.encode(nbCount, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbcours",URLEncoder.encode(String.valueOf(nbTicketCours), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbattente",URLEncoder.encode(String.valueOf(nbTicketAttente), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbresolu",URLEncoder.encode(String.valueOf(nbTicketResolu), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbclos",URLEncoder.encode(String.valueOf(nbTicketClos), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbcourstemps",URLEncoder.encode(String.valueOf(nbTicketCours_A_Temps), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbcoursretard",URLEncoder.encode(String.valueOf(nbTicketCours_Retard), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbclostemps",URLEncoder.encode(String.valueOf(nbTicketClos_Temps), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbclosretard",URLEncoder.encode(String.valueOf(nbTicketClos_Retard), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("pourcentageReussite",URLEncoder.encode(pourcentageReussite, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode(emailReceiver, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("contentmsg",URLEncoder.encode(msgcontent, "UTF-8")));
+
+        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            pdShare.dismiss();
+
+                            String state = response.getString("state");
+                            String from = response.getString("from");
+                            String to = response.getString("to");
+                            String content = response.getString("content");
+                            String filename = response.getString("filename");
+                            Log.d("RESPONSE FROM", "from = "+from);
+                            Log.d("RESPONSE TO", "to = "+to);
+                            Log.d("RESPONSE STATE", "state = "+state);
+                            Log.d("RESPONSE CONTENT", "content = "+content);
+                            Log.d("RESPONSE FILENAME", "filename = "+filename);
+                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
+                            try {
+                                Toast.makeText(StatsTickets.this, "Un PDF a été envoyé à "+prenomReceiver+"", Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e("Toast Email", "Impossible de notifier");
+                            }
+
+                            notifyAdminByEmail(state, from, to, content, filename);
+
+                        } catch (JSONException | UnsupportedEncodingException e) { e.printStackTrace(); }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error.Response Email", error.toString());
+                        pdShare.dismiss();
+                        Toast.makeText(StatsTickets.this, "Envoi du PDF impossible", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ){
             @Override
-            public void run() {
-                CalculTempsMoyenResolution();
-                CalculTempsMoyenRetard();
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("Content-type","application/json");
+                return params;
             }
         };
-        mThread.start();
 
+        getRequestEmail.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
+        queue.add(getRequestEmail);
+
+    }
+
+    private String editformatdate(String date) {
+        String finaldate = "";
+        //yyyy-MM-dd HH:mm:ss
+        finaldate = date.substring(0, 10);
+        return finaldate;
+    }
+
+    private void notifyAdminByEmail(String state, String from, String to, String content, String filename) throws UnsupportedEncodingException {
+        String url = Constants.URL_EMAIL_API;
+
+        final String ContentMessage = "<h2>--- Message Admin STAT ---</h2> <br><br><br>" +
+                "Un mail a été envoyé avec succès via l'API. <br><br>" +
+                "State: "+state+"<br><br>" +
+                "From: "+from+"<br><br>" +
+                "To: "+to+"<br><br><br>" +
+                "Content: <br> __________________ <br> "+content+" <br> __________________ <br><br><br>";
+
+        List<KeyValuePair> paramsEmail = new ArrayList<>();
+        paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode("adel.achour@groupe-hasnaoui.com", "UTF-8"))); //Admin
+        paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("Notif Admin STAT", "UTF-8")));
+        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(ContentMessage, "UTF-8")));
+
+        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            String state = response.getString("state");
+                            String from = response.getString("from");
+                            String to = response.getString("to");
+                            Log.d("RESPONSE FROM", "from = "+from);
+                            Log.d("RESPONSE TO", "to = "+to);
+                            Log.d("RESPONSE STATE", "state = "+state);
+                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
+
+                        } catch (JSONException e) { e.printStackTrace(); }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error Email Notif Admin", error.toString());
+                        //Toast.makeText(getActivity(), "Envoi de l'email au demandeur impossible", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("Content-type","application/json");
+                return params;
+            }
+        };
+
+        getRequestEmail.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
+        queue.add(getRequestEmail);
     }
 
     private void CalculTempsMoyenResolution() {
@@ -531,11 +652,11 @@ public class StatsTickets extends AppCompatActivity {
         switch (statutTicket){
             case "2": //En cours
                 nbTicketCours++;
-                if (isLate){
+                if (isLate){ //En cours (en retard)
                     nbTicketCours_Retard++;
                 }
-                else {
-                    nbTicketCours++;
+                else { //En cours (à temps)
+                    nbTicketCours_A_Temps++;
                 }
                 break;
             case "4": //Attente
@@ -638,6 +759,24 @@ public class StatsTickets extends AppCompatActivity {
         return todayString;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.presentationDateTicket:
+                changeIntervalle();
+                break;
+
+            case R.id.changeDateStat:
+                changeIntervalle();
+                break;
+        }
+    }
+
+    private void changeIntervalle() {
+        DialogChoixDate alert = new DialogChoixDate();
+        alert.showDialog(StatsTickets.this, debutMoisDate, finMoisDate);
+    }
+
     class HandlerDate extends Handler{
         Bundle bundle;
         @Override
@@ -659,30 +798,6 @@ public class StatsTickets extends AppCompatActivity {
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                    break;
-
-                case 1:
-                    bundle = msg.getData();
-                    tempsResolutionMoyenTV.setText(bundle.getString("zero"));
-                    progressBarTempsMoyen.setVisibility(View.GONE);
-                    break;
-
-                case 2:
-                    bundle = msg.getData();
-                    tempsResolutionMoyenTV.setText(bundle.getString("tempsrestant"));
-                    progressBarTempsMoyen.setVisibility(View.GONE);
-                    break;
-
-                case 3:
-                    bundle = msg.getData();
-                    tempsRetardMoyenTV.setText(bundle.getString("zero"));
-                    progressBarTempsMoyen.setVisibility(View.GONE);
-                    break;
-
-                case 4:
-                    bundle = msg.getData();
-                    tempsRetardMoyenTV.setText(bundle.getString("tempsretard"));
-                    progressBarTempsMoyen.setVisibility(View.GONE);
                     break;
 
             }
@@ -726,7 +841,174 @@ public class StatsTickets extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
+
+            case R.id.itemShareStat:
+                openShareStatDialog();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void openShareStatDialog() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(StatsTickets.this);
+        builderSingle.setTitle("Partage de vos statistiques");
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(StatsTickets.this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add("Abdelkarim Mokrane");
+        arrayAdapter.add("Choisir une autre personne...");
+
+
+        builderSingle.setNegativeButton("Fermer", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String strName = arrayAdapter.getItem(which);
+                switch (strName){
+                    case "Abdelkarim Mokrane":
+                        pdShare.show();
+                        String emailR = "abdelkarim.mokrane@groupe-hasnaoui.com";
+                        String prenomR = "Abdelkarim";
+                        //String emailR = "adel.achour@groupe-hasnaoui.com";
+                        try {
+                            shareStat(prenomR, emailR);
+                            shareStatToMe(firstnameUser, emailUser, prenomR, emailR);
+                        }
+                        catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+                        break;
+                    case "Choisir une autre personne...":
+                        //open dialog for another person
+                        DialogChoixPersonStat alert = new DialogChoixPersonStat();
+                        alert.showDialog(StatsTickets.this);
+                        break;
+                }
+                //Toast.makeText(getActivity(), TicketModel.getTitreTicket(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        builderSingle.show();
+    }
+
+    private void shareStatToMe(String firstnameUser, String emailUser, String prenomReceiver, String emailReceiver) throws UnsupportedEncodingException {
+        String url = Constants.URL_STAT_API;
+
+        String dateDebut = editformatdate(debutMoisDate);
+        String datefin = editformatdate(finMoisDate);
+
+        String fullnameIngenieur = firstnameUser+ " " +nameUser;
+        final String msgcontent = "<h2>Rapport Helpdesk</h2> <br><br>"+firstnameUser+",<br><br>Vous trouverez en pièce jointe le fichier PDF contenant votre rapport " +
+                "Helpdesk du " +
+                "<u><font color=#2e3e68>"+dateDebut+"</font></u> au <u><font color=#2e3e68>"+datefin+"</font></u>.<br><br>" +
+                "Ce fichier a été également envoyé à "+prenomReceiver+" dont l'adresse est la suivante : "+emailReceiver+".<br><br><br>" +
+                "L'équipe Helpdesk Mobile.<br><br><br>" +
+                "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
+
+        List<KeyValuePair> paramsEmail = new ArrayList<>();
+        paramsEmail.add(new KeyValuePair("fullname", URLEncoder.encode(fullnameIngenieur, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("datedebut",URLEncoder.encode(dateDebut, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("datefin",URLEncoder.encode(datefin, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbouvert",URLEncoder.encode(nbCount, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbcours",URLEncoder.encode(String.valueOf(nbTicketCours), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbattente",URLEncoder.encode(String.valueOf(nbTicketAttente), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbresolu",URLEncoder.encode(String.valueOf(nbTicketResolu), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbclos",URLEncoder.encode(String.valueOf(nbTicketClos), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbcourstemps",URLEncoder.encode(String.valueOf(nbTicketCours_A_Temps), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbcoursretard",URLEncoder.encode(String.valueOf(nbTicketCours_Retard), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbclostemps",URLEncoder.encode(String.valueOf(nbTicketClos_Temps), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("nbclosretard",URLEncoder.encode(String.valueOf(nbTicketClos_Retard), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("pourcentageReussite",URLEncoder.encode(pourcentageReussite, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode(emailUser, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("contentmsg",URLEncoder.encode(msgcontent, "UTF-8")));
+
+        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+
+                            String state = response.getString("state");
+                            String from = response.getString("from");
+                            String to = response.getString("to");
+                            String content = response.getString("content");
+                            String filename = response.getString("filename");
+                            Log.d("RESPONSE FROM", "from = "+from);
+                            Log.d("RESPONSE TO", "to = "+to);
+                            Log.d("RESPONSE STATE", "state = "+state);
+                            Log.d("RESPONSE CONTENT", "content = "+content);
+                            Log.d("RESPONSE FILENAME", "filename = "+filename);
+                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
+                            try {
+                                Toast.makeText(StatsTickets.this, "Un PDF vous a été envoyé", Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e("Toast Email", "Impossible de notifier");
+                            }
+
+                            notifyAdminByEmail(state, from, to, content, filename);
+
+                        } catch (JSONException | UnsupportedEncodingException e) { e.printStackTrace(); }
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Error.Response Email", error.toString());
+                        Toast.makeText(StatsTickets.this, "Envoi du PDF impossible", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("Content-type","application/json");
+                return params;
+            }
+        };
+
+        getRequestEmail.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
+        queue.add(getRequestEmail);
+    }
+
+    private class HandlerStats extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constants.SEND_EMAIL_PERSON: //send email
+                    pdShare.show();
+                    Bundle bundle;
+                    bundle = msg.getData();
+                    String prenomR = bundle.getString("prenomR");
+                    String emailR = bundle.getString("emailR");
+
+                    try {
+                        shareStat(prenomR, emailR);
+                        shareStatToMe(firstnameUser, emailUser, prenomR, emailR);
+                    } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+
+                    break;
+            }
+        }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_stat_ticket, menu);
+        return true;
+    }
+
 }

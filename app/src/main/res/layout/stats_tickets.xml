@@ -1,295 +1,411 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#dfdfdf"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Big Boss Linear -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-
         <!-- Header -->
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            android:id="@+id/titleCard"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
             android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            app:cardCornerRadius="6dp"
+            app:cardUseCompatPadding="true">
 
-            <TextView
-                android:id="@+id/presentationDateTicket"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:text="10/08/2018 - 19/09/2018"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/changeDateStat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:text="Choisir l'intervalle"
-                android:textColor="#224248"
-                android:textSize="15dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/presentationName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:paddingEnd="7dp"
-                android:paddingStart="7dp"
-                android:text="KHADRAOUI Merouane"
-                android:textColor="#2f2f2f"
-                android:textSize="25dp" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/presentationTextStat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="0dp"
-                android:gravity="center"
-                android:paddingEnd="7dp"
-                android:paddingStart="7dp"
-                android:text="20 tickets"
-                android:textColor="@color/colorPrimary"
-                android:textSize="25dp" />
+                <TextView
+                    android:id="@+id/presentationDateTicket"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:text="10/08/2018 - 19/09/2018"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20dp" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/changeDateStat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Choisir l'intervalle"
+                    android:textColor="#224248"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:shadowColor="@color/text_shadow"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:layout_marginBottom="15dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/requester"/>
+                <TextView
+                    android:id="@+id/presentationName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingEnd="7dp"
+                    android:paddingStart="7dp"
+                    android:text="KHADRAOUI Merouane"
+                    android:textColor="#2f2f2f"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/presentationTextStat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center"
+                    android:paddingEnd="7dp"
+                    android:paddingStart="7dp"
+                    android:text="20 tickets"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="25dp" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
 
         <!-- Contenu nombre de ticket (texts) -->
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
             android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="50dp"
-            android:orientation="vertical">
-
-            <!-- Ticket en cours -->
+            app:cardCornerRadius="6dp"
+            app:cardUseCompatPadding="true">
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/encours"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="Tickets en cours"
-                    android:textColor="#4a4a4a"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:id="@+id/nbticketencours"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="15"
-                    android:textColor="#186317"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:id="@+id/dontticketenretard"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="(dont 6 en retard)"
-                    android:textColor="#79191e"
-                    android:textSize="18dp" />
-
-            </LinearLayout>
-
-            <!-- Tickets en attente -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/enattente"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="Tickets en attente"
-                    android:textColor="#4a4a4a"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:id="@+id/nbticketenattente"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="11"
-                    android:textColor="#cc8022"
-                    android:textSize="18dp" />
-
-            </LinearLayout>
-
-            <!-- Tickets résolu -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/resolu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="Tickets résolus"
-                    android:textColor="#4a4a4a"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:id="@+id/nbticketresolu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="9"
-                    android:textColor="#2348c3"
-                    android:textSize="18dp" />
-            </LinearLayout>
-
-            <!-- Tickets clos à temps -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/clos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="Tickets clos"
-                    android:textColor="#4a4a4a"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:id="@+id/nbticketclos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="21"
-                    android:textColor="#1e1e1e"
-                    android:textSize="18dp" />
-
-                <TextView
-                    android:id="@+id/nbticketclosretard"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="(7 à temps - 14 en retard)"
-                    android:textColor="#4d4d4d"
-                    android:textSize="18dp" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Graph big Linear -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
-            android:orientation="vertical">
-
-            <!-- Graph Ticket (ouvert / clos) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Tickets" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:orientation="vertical">
+
+                <!-- Ticket en cours -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/encours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="Tickets en cours"
+                        android:textColor="#4a4a4a"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/nbticketencours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="15"
+                        android:textColor="#306317"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/dontticketenretard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="(dont 6 en retard)"
+                        android:textColor="#79191e"
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+
+                <!-- Tickets en attente -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/enattente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tickets en attente"
+                        android:textColor="#4a4a4a"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/nbticketenattente"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="11"
+                        android:textColor="#cc8022"
+                        android:textSize="18dp" />
+
+                </LinearLayout>
+
+                <!-- Tickets résolu -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/resolu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="Tickets résolus"
+                        android:textColor="#4a4a4a"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/nbticketresolu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="9"
+                        android:textColor="#2348c3"
+                        android:textSize="18dp" />
+                </LinearLayout>
+
+                <!-- Tickets clos à temps -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="15dp">
+
+                    <TextView
+                        android:id="@+id/clos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tickets clos"
+                        android:textColor="#4a4a4a"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/nbticketclos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="21"
+                        android:textColor="#1e1e1e"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/nbticketclosretard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="10dp"
+                        android:text="(7 à temps - 14 en retard)"
+                        android:textColor="#4d4d4d"
+                        android:textSize="18dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <!-- Graph Ticket (ouvert / clos) -->
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="6dp"
+            app:cardUseCompatPadding="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:text="Tickets" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
 
                 <org.eazegraph.lib.charts.BarChart xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/barOuvertClos"
                     android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
                     android:layout_height="256dp"
                     android:padding="10dp"
                     app:egBarWidth="30dp"
                     app:egFixedBarWidth="true"
                     app:egLegendHeight="40dp" />
-            </LinearLayout>
-            <!-- Information du graphe -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
 
-                <ListView
-                    android:id="@+id/ListChartTicket"
-                    android:layout_width="wrap_content"
-                    android:layout_height="195dp"></ListView>
+                <!-- Chart du graphe -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
 
-                <!--
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/chartColorOuvert"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="17dp"
+                        android:background="@drawable/chart_shape_ouvert">
+
+                    </LinearLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:textColor="#247c8f"
-                        android:textStyle="bold"
-                        android:text="Ouvert"
-                        android:textSize="15dp" />
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toRightOf="@+id/chartColorOuvert"
+                        android:text="Ticket ouvert"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/chartColorClos"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="17dp"
+                        android:background="@drawable/chart_shape_clos">
+
+                    </LinearLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:textColor="#292929"
-                        android:textStyle="bold"
-                        android:layout_marginLeft="100dp"
-                        android:text="Clos"
-                        android:textSize="15dp" /> -->
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toRightOf="@+id/chartColorClos"
+                        android:text="Ticket clos"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/chartColorSuccess"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="17dp"
+                        android:src="@drawable/graph"/>
+
+                    <TextView
+                        android:id="@+id/statSuccessTicket"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toRightOf="@+id/chartColorSuccess"
+                        android:text="% de réussite"/>
+                </RelativeLayout>
+                <!-- Chart du graphe -->
             </LinearLayout>
+        </android.support.v7.widget.CardView>
 
-            <!-- Graph Ticket (ouvert / clos) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="50dp"
-                android:text="Tickets par état" />
 
+
+        <!-- Graph Ticket (ouvert / clos) -->
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/color_card_profile"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="6dp"
+            app:cardUseCompatPadding="true">
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:text="Tickets par état" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
 
                 <org.eazegraph.lib.charts.BarChart xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/barParEtat"
@@ -299,135 +415,198 @@
                     app:egBarWidth="30dp"
                     app:egFixedBarWidth="true"
                     app:egLegendHeight="40dp" />
+
+                <!-- Chart du graphe -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
+
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/chartColorEnCours"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="17dp"
+                        android:background="@drawable/chart_shape_cours_temps">
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toEndOf="@+id/chartColorEnCours"
+                        android:text="Ticket en cours (à temps)"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/chartColosEnCoursRetard"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="17dp"
+                        android:background="@drawable/chart_shape_enretard">
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toEndOf="@+id/chartColosEnCoursRetard"
+                        android:text="Ticket en cours (en retard)"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/chartColorAttente"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="17dp"
+                        android:background="@drawable/chart_shape_attente">
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toRightOf="@+id/chartColorAttente"
+                        android:text="Ticket en attente"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/chartColorResolu"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="17dp"
+                        android:background="@drawable/chart_shape_resolu">
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toRightOf="@+id/chartColorResolu"
+                        android:text="Ticket résolu"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/chartColorClosTemps"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="17dp"
+                        android:background="@drawable/chart_shape_clos">
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toRightOf="@+id/chartColorClosTemps"
+                        android:text="Ticket clos à temps"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#aeaeae"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/chartColorClosRetard"
+                        android:orientation="horizontal"
+                        android:layout_centerVertical="true"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="17dp"
+                        android:background="@drawable/chart_shape_clos_retard">
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toRightOf="@+id/chartColorClosRetard"
+                        android:text="Ticket clos en retard"/>
+                </RelativeLayout>
+                <!-- Chart du graphe -->
             </LinearLayout>
-            <!-- Information du graphe -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
+        </android.support.v7.widget.CardView>
 
-                <ListView
-                    android:id="@+id/ListChartParTicket"
-                    android:layout_width="wrap_content"
-                    android:layout_height="260dp"></ListView>
-
-                <!--
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:paddingEnd="5dp"
-                    android:text="En cours"
-                    android:textColor="#247c8f"
-                    android:textSize="13dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:paddingEnd="5dp"
-                    android:text="En retard"
-                    android:textColor="#5e1212"
-                    android:textSize="13dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:paddingEnd="5dp"
-                    android:text="En attente"
-                    android:textColor="#a95516"
-                    android:textSize="13dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:paddingEnd="5dp"
-                    android:text="Résolu"
-                    android:textColor="#1b2a6b"
-                    android:textSize="13dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="Clos à temps"
-                    android:textColor="#292929"
-                    android:textSize="13dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:text=", en retard"
-                    android:textColor="#7b1d6e"
-                    android:textSize="13dp"
-                    android:textStyle="bold" />
-                    -->
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center"
-                android:text="Temps moyen de résolution:"
-                android:textColor="#4c4c4c"
-                android:textSize="18dp" />
-
-            <TextView
-                android:id="@+id/tempsresolutionMoyen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:text="3h14m56s"
-                android:textColor="#173d0d"
-                android:textSize="18dp" />
-
-            <ProgressBar
-                android:id="@+id/progressBarTempsMoyen"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center"
-                android:text="Temps moyen de retard:"
-                android:textColor="#4c4c4c"
-                android:textSize="18dp" />
-
-            <TextView
-                android:id="@+id/tempsretardMoyen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:text="1h10m25s"
-                android:textColor="#711212"
-                android:textSize="18dp" />
-
-
-            <!-- Fin nombre de tickets (texts) -->
-        </LinearLayout>
     </LinearLayout>
 </ScrollView>
