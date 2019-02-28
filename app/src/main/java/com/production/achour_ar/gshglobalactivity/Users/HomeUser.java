@@ -303,14 +303,14 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
                 startActivity(i);
                 break;
 
-            case R.id.projectCard:
+            /*case R.id.projectCard:
                 break;
 
             case R.id.rendementCard:
                 break;
 
             case R.id.interventionCard:
-                break;
+                break;*/
 
 
 

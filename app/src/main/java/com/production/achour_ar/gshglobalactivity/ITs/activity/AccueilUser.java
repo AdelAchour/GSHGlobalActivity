@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static com.production.achour_ar.gshglobalactivity.ITs.data_model.Constants.GLPI_URL;
 
@@ -75,6 +76,8 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
     private String telephoneUser;
     private String lieuUser;
     private String posteUser;
+    private ArrayList<String> picsBG;
+    private ImageView picBG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +86,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
 
         initView();
         getArguments();
-        serviceNotificationManagement();
+        //serviceNotificationManagement();
         setupToolbar();
         setupPDs();
         setupTVs();
@@ -93,6 +96,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         loadProfilePic();
         loadProfilePicHome();
         getInfoUser();
+        setImageBGRandomly();
         getTicketsByTechnicien(idUser);
 
     }
@@ -165,6 +169,37 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
 
     }
 
+    private void setImageBGRandomly() {
+        picsBG = new ArrayList<>();
+        picsBG.add("home01");
+        picsBG.add("home02");
+        picsBG.add("home03");
+        picsBG.add("home04");
+        picsBG.add("home05");
+        picsBG.add("home06");
+        picsBG.add("home07");
+        picsBG.add("home08");
+        picsBG.add("home09");
+        picsBG.add("home10");
+        picsBG.add("home11");
+        picsBG.add("home12");
+        picsBG.add("home13");
+        picsBG.add("home14");
+
+
+        int picId = getResources().getIdentifier(picsBG.get(new Random().nextInt(14)), "drawable", getPackageName());
+
+        if (picId != 0) {
+            picBG.setImageResource(picId);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setImageBGRandomly();
+    }
+
     private void setupButtons() {
         //projectButton.setEnabled(false);
         //rendementButton.setEnabled(false);
@@ -176,9 +211,9 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         rendementButton.setOnClickListener(this);*/
 
         ticketCard.setOnClickListener(this);
-        projectCard.setOnClickListener(this);
-        rendementCard.setOnClickListener(this);
-        interventionCard.setOnClickListener(this);
+        //projectCard.setOnClickListener(this);
+        //rendementCard.setOnClickListener(this);
+        //interventionCard.setOnClickListener(this);
     }
 
     private void navigationListener() {
@@ -239,6 +274,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         handler = new HandlerAccueil();
         queue = Volley.newRequestQueue(this);
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        picBG = findViewById(R.id.picBGHome);
 
         toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -260,9 +296,9 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         projectButton = findViewById(R.id.projectButton);*/
 
         ticketCard = findViewById(R.id.ticketCard);
-        projectCard = findViewById(R.id.projectCard);
+        //projectCard = findViewById(R.id.projectCard);
         rendementCard = findViewById(R.id.rendementCard);
-        interventionCard = findViewById(R.id.interventionCard);
+        //interventionCard = findViewById(R.id.interventionCard);
     }
 
     private void setupPDs() {
@@ -311,14 +347,14 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                 startActivity(i);
                 break;
 
-            case R.id.projectCard:
+            /*case R.id.projectCard:
                 break;
 
             case R.id.rendementCard:
                 break;
 
             case R.id.interventionCard:
-                break;
+                break;*/
 
 
 

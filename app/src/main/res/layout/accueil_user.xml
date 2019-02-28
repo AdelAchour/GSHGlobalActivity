@@ -13,39 +13,74 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/greenbglayout"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
+                android:layout_height="300dp"
                 android:orientation="vertical"
                 android:background="@color/linearbg">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/imageviewbgprofile"
-                    android:layout_marginTop="70dp"
-                    android:layout_gravity="center"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    app:civ_border_width="3dp"
-                    app:civ_border_color="@color/linearbghard"
-                    />
-                <TextView
-                    android:id="@+id/welcomeTextView"
+
+
+                <ImageView
+                    android:id="@+id/picBGHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/home02"/>
+
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ACHOUR Adel"
-                    android:layout_gravity="center"
-                    android:textSize="20sp"
-                    android:textColor="@color/white"/>
-                <TextView
-                    android:id="@+id/jobuserTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Poste"
-                    android:layout_gravity="center"
-                    android:textSize="13sp"
-                    android:textColor="@color/grey_weak"/>
-            </LinearLayout>
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true">
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cardImage"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerHorizontal="true"
+                        app:cardCornerRadius="50dp">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/imageviewbgprofile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/man"
+                            android:layout_centerHorizontal="true"
+                            app:civ_border_color="@color/colorPrimaryDark" />
+                    </android.support.v7.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/welcomeTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="ACHOUR Adel"
+                        android:layout_centerHorizontal="true"
+                        android:textSize="20sp"
+                        android:shadowColor="@color/text_shadow"
+                        android:shadowDx="2"
+                        android:shadowDy="2"
+                        android:shadowRadius="2"
+                        android:layout_below="@+id/cardImage"
+                        android:textColor="@color/white"/>
+                    <TextView
+                        android:id="@+id/jobuserTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:shadowColor="@color/text_shadow"
+                        android:shadowDx="2"
+                        android:shadowDy="2"
+                        android:shadowRadius="2"
+                        android:layout_centerHorizontal="true"
+                        android:text="Poste"
+                        android:textSize="15sp"
+                        android:layout_below="@+id/welcomeTextView"
+                        android:textColor="@color/grey_weak"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,13 +88,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="235dp"
+                android:layout_marginTop="270dp"
                 android:weightSum="100"
                 android:orientation="horizontal"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_centerHorizontal="true"
-                >
+                android:layout_marginEnd="20dp" >
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/ticketCard"
@@ -93,7 +126,7 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
-                    android:id="@+id/projectCard"
+                    android:id="@+id/messagesCard"
                     android:layout_width="0dp"
                     android:layout_weight="50"
                     app:cardBackgroundColor="@color/color_card_profile"
@@ -112,97 +145,132 @@
                             android:layout_gravity="center"
                             android:layout_width="45dp"
                             android:layout_height="45dp"
-                            android:src="@drawable/idea"/>
+                            android:src="@drawable/email"/>
                         <TextView
                             android:textColor="@color/black"
                             android:layout_marginTop="15dp"
                             android:layout_gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Mes projets" />
+                            android:text="Mes messages" />
 
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
+            </LinearLayout> <!--tag to delete-->
 
-            </LinearLayout>
+                <!-- <android.support.v7.widget.CardView
+                     android:id="@+id/projectCard"
+                     android:layout_width="0dp"
+                     android:layout_weight="50"
+                     app:cardBackgroundColor="@color/color_card_profile"
+                     android:layout_height="wrap_content"
+                     app:cardCornerRadius="3dp"
+                     app:cardUseCompatPadding="true"
+                     android:layout_marginLeft="15dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:weightSum="100"
-                android:orientation="horizontal"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp">
+                     <LinearLayout
+                         android:layout_margin="20dp"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="vertical"
+                         android:weightSum="100">
+                         <ImageView
+                             android:layout_gravity="center"
+                             android:layout_width="45dp"
+                             android:layout_height="45dp"
+                             android:src="@drawable/idea"/>
+                         <TextView
+                             android:textColor="@color/black"
+                             android:layout_marginTop="15dp"
+                             android:layout_gravity="center"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="Mes projets" />
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/rendementCard"
-                    android:layout_width="0dp"
-                    android:layout_weight="50"
-                    app:cardBackgroundColor="@color/color_card_profile"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="3dp"
-                    app:cardUseCompatPadding="true">
+                     </LinearLayout>
+                 </android.support.v7.widget.CardView>
 
-                    <LinearLayout
-                        android:layout_margin="20dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:weightSum="100">
-                        <ImageView
-                            android:layout_gravity="center"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:src="@drawable/graphhome"/>
-                        <TextView
-                            android:textColor="@color/black"
-                            android:layout_marginTop="15dp"
-                            android:layout_gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Mon rendement" />
+             </LinearLayout>
 
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
+              <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginTop="15dp"
+                 android:weightSum="100"
+                 android:orientation="horizontal"
+                 android:layout_marginStart="20dp"
+                 android:layout_marginEnd="20dp">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/interventionCard"
-                    android:layout_width="0dp"
-                    android:layout_weight="50"
-                    app:cardBackgroundColor="@color/color_card_profile"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="3dp"
-                    app:cardUseCompatPadding="true"
-                    android:layout_marginLeft="15dp">
+                 <android.support.v7.widget.CardView
+                     android:id="@+id/rendementCard"
+                     android:layout_width="0dp"
+                     android:layout_weight="50"
+                     app:cardBackgroundColor="@color/color_card_profile"
+                     android:layout_height="wrap_content"
+                     app:cardCornerRadius="3dp"
+                     app:cardUseCompatPadding="true">
 
-                    <LinearLayout
-                        android:layout_margin="20dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:weightSum="100">
-                        <ImageView
-                            android:layout_gravity="center"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:src="@drawable/achievement"/>
-                        <TextView
-                            android:textColor="@color/black"
-                            android:layout_marginTop="15dp"
-                            android:layout_gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Mes interventions"
-                            android:textSize="13sp"/>
+                     <LinearLayout
+                         android:layout_margin="20dp"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="vertical"
+                         android:weightSum="100">
+                         <ImageView
+                             android:layout_gravity="center"
+                             android:layout_width="45dp"
+                             android:layout_height="45dp"
+                             android:src="@drawable/graphhome"/>
+                         <TextView
+                             android:textColor="@color/black"
+                             android:layout_marginTop="15dp"
+                             android:layout_gravity="center"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="Mon rendement" />
 
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
+                     </LinearLayout>
+                 </android.support.v7.widget.CardView>
 
-            </LinearLayout>
+                 <android.support.v7.widget.CardView
+                     android:id="@+id/interventionCard"
+                     android:layout_width="0dp"
+                     android:layout_weight="50"
+                     app:cardBackgroundColor="@color/color_card_profile"
+                     android:layout_height="wrap_content"
+                     app:cardCornerRadius="3dp"
+                     app:cardUseCompatPadding="true"
+                     android:layout_marginLeft="15dp">
+
+                     <LinearLayout
+                         android:layout_margin="20dp"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="vertical"
+                         android:weightSum="100">
+                         <ImageView
+                             android:layout_gravity="center"
+                             android:layout_width="45dp"
+                             android:layout_height="45dp"
+                             android:src="@drawable/achievement"/>
+                         <TextView
+                             android:textColor="@color/black"
+                             android:layout_marginTop="15dp"
+                             android:layout_gravity="center"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="Mes interventions"
+                             android:textSize="13sp"/>
+
+                     </LinearLayout>
+                 </android.support.v7.widget.CardView>
+
+             </LinearLayout> -->
+
             </LinearLayout>
 
         </RelativeLayout>
+
     </ScrollView>
 
     <include
