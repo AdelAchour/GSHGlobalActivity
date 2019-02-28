@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "223192821366",
+    "firebase_url": "https://gsh-it-messagerie.firebaseio.com",
+    "project_id": "gsh-it-messagerie",
+    "storage_bucket": "gsh-it-messagerie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223192821366:android:dab09058e8f8bcb3",
+        "android_client_info": {
+          "package_name": "com.production.achour_ar.gshglobalactivity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223192821366-avsmdh8aa0167fpvr7jo0kbibl59oakv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.production.achour_ar.gshglobalactivity",
+            "certificate_hash": "d930f4e6efbe8ffc35220192dea061bdbaad21c9"
+          }
+        },
+        {
+          "client_id": "223192821366-5cmc561v9ubfn1doi98lkm797molk3q9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPPjXw_0ySlZuglfc7RKHMlPfFFSXalZ4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223192821366-5cmc561v9ubfn1doi98lkm797molk3q9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +34,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.production.achour_ar.gshglobalactivity.ITs.data_model.Constants;
 import com.production.achour_ar.gshglobalactivity.ITs.dialog.DialogLogout;
 import com.production.achour_ar.gshglobalactivity.ITs.data_model.KeyValuePair;
@@ -61,7 +66,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
     private TextView welcomeView, headertitle, jobuserTV;
     private ImageView profilePicNav, profilePicHome;
     private Button ticketButton, projectButton, rendementButton;
-    private CardView ticketCard, projectCard, rendementCard, interventionCard;
+    private CardView ticketCard, messagesCard, projectCard, rendementCard, interventionCard;
     private String session_token, nameUser, idUser, firstnameUser;
     static String nbCount ;
     private RequestQueue queue;
@@ -78,6 +83,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
     private String posteUser;
     private ArrayList<String> picsBG;
     private ImageView picBG;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +96,9 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         setupToolbar();
         setupPDs();
         setupTVs();
+        signInAnonymously();
+        //FirebaseOffline();
+        subscribeTopic();
         setListeners();
         setupButtons();
         navigationListener();
@@ -169,6 +178,26 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
 
     }
 
+    private void signInAnonymously() {
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.signInAnonymously();
+    }
+
+    private void subscribeTopic() {
+        FirebaseMessaging.getInstance().subscribeToTopic("GSHITsMessage")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "DONE!";
+                        if (!task.isSuccessful()) {
+                            msg = "FAILED...";
+                        }
+                        Log.d("TOPIC", msg);
+                        //Toast.makeText(AccueilUser.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     private void setImageBGRandomly() {
         picsBG = new ArrayList<>();
         picsBG.add("home01");
@@ -211,6 +240,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         rendementButton.setOnClickListener(this);*/
 
         ticketCard.setOnClickListener(this);
+        messagesCard.setOnClickListener(this);
         //projectCard.setOnClickListener(this);
         //rendementCard.setOnClickListener(this);
         //interventionCard.setOnClickListener(this);
@@ -296,6 +326,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         projectButton = findViewById(R.id.projectButton);*/
 
         ticketCard = findViewById(R.id.ticketCard);
+        messagesCard = findViewById(R.id.messagesCard);
         //projectCard = findViewById(R.id.projectCard);
         rendementCard = findViewById(R.id.rendementCard);
         //interventionCard = findViewById(R.id.interventionCard);
@@ -345,6 +376,10 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                 i.putExtra("email",emailUser);
 
                 startActivity(i);
+                break;
+
+            case R.id.messagesCard:
+                startActivity(new Intent(getApplicationContext(), MessageAct.class));
                 break;
 
             /*case R.id.projectCard:

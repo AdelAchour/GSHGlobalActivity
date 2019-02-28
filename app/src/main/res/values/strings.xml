@@ -101,5 +101,9 @@
     <string name="shareStat">Partager mes statistiques</string>
     <string name="pickpersontext">A qui voulez-vous envoyer votre rapport Helpdesk?</string>
     <string name="technician">Ingénieur</string>
+    <string name="sender">Emetteur</string>
+    <string name="messagetitle">Titre</string>
+    <string name="date">Date</string>
+    <string name="default_notification_channel_id">fcm_default_channel</string>
 
 </resources>

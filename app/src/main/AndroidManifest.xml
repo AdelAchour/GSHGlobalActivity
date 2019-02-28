@@ -12,11 +12,13 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_worker"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_worker_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ITs.activity.SingleMessage"></activity>
+        <activity android:name=".ITs.activity.MessageAct" />
         <activity
             android:name=".ITs.activity.CheckAuth"
             android:screenOrientation="portrait">
@@ -28,9 +30,7 @@
         </activity>
         <activity
             android:name=".ITs.activity.LoginActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ITs.activity.GalleryUtil"
             android:screenOrientation="portrait" />
@@ -40,9 +40,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ITs.activity.InfoTicket"
-            android:screenOrientation="portrait" />
-        <!-- android:parentActivityName=".TabLayoutActivity" -->
-
+            android:screenOrientation="portrait" /> <!-- android:parentActivityName=".TabLayoutActivity" -->
         <activity
             android:name=".ITs.activity.TabLayoutActivity"
             android:parentActivityName=".ITs.activity.AccueilUser"
@@ -82,18 +80,44 @@
             android:name=".ITs.activity.SearchTicket"
             android:parentActivityName=".ITs.activity.TabLayoutActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ITs.activity.MyProfileActivity"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ITs.activity.SettingTicket"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".ITs.activity.AboutActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ITs.activity.AboutActivity"
+            android:screenOrientation="portrait" />
+
+
+
+
+        <service android:name=".ITs.manager.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- [END firebase_service] -->
+        <service
+            android:name=".ITs.manager.MyJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/idea" />
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
 
     </application>
 
