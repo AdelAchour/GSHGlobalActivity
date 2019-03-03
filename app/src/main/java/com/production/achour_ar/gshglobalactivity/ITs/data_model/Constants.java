@@ -41,7 +41,7 @@ public class Constants {
     public final static String GLPI_URL = "https://mobile-helpdesk.groupe-hasnaoui.com/apirest.php/"; //9.3.1 remote (REAL)
     public final static String App_Token = "MvMvBTXzCBLy6qInlcWdbTdxMS2IefVOjlSkPgYi"; //9.3.1 (REAL)
 
-    public static final String APP_VERSION = "1.4";
+    public static final String APP_VERSION = "1.6";
 
     public static int SHOW_KEYBORD = 100;
     public static final int PICK_IMAGE = 100;

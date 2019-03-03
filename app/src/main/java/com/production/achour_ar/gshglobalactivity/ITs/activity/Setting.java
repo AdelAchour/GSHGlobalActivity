@@ -28,8 +28,8 @@ public class Setting extends AppCompatActivity implements View.OnClickListener {
 
     private void setListener() {
         ticketLinear.setOnClickListener(this);
-        projectLinear.setOnClickListener(this);
-        interventionLinear.setOnClickListener(this);
+        //projectLinear.setOnClickListener(this);
+        //interventionLinear.setOnClickListener(this);
     }
 
     private void setupActionBar() {
@@ -41,8 +41,8 @@ public class Setting extends AppCompatActivity implements View.OnClickListener {
     private void initView() {
         ActionBar actionBar = getSupportActionBar();
         ticketLinear = findViewById(R.id.ticketlinear);
-        projectLinear = findViewById(R.id.projectlinear);
-        interventionLinear = findViewById(R.id.interventionlinear);
+        //projectLinear = findViewById(R.id.projectlinear);
+        //interventionLinear = findViewById(R.id.interventionlinear);
     }
 
 
@@ -63,13 +63,13 @@ public class Setting extends AppCompatActivity implements View.OnClickListener {
                 startActivity(new Intent(this, SettingTicket.class));
                 break;
 
-            case R.id.projectlinear:
+            /*case R.id.projectlinear:
                 Toast.makeText(this, "En cours d'implémentation", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.interventionlinear:
                 Toast.makeText(this, "En cours d'implémentation", Toast.LENGTH_SHORT).show();
-                break;
+                break;*/
 
         }
     }

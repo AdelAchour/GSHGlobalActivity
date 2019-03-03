@@ -89,7 +89,7 @@
     <string name="apppartsquestion">Quelles parties de l’application sont achevées?</string>
     <string name="apppartsanswer">Pour l’instant la partie Helpdesk est achevée, des réparations de bugs ou de nouvelles fonctionnalités viendront surement s’y ajouter.\nLes parties projets et interventions sont en cours d’implémentation.</string>
     <string name="appbugquestion">Que faire en cas de bug de l’application?</string>
-    <string name="appbuganswer">Il est vivement conseillé d’envoyer un email à Adel ACHOUR (adel.achour@groupe-hasnaoui.com) avec des explications relatifs au bug, afin que celui-ci soit réglé au plus vite.</string>
+    <string name="appbuganswer">Il est vivement conseillé d’envoyer un email à l’adresse suivante (adel.achour@groupe-hasnaoui.com) avec des explications relatifs au bug, afin que celui-ci soit réglé au plus vite.</string>
 
     <string name="copyright">© 2018 GSH Inc.\nDSI.\nAdel ACHOUR.</string>
     <string name="gotologin">Se reconnecter manuellement</string>

@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
-    android:background="@color/colorPrimary">
+    android:background="#669CA5">
 
     <LinearLayout
         android:orientation="vertical"
@@ -32,8 +32,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:textColor="#ffffff"
-                android:hint="Email"
-                />
+                android:hint="Email" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -69,7 +68,7 @@
             android:text="Mes performances à porter de main"
             android:gravity="center"
             android:textSize="16dip"
-            android:textColor="#F7C6C6"/>
+            android:textColor="#CCD8DA"/>
 
     </LinearLayout>
 

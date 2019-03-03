@@ -28,7 +28,7 @@
             />
     </LinearLayout>
 
-    <LinearLayout
+    <!-- <LinearLayout
         android:id="@+id/projectlinear"
         android:layout_marginTop="13dp"
         android:layout_width="match_parent"
@@ -68,5 +68,5 @@
             android:layout_height="wrap_content"
             android:text="Interventions"
             />
-    </LinearLayout>
+    </LinearLayout> -->
 </LinearLayout>
