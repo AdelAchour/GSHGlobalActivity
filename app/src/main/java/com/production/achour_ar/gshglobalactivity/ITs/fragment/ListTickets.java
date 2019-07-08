@@ -597,6 +597,11 @@ public class ListTickets extends Fragment {
             }
         };
 
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         // Add JsonArrayRequest to the RequestQueue
         queue.add(jsonArrayRequest);
     }
@@ -666,6 +671,11 @@ public class ListTickets extends Fragment {
                 }
 
             };
+
+            getRequestObserver.setRetryPolicy(new DefaultRetryPolicy(
+                    30000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
             queue.add(getRequestObserver);
         }
@@ -807,6 +817,11 @@ public class ListTickets extends Fragment {
                 return params;
             }
         };
+
+        getRequestDemandeur.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(getRequestDemandeur);
     }
@@ -1028,6 +1043,11 @@ public class ListTickets extends Fragment {
             }
         };
 
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         // Add JsonArrayRequest to the RequestQueue
         queue.add(jsonArrayRequest);
     }
@@ -1097,6 +1117,11 @@ public class ListTickets extends Fragment {
                 }
 
             };
+
+            getRequestObserver.setRetryPolicy(new DefaultRetryPolicy(
+                    30000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
             queue.add(getRequestObserver);
         }
@@ -1234,6 +1259,11 @@ public class ListTickets extends Fragment {
                 return params;
             }
         };
+
+        getRequestDemandeur.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(getRequestDemandeur);
     }

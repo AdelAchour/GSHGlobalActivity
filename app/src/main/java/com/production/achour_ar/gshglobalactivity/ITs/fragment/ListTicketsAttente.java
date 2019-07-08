@@ -459,6 +459,11 @@ public class ListTicketsAttente extends Fragment {
             }
         };
 
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         // Add JsonArrayRequest to the RequestQueue
         queue.add(jsonArrayRequest);
 
@@ -529,6 +534,11 @@ public class ListTicketsAttente extends Fragment {
                 }
 
             };
+
+            getRequestObserver.setRetryPolicy(new DefaultRetryPolicy(
+                    30000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
             queue.add(getRequestObserver);
         }
@@ -733,6 +743,11 @@ public class ListTicketsAttente extends Fragment {
                 return params;
             }
         };
+
+        getRequestDemandeur.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(getRequestDemandeur);
 
