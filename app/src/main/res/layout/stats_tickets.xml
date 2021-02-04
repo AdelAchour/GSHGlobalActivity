@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <!-- Header -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/titleCard"
             android:layout_marginStart="3dp"
             android:layout_marginEnd="3dp"
@@ -93,11 +93,11 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 
         <!-- Contenu nombre de ticket (texts) -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_marginStart="3dp"
             android:layout_marginEnd="3dp"
             android:layout_width="match_parent"
@@ -243,10 +243,10 @@
                         android:textSize="18dp" />
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <!-- Graph Ticket (ouvert / clos) -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_marginTop="10dp"
             android:layout_marginStart="3dp"
             android:layout_marginEnd="3dp"
@@ -375,12 +375,12 @@
                 </RelativeLayout>
                 <!-- Chart du graphe -->
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 
 
         <!-- Graph Ticket (ouvert / clos) -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_marginTop="10dp"
             android:layout_marginStart="3dp"
             android:layout_marginEnd="3dp"
@@ -606,7 +606,7 @@
                 </RelativeLayout>
                 <!-- Chart du graphe -->
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 </ScrollView>

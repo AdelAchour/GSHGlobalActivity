@@ -7,19 +7,25 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.cardview.widget.CardView;
+import androidx.appcompat.widget.Toolbar;
+
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,15 +42,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.production.achour_ar.gshglobalactivity.ITs.data_model.Constants;
+import com.production.achour_ar.gshglobalactivity.ITs.data_model.UserModel;
 import com.production.achour_ar.gshglobalactivity.ITs.dialog.DialogLogout;
 import com.production.achour_ar.gshglobalactivity.ITs.data_model.KeyValuePair;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.LoadProfilePic;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.MyPreferences;
 import com.production.achour_ar.gshglobalactivity.R;
-import com.production.achour_ar.gshglobalactivity.ITs.manager.ServiceNotificationNewTicket;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.URLGenerator;
 
 import org.json.JSONArray;
@@ -65,10 +70,9 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
 
     private TextView welcomeView, headertitle, jobuserTV;
     private ImageView profilePicNav, profilePicHome;
-    private Button ticketButton, projectButton, rendementButton;
     private CardView ticketCard, messagesCard, projectCard, rendementCard, interventionCard;
-    private String session_token, nameUser, idUser, firstnameUser;
-    static String nbCount ;
+    private String session_token, idUser;
+    static String nbCount;
     private RequestQueue queue;
     private DrawerLayout mDrawerLayout;
     public static Handler handler;
@@ -77,13 +81,8 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
     private View headerView;
-    private String emailUser;
-    private String telephoneUser;
-    private String lieuUser;
-    private String posteUser;
     private ArrayList<String> picsBG;
     private ImageView picBG;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,110 +91,79 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
 
         initView();
         getArguments();
-        //serviceNotificationManagement();
-        setupToolbar();
-        setupPDs();
-        setupTVs();
-        signInAnonymously();
-        //FirebaseOffline();
-        subscribeTopic();
         setListeners();
-        setupButtons();
+        setupToolbar();
+        populateTVs();
+        populateIVs();
+        subscribeTopic();
         navigationListener();
-        loadProfilePic();
-        loadProfilePicHome();
-        getInfoUser();
         setImageBGRandomly();
-        getTicketsByTechnicien(idUser);
 
     }
 
-    private void getInfoUser() {
-        String url = Constants.GLPI_URL+"search/User";
-
-        List<KeyValuePair> paramsObs = new ArrayList<>();
-        paramsObs.add(new KeyValuePair("criteria[0][field]","2"));
-        paramsObs.add(new KeyValuePair("criteria[0][searchtype]","equals"));
-        paramsObs.add(new KeyValuePair("criteria[0][value]",idUser));
-        paramsObs.add(new KeyValuePair("forcedisplay[0]","9"));
-        paramsObs.add(new KeyValuePair("forcedisplay[1]","34"));
-        paramsObs.add(new KeyValuePair("forcedisplay[2]","5"));
-        paramsObs.add(new KeyValuePair("forcedisplay[3]","6"));
-        paramsObs.add(new KeyValuePair("forcedisplay[4]","81"));
-
-
-        final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, paramsObs), null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray Jdata = response.getJSONArray("data");
-                            try {
-                                JSONObject userInfo = Jdata.getJSONObject(0);
-
-                                emailUser = userInfo.getString("5");
-                                telephoneUser = userInfo.getString("6");
-                                lieuUser = userInfo.getString("80");
-                                posteUser = userInfo.getString("81");
-
-
-                            } catch (JSONException e) {
-                                Log.e("Error JSONArray : ", e.getMessage());
-                            }
-
-                        } catch (JSONException e) {
-                            Log.e("JSON Error response",e.getMessage());
-                        }
-
-                        try {
-                            jobuserTV.setText(posteUser);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //progressBar.setVisibility(View.GONE);
-                        Log.e("Error.Response", error.toString());
-                    }
-                }
-        ){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",Constants.App_Token);
-                params.put("Session-Token",session_token);
-                return params;
-            }
-        };
-
-        queue.add(getRequestDemandeur);
-
-    }
-
-    private void signInAnonymously() {
-        mAuth = FirebaseAuth.getInstance();
-        mAuth.signInAnonymously();
-    }
 
     private void subscribeTopic() {
-        FirebaseMessaging.getInstance().subscribeToTopic("GSHITsMessage")
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        String msg = "DONE!";
-                        if (!task.isSuccessful()) {
-                            msg = "FAILED...";
-                        }
-                        Log.d("TOPIC", msg);
-                        //Toast.makeText(AccueilUser.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+        FirebaseMessaging.getInstance().subscribeToTopic("GSHITsMessage").addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                String msg = "DONE!";
+                if (!task.isSuccessful()) {
+                    msg = "FAILED...";
+                }
+                Log.d("TOPIC-GSHITsMessage", msg);
+                //Toast.makeText(AccueilUser.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        String topic_notif = "tech_" + idUser;
+        System.out.println("topic : " + topic_notif);
+        FirebaseMessaging.getInstance().subscribeToTopic("tech_" + idUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                String msg = "DONE!";
+                if (!task.isSuccessful()) {
+                    msg = "FAILED...";
+                    System.out.println("subscribed to new notif");
+                }
+                Log.d("TOPIC-tech_id", msg);
+                //Toast.makeText(AccueilUser.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void populateIVs() {
+        String pic = UserModel.getCurrentUserModel().getPic();
+        System.out.println("pic " + pic);
+        if (pic != null)
+            if (!pic.equals("null")) {
+                Bitmap bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
+                profilePicHome.setImageBitmap(bitmap);
+                profilePicNav.setImageBitmap(bitmap);
+            }
+    }
+
+    public static Bitmap decodeSampleBitmap(byte[] bitmap, int reqHeight, int reqWidth) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length);
+        options.inSampleSize = calculateInSampleSize(options, reqHeight, reqWidth);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length);
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            int halfHeight = height / 2;
+            int halfWidth = width / 2;
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
     }
 
     private void setImageBGRandomly() {
@@ -229,10 +197,6 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         setImageBGRandomly();
     }
 
-    private void setupButtons() {
-        //projectButton.setEnabled(false);
-        //rendementButton.setEnabled(false);
-    }
 
     private void setListeners() {
         /*ticketButton.setOnClickListener(this);
@@ -247,55 +211,51 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
     }
 
     private void navigationListener() {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        int id = menuItem.getItemId();
-                        switch (id){
-                            case R.id.nav_setting:
-                                startActivity(new Intent(AccueilUser.this, Setting.class));
-                                break;
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                // set item as selected to persist highlight
+                menuItem.setChecked(true);
+                int id = menuItem.getItemId();
+                switch (id) {
+                    case R.id.nav_setting:
+                        startActivity(new Intent(AccueilUser.this, Setting.class));
+                        break;
 
-                            case R.id.nav_about:
-                                startActivity(new Intent(AccueilUser.this, AboutActivity.class));
-                                break;
+                    case R.id.nav_about:
+                        startActivity(new Intent(AccueilUser.this, AboutActivity.class));
+                        break;
 
-                            case R.id.nav_logout:
-                                DialogLogout alert = new DialogLogout();
-                                alert.showDialog(AccueilUser.this, firstnameUser);
-                                break;
+                    case R.id.nav_logout:
+                        DialogLogout alert = new DialogLogout();
+                        alert.showDialog(AccueilUser.this, UserModel.getCurrentUserModel().getFirstname());
+                        break;
 
-                            case R.id.nav_profile:
-                                Intent i = new Intent(AccueilUser.this, MyProfileActivity.class);
-                                i.putExtra("session",session_token);
-                                i.putExtra("nom",nameUser);
-                                i.putExtra("prenom",firstnameUser);
-                                i.putExtra("id",idUser);
+                    case R.id.nav_profile:
+                        Intent i = new Intent(AccueilUser.this, MyProfileActivity.class);
+                        i.putExtra("session", session_token);
+                        i.putExtra("id", idUser);
 
-                                i.putExtra(Constants.EMAIL_USER,emailUser);
-                                i.putExtra(Constants.TEL_USER,telephoneUser);
-                                i.putExtra(Constants.LIEU_USER,lieuUser);
-                                i.putExtra(Constants.POSTE_USER,posteUser);
+                        startActivity(i);
+                        break;
+                }
 
-                                startActivity(i);
-                                break;
-                        }
-
-                        mDrawerLayout.closeDrawers();
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-                        return true;
-                    }
-                });
+                mDrawerLayout.closeDrawers();
+                // Add code here to update the UI based on the item selected
+                // For example, swap UI fragments here
+                return true;
+            }
+        });
     }
 
-    private void setupTVs() {
-        String name = firstnameUser+" "+nameUser;
+    private void populateTVs() {
+        //String name = firstnameUser+" "+nameUser;
+        String name = UserModel.getCurrentUserModel().getFullname();
         welcomeView.setText(name);
         headertitle.setText(name);
+
+        String job = UserModel.getCurrentUserModel().getJobTitle();
+        jobuserTV.setText(job);
     }
 
     private void initView() {
@@ -330,50 +290,36 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         //projectCard = findViewById(R.id.projectCard);
         rendementCard = findViewById(R.id.rendementCard);
         //interventionCard = findViewById(R.id.interventionCard);
-    }
-
-    private void setupPDs() {
         pdlogout.setMessage("Déconnexion...");
     }
+
 
     private void setupToolbar() {
         toolbar.setTitle("Accueil");
         setSupportActionBar(toolbar);
     }
 
-    private void serviceNotificationManagement() {
-        if(ServiceNotificationNewTicket.ServiceIsRunning == false ) {
-            System.out.println("Service not running");
-            ServiceNotificationNewTicket.ServiceIsRunning = true ;
-            //register the services to run in background
-            Intent intent = new Intent(AccueilUser.this, ServiceNotificationNewTicket.class);
-            intent.putExtra("id",idUser);
-            intent.putExtra("session",session_token);
-            // start the services
-            startService(intent);
-            System.out.println("Service started with id = "+idUser);
-        }
-    }
 
     private void getArguments() {
         Intent i = getIntent();
         session_token = i.getStringExtra("session");
-        nameUser = i.getStringExtra("nom");
-        firstnameUser = i.getStringExtra("prenom");
         idUser = i.getStringExtra("id");
+        //nameUser = i.getStringExtra("nom");
+        //firstnameUser = i.getStringExtra("prenom");
+        //ad2000 = i.getStringExtra("ad2000");
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ticketCard:
                 Intent i = new Intent(getApplicationContext(), TabLayoutActivity.class);
-                i.putExtra("session",session_token);
-                i.putExtra("nom",nameUser);
+                i.putExtra("session", session_token);
+                i.putExtra("id", idUser);
+               /* i.putExtra("nom",nameUser);
                 i.putExtra("prenom",firstnameUser);
-                i.putExtra("id",idUser);
                 i.putExtra("nb",nbCount);
-                i.putExtra("email",emailUser);
+                i.putExtra("email",emailUser);*/
 
                 startActivity(i);
                 break;
@@ -392,7 +338,6 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                 break;*/
 
 
-
         }
     }
 
@@ -407,78 +352,11 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         return super.onOptionsItemSelected(item);
     }
 
-    private void getTicketsByTechnicien(final String idUser) {
-        String url = Constants.GLPI_URL+"search/Ticket";
 
-        List<KeyValuePair> params = new ArrayList<>();
-            params.add(new KeyValuePair("criteria[0][field]","5"));
-            params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
-            params.add(new KeyValuePair("criteria[0][value]",idUser));
-            params.add(new KeyValuePair("forcedisplay[0]","4"));
-            params.add(new KeyValuePair("forcedisplay[1]","10"));
-            params.add(new KeyValuePair("forcedisplay[2]","7"));
-            params.add(new KeyValuePair("forcedisplay[3]","12"));
-            params.add(new KeyValuePair("forcedisplay[4]","15"));
-            params.add(new KeyValuePair("forcedisplay[5]","30"));
-            params.add(new KeyValuePair("forcedisplay[6]","18"));
-            params.add(new KeyValuePair("forcedisplay[7]","21"));
-
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            nbCount = response.getString("totalcount");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //progressBar.setVisibility(View.GONE);
-                        Log.e("Error.Response", error.toString());
-                    }
-
-                }
-        ){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",Constants.App_Token);
-                params.put("Session-Token",session_token);
-                return params;
-            }
-        };
-
-        queue.add(getRequest);
-
-    }
-
-
-    public static String generateUrl(String baseUrl, List<KeyValuePair> params) {
-        if (params.size() > 0) {
-            int cpt = 1 ;
-            for (KeyValuePair parameter: params) {
-                if (cpt==1){
-                    baseUrl += "?" + parameter.getKey() + "=" + parameter.getValue();
-                }
-                else{
-                    baseUrl += "&" + parameter.getKey() + "=" + parameter.getValue();
-                }
-                    cpt++;
-            }
-        }
-        return baseUrl;
-    }
     private void killsession() {
-        String url = GLPI_URL+"killSession";
+        String url = GLPI_URL + "killSession";
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>()
-                {
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
 
@@ -494,8 +372,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
 
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Error.Response", error.toString());
@@ -504,7 +381,7 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
                     }
 
                 }
-        ){
+        ) {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 try {
@@ -528,19 +405,13 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",Constants.App_Token);
-                params.put("Session-Token",session_token);
+                params.put("App-Token", Constants.App_Token);
+                params.put("Session-Token", session_token);
                 return params;
             }
         };
         // add it to the RequestQueue
         queue.add(getRequest);
-
-        ServiceNotificationNewTicket.ServiceIsRunning = false;
-        Intent intent = new Intent(AccueilUser.this, ServiceNotificationNewTicket.class);
-        // stop the services
-        stopService(intent);
-        System.out.println("Service stopped");
 
     }
 
@@ -550,23 +421,21 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         String path = Constants.PROFILE_PIC_PATH;
         String picname = MyPreferences.getMyProfilPicName(this, Constants.PROFILE_PIC_NAME__KEY, Constants.PROFILE_PIC_NAME_DEF);
 
-        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)){
+        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)) {
             //CASE : NO SHARED PREFERENCE (DOWNLOAD FROM SERVER)
             //temp case: put a default profile pic
             loadDefaultProfilePic();
-        }
-        else {
+        } else {
             // SHARED PREFERENCE EXISTS
-            File picToLoad = new File(path+"/"+picname);
-            if (picToLoad.exists()){
+            File picToLoad = new File(path + "/" + picname);
+            if (picToLoad.exists()) {
                 // PIC EXISTS
                 Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
-                profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
+                profilePic = LoadProfilePic.loadImageFromStorage(path, picname);
                 profilePicNav.setImageBitmap(profilePic);
                 profilePicHome.setImageBitmap(profilePic);
 
-            }
-            else {
+            } else {
                 //PIC DOES NOT EXIST
                 Log.e("DOES_PIC_EXIST", "NO IT DOES NOT EXIST !");
                 File folderPics = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
@@ -591,21 +460,19 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
         String path = Constants.PROFILE_PIC_PATH;
         String picname = MyPreferences.getMyProfilPicName(this, Constants.PROFILE_PIC_NAME__KEY, Constants.PROFILE_PIC_NAME_DEF);
 
-        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)){
+        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)) {
             //CASE : NO SHARED PREFERENCE (DOWNLOAD FROM SERVER)
             //temp case: put a default profile pic
             loadDefaultProfilePicHome();
-        }
-        else {
+        } else {
             // SHARED PREFERENCE EXISTS
-            File picToLoad = new File(path+"/"+picname);
-            if (picToLoad.exists()){
+            File picToLoad = new File(path + "/" + picname);
+            if (picToLoad.exists()) {
                 // PIC EXISTS
                 Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
-                profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
+                profilePic = LoadProfilePic.loadImageFromStorage(path, picname);
                 profilePicHome.setImageBitmap(profilePic);
-            }
-            else {
+            } else {
                 //PIC DOES NOT EXIST
                 Log.e("DOES_PIC_EXIST", "NO IT DOES NOT EXIST !");
                 File folderPics = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
@@ -656,7 +523,6 @@ public class AccueilUser extends AppCompatActivity implements View.OnClickListen
             }
         }
     }
-
 
 
 }

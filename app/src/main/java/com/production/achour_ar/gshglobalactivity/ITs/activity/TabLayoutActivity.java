@@ -6,10 +6,13 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.production.achour_ar.gshglobalactivity.ITs.data_model.UserModel;
 import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.ITs.adapter.ViewPagerAdapter;
 import com.production.achour_ar.gshglobalactivity.ITs.fragment.ListTicketBackLog;
@@ -58,7 +62,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
         SetupViewPagerTabLayout();
         TabSwitchListener();
         //setListener();
-        LaunchAutoTimerLoad();
+        //LaunchAutoTimerLoad();
         ShowPD();
 
     }
@@ -117,14 +121,12 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void LaunchAutoTimerLoad() {
-        timer.schedule(new TimerTask()
-        {
+        timer.schedule(new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 int position = tabLayout.getSelectedTabPosition();
 
-                switch (position){
+                switch (position) {
                     case 0: //en cours
                         ListTickets.handlerticket.sendEmptyMessage(3);
                         break;
@@ -143,8 +145,8 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
                 }
 
             }
-        }, 10000, timeLoad*60*1000);
-        Log.d("TIME LOAD", ""+timeLoad);
+        }, 10000, timeLoad * 60 * 1000);
+        Log.d("TIME LOAD", "" + timeLoad);
     }
 
     private void SetupViewPagerTabLayout() {
@@ -160,10 +162,10 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
     private void getArguments() {
         Intent i = getIntent();
         session_token = i.getStringExtra("session");
-        nameUser = i.getStringExtra("nom");
-        firstnameUser = i.getStringExtra("prenom");
         idUser = i.getStringExtra("id");
-        emailUser = i.getStringExtra("email");
+        /*nameUser = i.getStringExtra("nom");
+        firstnameUser = i.getStringExtra("prenom");
+        emailUser = i.getStringExtra("email");*/
     }
 
     private void SetupActionBar() {
@@ -237,16 +239,14 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
         super.onRestart();
         System.out.println("On a recommencé");
         timer = new Timer();
-        timer.schedule(new TimerTask()
-        {
+        timer.schedule(new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 System.out.println("3 sec in onRestart");
 
                 int position = tabLayout.getSelectedTabPosition();
 
-                switch (position){
+                switch (position) {
                     case 0: //en cours
                         ListTickets.handlerticket.sendEmptyMessage(3);
                         break;
@@ -264,42 +264,42 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
                         break;
                 }
             }
-        }, 30000, timeLoad*60*1000);
-        Log.d("TIME LOAD", ""+timeLoad);
+        }, 30000, timeLoad * 60 * 1000);
+        Log.d("TIME LOAD", "" + timeLoad);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.itemStatTicket:
                 intent = new Intent(getApplicationContext(), StatsTickets.class);
-                intent.putExtra("session",session_token);
-                intent.putExtra("nom",nameUser);
+                intent.putExtra("session", session_token);
+                intent.putExtra("id", idUser);
+                /*intent.putExtra("nom",nameUser);
                 intent.putExtra("prenom",firstnameUser);
-                intent.putExtra("id",idUser);
-                intent.putExtra("email",emailUser);
+                intent.putExtra("email",emailUser);*/
                 startActivity(intent);
                 break;
 
-            case R.id.itemCreationTicket:
+            /*case R.id.itemCreationTicket:
                 intent = new Intent(getApplicationContext(), CreationTicket.class);
                 intent.putExtra("session",session_token);
                 intent.putExtra("nom",nameUser);
                 intent.putExtra("prenom",firstnameUser);
                 intent.putExtra("id",idUser);
                 startActivity(intent);
-                break;
+                break;*/
 
             case R.id.itemRechercheTicket:
                 intent = new Intent(getApplicationContext(), SearchTicket.class);
-                intent.putExtra("session",session_token);
-                intent.putExtra("nom",nameUser);
-                intent.putExtra("prenom",firstnameUser);
-                intent.putExtra("id",idUser);
+                intent.putExtra("session", session_token);
+                intent.putExtra("id", idUser);
+                //intent.putExtra("nom",nameUser);
+                //intent.putExtra("prenom",firstnameUser);
                 startActivity(intent);
                 break;
 
@@ -327,8 +327,8 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
 
         Bundle bundle = new Bundle();
         bundle.putString("session", session_token);
-        bundle.putString("nom", nameUser);
-        bundle.putString("prenom", firstnameUser);
+        bundle.putString("nom", UserModel.getCurrentUserModel().getLastname());
+        bundle.putString("prenom", UserModel.getCurrentUserModel().getFirstname());
         bundle.putString("id", idUser);
         bundle.putInt("range", range);
 
@@ -355,7 +355,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
           /*  case R.id.homeiconID:
                 finish();
                 break;
@@ -368,7 +368,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
     private void refreshCurrentFragmentsTicket() {
         int position = tabLayout.getSelectedTabPosition();
 
-        switch (position){
+        switch (position) {
             case 0: //en cours
                 ListTickets.handlerticket.sendEmptyMessage(3);
                 break;
@@ -393,7 +393,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-                    if (pd.isShowing()){
+                    if (pd.isShowing()) {
                         pd.dismiss();
                     }
                     break;
@@ -404,7 +404,7 @@ public class TabLayoutActivity extends AppCompatActivity implements View.OnClick
                     String count = bundle.getString("count"); //15
                     String title = bundle.getString("title"); //Résolu
 
-                    tabLayout.getTabAt(position).setText(title+" ("+count+")");
+                    tabLayout.getTabAt(position).setText(title + " (" + count + ")");
                     break;
 
             }

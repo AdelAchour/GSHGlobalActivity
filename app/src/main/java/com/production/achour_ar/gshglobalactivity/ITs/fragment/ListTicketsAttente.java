@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.ITs.activity.TabLayoutActivity;
@@ -81,6 +82,7 @@ public class ListTicketsAttente extends Fragment {
     private String emailObservateur;
     private String prenomObservateur;
     private String nomObservateur;
+    private final String TAG = "ListTicketsAttente";
 
     public ListTicketsAttente() {
         handlerticketAttente = new HandlerTicketAttente();
@@ -550,41 +552,25 @@ public class ListTicketsAttente extends Fragment {
 
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomObservateur+",<br><br>" +
                 "Le ticket \""+titreTicket+"\" dont vous êtes l'observateur a été <b>remis en cours</b> le "+nowEnCours+".<br><br>" +
-                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
-                "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
+                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
-        paramsEmail.add(new KeyValuePair("from", URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
+        //paramsEmail.add(new KeyValuePair("from", URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
         paramsEmail.add(new KeyValuePair("to",URLEncoder.encode(emailObservateur, "UTF-8"))); //emailObservateur
         paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("Ticket en cours", "UTF-8")));
-        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(content, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("message",URLEncoder.encode(content, "UTF-8")));
 
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
-                new Response.Listener<JSONObject>()
+        final StringRequest getRequestEmail = new StringRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail),
+                new Response.Listener<String>()
                 {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        try {
+                    public void onResponse(String response) {
 
-                            String state = response.getString("state");
-                            String from = response.getString("from");
-                            String to = response.getString("to");
-                            String content = response.getString("content");
-                            Log.d("RESPONSE FROM", "from = "+from);
-                            Log.d("RESPONSE TO", "to = "+to);
-                            Log.d("RESPONSE STATE", "state = "+state);
-                            Log.d("RESPONSE CONTENT", "content = "+content);
-                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
-                            try {
-                                Toast.makeText(getActivity(), "Un email a été envoyé à l'observateur", Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.e("Toast Email", "Impossible de notifier");
-                            }
-
-                            notifyAdminByEmail(state, from, to, content);
-
-                        } catch (JSONException | UnsupportedEncodingException e) { e.printStackTrace(); }
+                        Log.d(TAG, "onResponse: EmailCoursObserver - "+response);
+                        /*String state = response.getString("state");
+                        String from = response.getString("from");
+                        String to = response.getString("to");
+                        String content = response.getString("content");*/
 
                     }
                 },
@@ -631,28 +617,20 @@ public class ListTicketsAttente extends Fragment {
                 "Content: <br> __________________ <br> "+content+" <br> __________________ <br><br><br>";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
-        paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
+        //paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
         paramsEmail.add(new KeyValuePair("to",URLEncoder.encode("adel.achour@groupe-hasnaoui.com", "UTF-8"))); //Admin
         paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("LOG ERROR Admin", "UTF-8")));
-        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(ContentMessage, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("message",URLEncoder.encode(ContentMessage, "UTF-8")));
 
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
-                new Response.Listener<JSONObject>()
+        final StringRequest getRequestEmail = new StringRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail),
+                new Response.Listener<String>()
                 {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-
-                            String state = response.getString("state");
-                            String from = response.getString("from");
-                            String to = response.getString("to");
-                            Log.d("RESPONSE FROM", "from = "+from);
-                            Log.d("RESPONSE TO", "to = "+to);
-                            Log.d("RESPONSE STATE", "state = "+state);
-                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
-
-                        } catch (JSONException e) { e.printStackTrace(); }
-
+                    public void onResponse(String response) {
+                        Log.d(TAG, "onResponse: EmailError "+response);
+                        /*String state = response.getString("state");
+                        String from = response.getString("from");
+                        String to = response.getString("to");*/
                     }
                 },
                 new Response.ErrorListener()
@@ -759,41 +737,29 @@ public class ListTicketsAttente extends Fragment {
         //final String content = prenomDemandeur+",\\n\\nVotre ticket "+titreTicket+" a été résolu à "+now+".\\n\\nMerci,\\n\\nL'équipe Helpdesk mobile.";
         final String content = "<h2>Notification Helpdesk</h2> <br>"+prenomDemandeur+",<br><br>" +
                 "Votre ticket \""+titreTicket+"\" a été <b>remis en cours</b> le "+nowEnCours+".<br><br>" +
-                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".<br><br><br>L'équipe Helpdesk Mobile.<br><br><br>" +
-                "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
+                "Ingénieur chargé du ticket : "+firstnameUser+" "+nameUser+".";
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
-        paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
+        //paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
         paramsEmail.add(new KeyValuePair("to",URLEncoder.encode(emailDemandeur, "UTF-8"))); //emailDemandeur
         paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("Ticket en cours", "UTF-8")));
-        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(content, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("message",URLEncoder.encode(content, "UTF-8")));
 
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
-                new Response.Listener<JSONObject>()
+        final StringRequest getRequestEmail = new StringRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail),
+                new Response.Listener<String>()
                 {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(String response) {
+                        Log.d(TAG, "onResponse: EmailCoursDemandeur "+response);
+                        /*String state = response.getString("state");
+                        String from = response.getString("from");
+                        String to = response.getString("to");
+                        String content = response.getString("content");*/
+
                         try {
-
-                            String state = response.getString("state");
-                            String from = response.getString("from");
-                            String to = response.getString("to");
-                            String content = response.getString("content");
-                            Log.d("RESPONSE FROM", "from = "+from);
-                            Log.d("RESPONSE TO", "to = "+to);
-                            Log.d("RESPONSE STATE", "state = "+state);
-                            Log.d("RESPONSE CONTENT", "content = "+content);
-                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
-                            try {
-                                Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.e("Toast Email", "Impossible de notifier");
-                            }
-
-                            notifyAdminByEmail(state, from, to, content);
-
-                        } catch (JSONException | UnsupportedEncodingException e) { e.printStackTrace(); }
+                            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                                    "Un email a été envoyé au demandeur", Snackbar.LENGTH_LONG).show();
+                        } catch (Exception e) { e.printStackTrace(); }
 
                     }
                 },
@@ -808,68 +774,6 @@ public class ListTicketsAttente extends Fragment {
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                    }
-                }
-        ){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("Content-type","application/json");
-                return params;
-            }
-        };
-
-        getRequestEmail.setRetryPolicy(new DefaultRetryPolicy(
-                30000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-
-        queue.add(getRequestEmail);
-
-    }
-
-    private void notifyAdminByEmail(String state, String from, String to, String content) throws UnsupportedEncodingException {
-        String url = Constants.URL_EMAIL_API;
-
-        final String ContentMessage = "<h2>--- Message Admin ---</h2> <br><br><br>" +
-                "Un mail a été envoyé avec succès via l'API. <br><br>" +
-                "State: "+state+"<br><br>" +
-                "From: "+from+"<br><br>" +
-                "To: "+to+"<br><br><br>" +
-                "Content: <br> __________________ <br> "+content+" <br> __________________ <br><br><br>";
-
-        List<KeyValuePair> paramsEmail = new ArrayList<>();
-        paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
-        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode("adel.achour@groupe-hasnaoui.com", "UTF-8"))); //Admin
-        paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("Notif Admin", "UTF-8")));
-        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(ContentMessage, "UTF-8")));
-
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-
-                            String state = response.getString("state");
-                            String from = response.getString("from");
-                            String to = response.getString("to");
-                            Log.d("RESPONSE FROM", "from = "+from);
-                            Log.d("RESPONSE TO", "to = "+to);
-                            Log.d("RESPONSE STATE", "state = "+state);
-                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
-
-                        } catch (JSONException e) { e.printStackTrace(); }
-
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Error Email Notif Admin", error.toString());
-                        //Toast.makeText(getActivity(), "Envoi de l'email au demandeur impossible", Toast.LENGTH_SHORT).show();
                     }
                 }
         ){

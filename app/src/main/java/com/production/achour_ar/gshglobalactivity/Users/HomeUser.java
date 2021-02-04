@@ -8,13 +8,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
+
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,7 +46,6 @@ import com.production.achour_ar.gshglobalactivity.ITs.data_model.KeyValuePair;
 import com.production.achour_ar.gshglobalactivity.ITs.dialog.DialogLogout;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.LoadProfilePic;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.MyPreferences;
-import com.production.achour_ar.gshglobalactivity.ITs.manager.ServiceNotificationNewTicket;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.URLGenerator;
 import com.production.achour_ar.gshglobalactivity.R;
 
@@ -67,7 +69,7 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
     private Button ticketButton, projectButton, rendementButton;
     private CardView ticketCard, newticketCard;
     private String session_token, nameUser, idUser, firstnameUser;
-    static String nbCount ;
+    static String nbCount;
     private RequestQueue queue;
     private DrawerLayout mDrawerLayout;
     public static Handler handler;
@@ -88,7 +90,6 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
 
         initView();
         getArguments();
-        serviceNotificationManagement();
         setupToolbar();
         setupPDs();
         setupTVs();
@@ -103,22 +104,21 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void getInfoUser() {
-        String url = Constants.GLPI_URL+"search/User";
+        String url = Constants.GLPI_URL + "search/User";
 
         List<KeyValuePair> paramsObs = new ArrayList<>();
-        paramsObs.add(new KeyValuePair("criteria[0][field]","2"));
-        paramsObs.add(new KeyValuePair("criteria[0][searchtype]","equals"));
-        paramsObs.add(new KeyValuePair("criteria[0][value]",idUser));
-        paramsObs.add(new KeyValuePair("forcedisplay[0]","9"));
-        paramsObs.add(new KeyValuePair("forcedisplay[1]","34"));
-        paramsObs.add(new KeyValuePair("forcedisplay[2]","5"));
-        paramsObs.add(new KeyValuePair("forcedisplay[3]","6"));
-        paramsObs.add(new KeyValuePair("forcedisplay[4]","81"));
+        paramsObs.add(new KeyValuePair("criteria[0][field]", "2"));
+        paramsObs.add(new KeyValuePair("criteria[0][searchtype]", "equals"));
+        paramsObs.add(new KeyValuePair("criteria[0][value]", idUser));
+        paramsObs.add(new KeyValuePair("forcedisplay[0]", "9"));
+        paramsObs.add(new KeyValuePair("forcedisplay[1]", "34"));
+        paramsObs.add(new KeyValuePair("forcedisplay[2]", "5"));
+        paramsObs.add(new KeyValuePair("forcedisplay[3]", "6"));
+        paramsObs.add(new KeyValuePair("forcedisplay[4]", "81"));
 
 
         final JsonObjectRequest getRequestDemandeur = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, paramsObs), null,
-                new Response.Listener<JSONObject>()
-                {
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -137,27 +137,26 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
                             }
 
                         } catch (JSONException e) {
-                            Log.e("JSON Error response",e.getMessage());
+                            Log.e("JSON Error response", e.getMessage());
                         }
 
                         jobuserTV.setText(posteUser);
                     }
 
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //progressBar.setVisibility(View.GONE);
                         Log.e("Error.Response", error.toString());
                     }
                 }
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",Constants.App_Token);
-                params.put("Session-Token",session_token);
+                params.put("App-Token", Constants.App_Token);
+                params.put("Session-Token", session_token);
                 return params;
             }
         };
@@ -188,7 +187,7 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
                         // set item as selected to persist highlight
                         menuItem.setChecked(true);
                         int id = menuItem.getItemId();
-                        switch (id){
+                        switch (id) {
                             case R.id.nav_setting:
                                 startActivity(new Intent(HomeUser.this, Setting.class));
                                 break;
@@ -204,15 +203,15 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
 
                             case R.id.nav_profile:
                                 Intent i = new Intent(HomeUser.this, MyProfileActivity.class);
-                                i.putExtra("session",session_token);
-                                i.putExtra("nom",nameUser);
-                                i.putExtra("prenom",firstnameUser);
-                                i.putExtra("id",idUser);
+                                i.putExtra("session", session_token);
+                                i.putExtra("nom", nameUser);
+                                i.putExtra("prenom", firstnameUser);
+                                i.putExtra("id", idUser);
 
-                                i.putExtra(Constants.EMAIL_USER,emailUser);
-                                i.putExtra(Constants.TEL_USER,telephoneUser);
-                                i.putExtra(Constants.LIEU_USER,lieuUser);
-                                i.putExtra(Constants.POSTE_USER,posteUser);
+                                i.putExtra(Constants.EMAIL_USER, emailUser);
+                                i.putExtra(Constants.TEL_USER, telephoneUser);
+                                i.putExtra(Constants.LIEU_USER, lieuUser);
+                                i.putExtra(Constants.POSTE_USER, posteUser);
 
                                 startActivity(i);
                                 break;
@@ -227,7 +226,7 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void setupTVs() {
-        String name = firstnameUser+" "+nameUser;
+        String name = firstnameUser + " " + nameUser;
         welcomeView.setText(name);
         headertitle.setText(name);
     }
@@ -267,19 +266,6 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
         setSupportActionBar(toolbar);
     }
 
-    private void serviceNotificationManagement() {
-        if(ServiceNotificationNewTicket.ServiceIsRunning == false ) {
-            System.out.println("Service not running");
-            ServiceNotificationNewTicket.ServiceIsRunning = true ;
-            //register the services to run in background
-            Intent intent = new Intent(HomeUser.this, ServiceNotificationNewTicket.class);
-            intent.putExtra("id",idUser);
-            intent.putExtra("session",session_token);
-            // start the services
-            startService(intent);
-            System.out.println("Service started with id = "+idUser);
-        }
-    }
 
     private void getArguments() {
         Intent i = getIntent();
@@ -291,14 +277,14 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ticketCard:
                 Intent i = new Intent(getApplicationContext(), TabLayoutActivity.class);
-                i.putExtra("session",session_token);
-                i.putExtra("nom",nameUser);
-                i.putExtra("prenom",firstnameUser);
-                i.putExtra("id",idUser);
-                i.putExtra("nb",nbCount);
+                i.putExtra("session", session_token);
+                i.putExtra("nom", nameUser);
+                i.putExtra("prenom", firstnameUser);
+                i.putExtra("id", idUser);
+                i.putExtra("nb", nbCount);
 
                 startActivity(i);
                 break;
@@ -311,7 +297,6 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
 
             case R.id.interventionCard:
                 break;*/
-
 
 
         }
@@ -329,24 +314,23 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
     }
 
     private void getTicketsByTechnicien(final String idUser) {
-        String url = Constants.GLPI_URL+"search/Ticket";
+        String url = Constants.GLPI_URL + "search/Ticket";
 
         List<KeyValuePair> params = new ArrayList<>();
-            params.add(new KeyValuePair("criteria[0][field]","5"));
-            params.add(new KeyValuePair("criteria[0][searchtype]","equals"));
-            params.add(new KeyValuePair("criteria[0][value]",idUser));
-            params.add(new KeyValuePair("forcedisplay[0]","4"));
-            params.add(new KeyValuePair("forcedisplay[1]","10"));
-            params.add(new KeyValuePair("forcedisplay[2]","7"));
-            params.add(new KeyValuePair("forcedisplay[3]","12"));
-            params.add(new KeyValuePair("forcedisplay[4]","15"));
-            params.add(new KeyValuePair("forcedisplay[5]","30"));
-            params.add(new KeyValuePair("forcedisplay[6]","18"));
-            params.add(new KeyValuePair("forcedisplay[7]","21"));
+        params.add(new KeyValuePair("criteria[0][field]", "5"));
+        params.add(new KeyValuePair("criteria[0][searchtype]", "equals"));
+        params.add(new KeyValuePair("criteria[0][value]", idUser));
+        params.add(new KeyValuePair("forcedisplay[0]", "4"));
+        params.add(new KeyValuePair("forcedisplay[1]", "10"));
+        params.add(new KeyValuePair("forcedisplay[2]", "7"));
+        params.add(new KeyValuePair("forcedisplay[3]", "12"));
+        params.add(new KeyValuePair("forcedisplay[4]", "15"));
+        params.add(new KeyValuePair("forcedisplay[5]", "30"));
+        params.add(new KeyValuePair("forcedisplay[6]", "18"));
+        params.add(new KeyValuePair("forcedisplay[7]", "21"));
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, URLGenerator.generateUrl(url, params), null,
-                new Response.Listener<JSONObject>()
-                {
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -356,8 +340,7 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
                         }
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //progressBar.setVisibility(View.GONE);
@@ -365,12 +348,12 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
                     }
 
                 }
-        ){
+        ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",Constants.App_Token);
-                params.put("Session-Token",session_token);
+                params.put("App-Token", Constants.App_Token);
+                params.put("Session-Token", session_token);
                 return params;
             }
         };
@@ -382,50 +365,46 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
 
     public static String generateUrl(String baseUrl, List<KeyValuePair> params) {
         if (params.size() > 0) {
-            int cpt = 1 ;
-            for (KeyValuePair parameter: params) {
-                if (cpt==1){
+            int cpt = 1;
+            for (KeyValuePair parameter : params) {
+                if (cpt == 1) {
                     baseUrl += "?" + parameter.getKey() + "=" + parameter.getValue();
-                }
-                else{
+                } else {
                     baseUrl += "&" + parameter.getKey() + "=" + parameter.getValue();
                 }
-                    cpt++;
+                cpt++;
             }
         }
         return baseUrl;
     }
+
     private void killsession() {
-        String url = GLPI_URL+"killSession";
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
+        String url = GLPI_URL + "killSession";
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
 
-                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                        pdlogout.dismiss();
-                        finish();
-                        MyPreferences.deletePreference(Constants.KEY_USERNAME);
-                        MyPreferences.deletePreference(Constants.KEY_PASSWORD);
-                        Log.v("MyPref", "DELETED THE IDS RPEFS");
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                pdlogout.dismiss();
+                finish();
+                MyPreferences.deletePreference(Constants.KEY_USERNAME);
+                MyPreferences.deletePreference(Constants.KEY_PASSWORD);
+                Log.v("MyPref", "DELETED THE IDS RPEFS");
 
-                        Toast.makeText(getApplicationContext(), "Déconnecté",
-                                Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Déconnecté",
+                        Toast.LENGTH_SHORT).show();
 
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Error.Response", error.toString());
-                        Toast.makeText(getApplicationContext(), "Déconnexion impossible",
-                                Toast.LENGTH_SHORT).show();
-                    }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Error.Response", error.toString());
+                Toast.makeText(getApplicationContext(), "Déconnexion impossible",
+                        Toast.LENGTH_SHORT).show();
+            }
 
-                }
-        ){
+        }
+        ) {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 try {
@@ -449,19 +428,13 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("App-Token",Constants.App_Token);
-                params.put("Session-Token",session_token);
+                params.put("App-Token", Constants.App_Token);
+                params.put("Session-Token", session_token);
                 return params;
             }
         };
         // add it to the RequestQueue
         queue.add(getRequest);
-
-        ServiceNotificationNewTicket.ServiceIsRunning = false;
-        Intent intent = new Intent(HomeUser.this, ServiceNotificationNewTicket.class);
-        // stop the services
-        stopService(intent);
-        System.out.println("Service stopped");
 
     }
 
@@ -471,23 +444,21 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
         String path = Constants.PROFILE_PIC_PATH;
         String picname = MyPreferences.getMyProfilPicName(this, Constants.PROFILE_PIC_NAME__KEY, Constants.PROFILE_PIC_NAME_DEF);
 
-        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)){
+        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)) {
             //CASE : NO SHARED PREFERENCE (DOWNLOAD FROM SERVER)
             //temp case: put a default profile pic
             loadDefaultProfilePic();
-        }
-        else {
+        } else {
             // SHARED PREFERENCE EXISTS
-            File picToLoad = new File(path+"/"+picname);
-            if (picToLoad.exists()){
+            File picToLoad = new File(path + "/" + picname);
+            if (picToLoad.exists()) {
                 // PIC EXISTS
                 Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
-                profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
+                profilePic = LoadProfilePic.loadImageFromStorage(path, picname);
                 profilePicNav.setImageBitmap(profilePic);
                 profilePicHome.setImageBitmap(profilePic);
 
-            }
-            else {
+            } else {
                 //PIC DOES NOT EXIST
                 Log.e("DOES_PIC_EXIST", "NO IT DOES NOT EXIST !");
                 File folderPics = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
@@ -512,21 +483,19 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
         String path = Constants.PROFILE_PIC_PATH;
         String picname = MyPreferences.getMyProfilPicName(this, Constants.PROFILE_PIC_NAME__KEY, Constants.PROFILE_PIC_NAME_DEF);
 
-        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)){
+        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)) {
             //CASE : NO SHARED PREFERENCE (DOWNLOAD FROM SERVER)
             //temp case: put a default profile pic
             loadDefaultProfilePicHome();
-        }
-        else {
+        } else {
             // SHARED PREFERENCE EXISTS
-            File picToLoad = new File(path+"/"+picname);
-            if (picToLoad.exists()){
+            File picToLoad = new File(path + "/" + picname);
+            if (picToLoad.exists()) {
                 // PIC EXISTS
                 Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
-                profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
+                profilePic = LoadProfilePic.loadImageFromStorage(path, picname);
                 profilePicHome.setImageBitmap(profilePic);
-            }
-            else {
+            } else {
                 //PIC DOES NOT EXIST
                 Log.e("DOES_PIC_EXIST", "NO IT DOES NOT EXIST !");
                 File folderPics = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
@@ -577,7 +546,6 @@ public class HomeUser extends AppCompatActivity implements View.OnClickListener 
             }
         }
     }
-
 
 
 }

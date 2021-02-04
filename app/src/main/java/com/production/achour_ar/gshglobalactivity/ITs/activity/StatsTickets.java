@@ -5,9 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,9 +26,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.production.achour_ar.gshglobalactivity.ITs.data_model.UserModel;
 import com.production.achour_ar.gshglobalactivity.ITs.dialog.DialogChoixPersonStat;
-import com.production.achour_ar.gshglobalactivity.ITs.dialog.DialogMotifAttente;
 import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.URLGenerator;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.WorkTimeCalculator;
@@ -56,8 +56,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.production.achour_ar.gshglobalactivity.ITs.fragment.ListTickets.generateUrl;
 
 public class StatsTickets extends AppCompatActivity implements View.OnClickListener {
 
@@ -94,6 +92,7 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
     private String emailUser;
 
     public static Handler handler;
+    private String emailR = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +119,7 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
 
     private void setupTVs() {
         //Initialiser le texte du début
-        String fullname = nameUser+" "+firstnameUser;
+        String fullname = UserModel.getCurrentUserModel().getFullname();
         presentationNameTV.setText(fullname);
         intervalDateTV.setText(initializeDateText(debutMoisDate, finMoisDate));
     }
@@ -396,18 +395,14 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
         nbTicketClosRetardTV.setText("");
     }
 
-    private void shareStat(final String prenomReceiver, String emailReceiver) throws UnsupportedEncodingException {
+    private void shareStat() throws UnsupportedEncodingException {
         String url = Constants.URL_STAT_API;
 
         String dateDebut = editformatdate(debutMoisDate);
         String datefin = editformatdate(finMoisDate);
 
         String fullnameIngenieur = firstnameUser+ " " +nameUser;
-        final String msgcontent = "<h2>Rapport Helpdesk</h2> <br><br>"+prenomReceiver+",<br><br>Vous trouverez en pièce jointe un fichier PDF contenant le rapport " +
-                "Helpdesk de <b>"+fullnameIngenieur+"</b> du " +
-                "<u><font color=#2e3e68>"+dateDebut+"</font></u> au <u><font color=#2e3e68>"+datefin+"</font></u>.<br><br>Pour un éventuel échange, veuillez contacter directement l'ingénieur.<br><br><br>" +
-                "L'équipe Helpdesk Mobile.<br><br><br>" +
-                "<i>P.S: Ce mail a été généré automatiquement, prière de ne pas répondre.</i>";
+        System.out.println("value of email : "+emailR);
 
         List<KeyValuePair> paramsEmail = new ArrayList<>();
         paramsEmail.add(new KeyValuePair("fullname", URLEncoder.encode(fullnameIngenieur, "UTF-8")));
@@ -423,39 +418,20 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
         paramsEmail.add(new KeyValuePair("nbclostemps",URLEncoder.encode(String.valueOf(nbTicketClos_Temps), "UTF-8")));
         paramsEmail.add(new KeyValuePair("nbclosretard",URLEncoder.encode(String.valueOf(nbTicketClos_Retard), "UTF-8")));
         paramsEmail.add(new KeyValuePair("pourcentageReussite",URLEncoder.encode(pourcentageReussite, "UTF-8")));
-        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode(emailReceiver, "UTF-8")));
-        paramsEmail.add(new KeyValuePair("contentmsg",URLEncoder.encode(msgcontent, "UTF-8")));
+        paramsEmail.add(new KeyValuePair("ad2000",URLEncoder.encode(UserModel.getCurrentUserModel().getAd2000(), "UTF-8")));
+        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode(emailR, "UTF-8")));
+        //paramsEmail.add(new KeyValuePair("to",URLEncoder.encode(emailReceiver, "UTF-8")));
+        //paramsEmail.add(new KeyValuePair("contentmsg",URLEncoder.encode(msgcontent, "UTF-8")));
 
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
-                new Response.Listener<JSONObject>()
+        final StringRequest getRequestEmail = new StringRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail),
+                new Response.Listener<String>()
                 {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        try {
+                    public void onResponse(String response) {
 
-                            pdShare.dismiss();
-
-                            String state = response.getString("state");
-                            String from = response.getString("from");
-                            String to = response.getString("to");
-                            String content = response.getString("content");
-                            String filename = response.getString("filename");
-                            Log.d("RESPONSE FROM", "from = "+from);
-                            Log.d("RESPONSE TO", "to = "+to);
-                            Log.d("RESPONSE STATE", "state = "+state);
-                            Log.d("RESPONSE CONTENT", "content = "+content);
-                            Log.d("RESPONSE FILENAME", "filename = "+filename);
-                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
-                            try {
-                                Toast.makeText(StatsTickets.this, "Un PDF a été envoyé à "+prenomReceiver+"", Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.e("Toast Email", "Impossible de notifier");
-                            }
-
-                            notifyAdminByEmail(state, from, to, content, filename);
-
-                        } catch (JSONException | UnsupportedEncodingException e) { e.printStackTrace(); }
+                        System.out.println("yep ! response share stat :: "+response);
+                        pdShare.dismiss();
+                        Toast.makeText(StatsTickets.this, "Le rapport a été envoyé à avec succès", Toast.LENGTH_SHORT).show();
 
                     }
                 },
@@ -465,7 +441,7 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Error.Response Email", error.toString());
                         pdShare.dismiss();
-                        Toast.makeText(StatsTickets.this, "Envoi du PDF impossible", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StatsTickets.this, "Envoi du rapport impossible", Toast.LENGTH_SHORT).show();
                     }
                 }
         ){
@@ -494,66 +470,7 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
         return finaldate;
     }
 
-    private void notifyAdminByEmail(String state, String from, String to, String content, String filename) throws UnsupportedEncodingException {
-        String url = Constants.URL_EMAIL_API;
 
-        final String ContentMessage = "<h2>--- Message Admin STAT ---</h2> <br><br><br>" +
-                "Un mail a été envoyé avec succès via l'API. <br><br>" +
-                "State: "+state+"<br><br>" +
-                "From: "+from+"<br><br>" +
-                "To: "+to+"<br><br><br>" +
-                "Content: <br> __________________ <br> "+content+" <br> __________________ <br><br><br>";
-
-        List<KeyValuePair> paramsEmail = new ArrayList<>();
-        paramsEmail.add(new KeyValuePair("from",URLEncoder.encode("helpdesk-mobile@groupe-hasnaoui.com", "UTF-8")));
-        paramsEmail.add(new KeyValuePair("to",URLEncoder.encode("adel.achour@groupe-hasnaoui.com", "UTF-8"))); //Admin
-        paramsEmail.add(new KeyValuePair("subject",URLEncoder.encode("Notif Admin STAT", "UTF-8")));
-        paramsEmail.add(new KeyValuePair("content",URLEncoder.encode(ContentMessage, "UTF-8")));
-
-        final JsonObjectRequest getRequestEmail = new JsonObjectRequest(Request.Method.POST, URLGenerator.generateUrl(url, paramsEmail), null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-
-                            String state = response.getString("state");
-                            String from = response.getString("from");
-                            String to = response.getString("to");
-                            Log.d("RESPONSE FROM", "from = "+from);
-                            Log.d("RESPONSE TO", "to = "+to);
-                            Log.d("RESPONSE STATE", "state = "+state);
-                            //Toast.makeText(getActivity(), "Un email a été envoyé au demandeur", Toast.LENGTH_SHORT).show();
-
-                        } catch (JSONException e) { e.printStackTrace(); }
-
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Error Email Notif Admin", error.toString());
-                        //Toast.makeText(getActivity(), "Envoi de l'email au demandeur impossible", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        ){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("Content-type","application/json");
-                return params;
-            }
-        };
-
-        getRequestEmail.setRetryPolicy(new DefaultRetryPolicy(
-                30000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-
-        queue.add(getRequestEmail);
-    }
 
     private void CalculTempsMoyenResolution() {
         //progressBarTempsMoyen.setVisibility(View.VISIBLE);
@@ -843,7 +760,8 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
                 return true;
 
             case R.id.itemShareStat:
-                openShareStatDialog();
+                emailR = "";
+                //openShareStatDialog();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -854,8 +772,8 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
         builderSingle.setTitle("Partage de vos statistiques");
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(StatsTickets.this, android.R.layout.select_dialog_singlechoice);
-        arrayAdapter.add("Abdelkarim Mokrane");
-        arrayAdapter.add("Choisir une autre personne...");
+        arrayAdapter.add("Votre responsable hiérarchique");
+        arrayAdapter.add("Choisir une autre personne");
 
 
         builderSingle.setNegativeButton("Fermer", new DialogInterface.OnClickListener() {
@@ -870,18 +788,15 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
             public void onClick(DialogInterface dialog, int which) {
                 String strName = arrayAdapter.getItem(which);
                 switch (strName){
-                    case "Abdelkarim Mokrane":
+                    case "Votre responsable hiérarchique":
                         pdShare.show();
-                        String emailR = "abdelkarim.mokrane@groupe-hasnaoui.com";
-                        String prenomR = "Abdelkarim";
-                        //String emailR = "adel.achour@groupe-hasnaoui.com";
                         try {
-                            shareStat(prenomR, emailR);
-                            shareStatToMe(firstnameUser, emailUser, prenomR, emailR);
+                            emailR = "";
+                            shareStat();
                         }
                         catch (UnsupportedEncodingException e) { e.printStackTrace(); }
                         break;
-                    case "Choisir une autre personne...":
+                    case "Choisir une autre personne":
                         //open dialog for another person
                         DialogChoixPersonStat alert = new DialogChoixPersonStat();
                         alert.showDialog(StatsTickets.this);
@@ -950,9 +865,7 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
                                 Log.e("Toast Email", "Impossible de notifier");
                             }
 
-                            notifyAdminByEmail(state, from, to, content, filename);
-
-                        } catch (JSONException | UnsupportedEncodingException e) { e.printStackTrace(); }
+                        } catch (JSONException e) { e.printStackTrace(); }
 
                     }
                 },
@@ -990,12 +903,10 @@ public class StatsTickets extends AppCompatActivity implements View.OnClickListe
                     pdShare.show();
                     Bundle bundle;
                     bundle = msg.getData();
-                    String prenomR = bundle.getString("prenomR");
-                    String emailR = bundle.getString("emailR");
+                    emailR = bundle.getString("emailR");
 
                     try {
-                        shareStat(prenomR, emailR);
-                        shareStatToMe(firstnameUser, emailUser, prenomR, emailR);
+                        shareStat();
                     } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
 
                     break;

@@ -11,26 +11,27 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.net.Uri;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.production.achour_ar.gshglobalactivity.ITs.data_model.UserModel;
 import com.production.achour_ar.gshglobalactivity.R;
-import com.production.achour_ar.gshglobalactivity.ITs.activity.AccueilUser;
-import com.production.achour_ar.gshglobalactivity.ITs.activity.GalleryUtil;
 import com.production.achour_ar.gshglobalactivity.ITs.data_model.Constants;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.LoadProfilePic;
 import com.production.achour_ar.gshglobalactivity.ITs.manager.MyPreferences;
@@ -43,11 +44,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener{
+public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView profilPicIV;
     //private Button pickImageButton;
-    private Button pickImageButton;
+    //private Button pickImageButton;
     private Uri imageURI;
     private String session_token, nameUser, idUser, firstnameUser;
     private String picturePath;
@@ -75,32 +76,62 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         setupActionBar();
         setListener();
         getArguments();
-        loadProfilePic();
-        setTVs();
+        //loadProfilePic();
+        populateIV();
+        populateTVs();
 
     }
 
-    private void setTVs() {
-        try {
-            nomInfo.setText(nameUser);
-            prenomInfo.setText(firstnameUser);
-            emailInfo.setText(emailUser);
-            posteInfo.setText(posteUser);
-            lieuInfo.setText(lieuUser);
-            String name = nameUser + " " + firstnameUser;
-            nomprenomTV.setText(name);
-            setTVtel(telephoneUser);
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void populateIV() {
+        String pic = UserModel.getCurrentUserModel().getPic();
+        System.out.println("pic " + pic);
+        if (pic != null)
+            if (!pic.equals("null")) {
+                Bitmap bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
+                profilPicIV.setImageBitmap(bitmap);
+            }
+    }
+
+    public static Bitmap decodeSampleBitmap(byte[] bitmap, int reqHeight, int reqWidth) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length);
+        options.inSampleSize = calculateInSampleSize(options, reqHeight, reqWidth);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length);
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            int halfHeight = height / 2;
+            int halfWidth = width / 2;
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2;
+            }
         }
+        return inSampleSize;
+    }
+
+    private void populateTVs() {
+        nomInfo.setText(UserModel.getCurrentUserModel().getLastname());
+        prenomInfo.setText(UserModel.getCurrentUserModel().getFirstname());
+        emailInfo.setText(UserModel.getCurrentUserModel().getEmail());
+        posteInfo.setText(UserModel.getCurrentUserModel().getJobTitle());
+        String departement = UserModel.getCurrentUserModel().getCompany() + " - " + UserModel.getCurrentUserModel().getDepartment();
+        lieuInfo.setText(departement);
+        //String name = nameUser + " " + firstnameUser;
+        nomprenomTV.setText(UserModel.getCurrentUserModel().getFullname());
+        setTVtel(reformatNumber(UserModel.getCurrentUserModel().getPhone()));
     }
 
     private void setTVtel(String telephoneUser) {
         try {
-            if (telephoneUser.length()==9){
-                telInfo.setText(DisplayNumber(telephoneUser));
-            }
-            else {
+            if (telephoneUser.length() == 9) {
+                telInfo.setText(reformatNumber(telephoneUser));
+            } else {
                 telInfo.setText(telephoneUser);
             }
         } catch (Exception e) {
@@ -108,14 +139,14 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private String DisplayNumber(String telNumber) {
-        String number = "";
-        number = "0"+telNumber; //0560 93 14 79
+    private String reformatNumber(String telNumber) {
+        String number = telNumber;
+        //number = "0" + telNumber; //0560 93 14 79
 
-        String part1 = number.substring(0,4);
-        String part2 = number.substring(4,6);
-        String part3 = number.substring(6,8);
-        String part4 = number.substring(8,10);
+        String part1 = number.substring(0, 4);
+        String part2 = number.substring(4, 6);
+        String part3 = number.substring(6, 8);
+        String part4 = number.substring(8, 10);
 
         number = part1 + " " + part2 + " " + part3 + " " + part4;
 
@@ -136,23 +167,21 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         String path = Constants.PROFILE_PIC_PATH;
         String picname = MyPreferences.getMyProfilPicName(this, Constants.PROFILE_PIC_NAME__KEY, Constants.PROFILE_PIC_NAME_DEF);
 
-        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)){
+        if (picname.equals(Constants.PROFILE_PIC_NAME_DEF)) {
             //CASE : NO SHARED PREFERENCE (DOWNLOAD FROM SERVER)
-                //temp case: put a default profile pic
-                LoadDefaultProfilePic();
-                //AccueilUser.handler.sendEmptyMessage(Constants.UPDATE_DEFAULT_PROFILE_PIC_NAV_HEADER);
-        }
-        else {
+            //temp case: put a default profile pic
+            LoadDefaultProfilePic();
+            //AccueilUser.handler.sendEmptyMessage(Constants.UPDATE_DEFAULT_PROFILE_PIC_NAV_HEADER);
+        } else {
             // SHARED PREFERENCE EXISTS
-            File picToLoad = new File(path+"/"+picname);
-            if (picToLoad.exists()){
+            File picToLoad = new File(path + "/" + picname);
+            if (picToLoad.exists()) {
                 // PIC EXISTS
                 Log.d("DOES_PIC_EXIST", "YES IT EXISTS !");
-                profilePic = LoadProfilePic.loadImageFromStorage(path,picname);
+                profilePic = LoadProfilePic.loadImageFromStorage(path, picname);
                 setProfilePicToImageView(profilPicIV, profilePic);
 
-            }
-            else {
+            } else {
                 //PIC DOES NOT EXIST
                 Log.e("DOES_PIC_EXIST", "NO IT DOES NOT EXIST !");
                 File folderPics = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
@@ -162,10 +191,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     }
                 }
                 //download from server and put it in the folder
-                    //temp case: put a default profile pic
-                    LoadDefaultProfilePic();
-                    //AccueilUser.handler.sendEmptyMessage(Constants.UPDATE_DEFAULT_PROFILE_PIC_NAV_HEADER);
-
+                //temp case: put a default profile pic
+                LoadDefaultProfilePic();
+                //AccueilUser.handler.sendEmptyMessage(Constants.UPDATE_DEFAULT_PROFILE_PIC_NAV_HEADER);
             }
 
         }
@@ -188,36 +216,36 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     private void getArguments() {
         Intent i = getIntent();
         session_token = i.getStringExtra("session");
-        nameUser = i.getStringExtra("nom");
-        firstnameUser = i.getStringExtra("prenom");
         idUser = i.getStringExtra("id");
+        /*nameUser = i.getStringExtra("nom");
+        firstnameUser = i.getStringExtra("prenom");
 
         emailUser = i.getStringExtra(Constants.EMAIL_USER);
         telephoneUser = i.getStringExtra(Constants.TEL_USER);
         lieuUser = i.getStringExtra(Constants.LIEU_USER);
-        posteUser = i.getStringExtra(Constants.POSTE_USER);
+        posteUser = i.getStringExtra(Constants.POSTE_USER);*/
 
     }
 
     private void SDKTestFileURI() {
-        if(Build.VERSION.SDK_INT>=24){
-            try{
+        if (Build.VERSION.SDK_INT >= 24) {
+            try {
                 Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
                 m.invoke(null);
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
     private void setListener() {
-        pickImageButton.setOnClickListener(this);
+        //pickImageButton.setOnClickListener(this);
         profilPicIV.setOnClickListener(this);
     }
 
     private void initView() {
         profilPicIV = findViewById(R.id.profilePic);
-        pickImageButton = findViewById(R.id.buttonPickImage);
+        //pickImageButton = findViewById(R.id.buttonPickImage);
         view = findViewById(R.id.profilePic);
         anim = AnimationUtils.loadAnimation(this, R.anim.animation_imageview);
         nomInfo = findViewById(R.id.nomprofile);
@@ -231,11 +259,11 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.buttonPickImage:
+        switch (v.getId()) {
+            /*case R.id.buttonPickImage:
                 if (isStoragePermissionGranted()) openGallery();
                 else askForPermission();
-                break;
+                break;*/
 
             case R.id.profilePic:
                 Log.d("ANIMATION", "onClick: CLICKED");
@@ -253,25 +281,25 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == Constants.PICK_IMAGE) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 picturePath = data.getStringExtra(Constants.PicturePath);
                 performCrop(picturePath);
             }
         }
 
         if (requestCode == Constants.RESULT_CROP) {
-            if(resultCode == Activity.RESULT_OK){
-                Bundle extras ;
+            if (resultCode == Activity.RESULT_OK) {
+                Bundle extras;
                 Bitmap selectedBitmap = null;
 
-                if(!(data.getExtras()==null)){
+                if (!(data.getExtras() == null)) {
                     try {
                         extras = data.getExtras();
                         selectedBitmap = extras.getParcelable("data");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else{
+                } else {
                     try {
                         selectedBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
                     } catch (IOException e) {
@@ -284,17 +312,17 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 setProfilePicToImageView(profilPicIV, selectedBitmap);
                 AccueilUser.handler.sendEmptyMessage(Constants.UPDATE_PROFILE_PIC_NAV_HEADER);
                 //profilPicIV.setScaleType(ScaleType.FIT_XY);
-                System.out.println("Height: "+profilPicIV.getHeight());
-                System.out.println("Width: "+profilPicIV.getWidth());
+                System.out.println("Height: " + profilPicIV.getHeight());
+                System.out.println("Width: " + profilPicIV.getWidth());
 
                 String pathToPic = saveToInternalStorage(selectedBitmap);
-                System.out.println("Path: "+pathToPic);
+                System.out.println("Path: " + pathToPic);
             }
         }
 
     }
 
-    private String saveToInternalStorage(Bitmap bitmapImage){
+    private String saveToInternalStorage(Bitmap bitmapImage) {
 
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "FourStarsPics");
 
@@ -304,8 +332,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             }
         }
         // Create imageDir
-        String picName = nameUser+"_"+firstnameUser+"_"+getNowTime()+"_profilePic.png";
-        File mypath = new File(mediaStorageDir,picName);
+        String picName = nameUser + "_" + firstnameUser + "_" + getNowTime() + "_profilePic.png";
+        File mypath = new File(mediaStorageDir, picName);
 
         FileOutputStream fos = null;
 
@@ -398,7 +426,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;

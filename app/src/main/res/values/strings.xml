@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GSH - IT\'s Global Activity</string>
+    <string name="app_name">GSH - Helpdesk IT</string>
     <string name="title_activity_info_ticket">InfoTicket</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -19,7 +19,7 @@
     <string name="searchticket">Rechercher un ticket</string>
     <string name="newticket">Créer un ticket</string>
     <string name="setting">Paramètres</string>
-    <string name="about">A propos et FAQ</string>
+    <string name="about">À propos et FAQ</string>
     <string name="logout">Se déconnecter</string>
     <string name="profile">Mon profil</string>
     <string name="alter_attente">Mettre le ticket en attente</string>
@@ -105,5 +105,10 @@
     <string name="messagetitle">Titre</string>
     <string name="date">Date</string>
     <string name="default_notification_channel_id">fcm_default_channel</string>
+    <string name="login_text">Vos tickets sont\nsont entre vos mains</string>
+    <string name="access_app">Accédez à l\'application</string>
+    <string name="email">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="login">Se connecter</string>
 
 </resources>

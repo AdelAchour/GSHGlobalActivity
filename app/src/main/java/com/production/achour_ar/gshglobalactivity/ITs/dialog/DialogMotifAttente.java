@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.production.achour_ar.gshglobalactivity.R;
 import com.production.achour_ar.gshglobalactivity.ITs.data_model.Constants;
-import com.production.achour_ar.gshglobalactivity.ITs.fragment.ListTicketBackLog;
 import com.production.achour_ar.gshglobalactivity.ITs.fragment.ListTickets;
 
 import java.util.ArrayList;

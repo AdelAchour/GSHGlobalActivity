@@ -8,10 +8,10 @@
         android:icon="@drawable/graph"
         />
 
-    <item  android:id="@+id/itemCreationTicket"
+   <!-- <item  android:id="@+id/itemCreationTicket"
         android:title="@string/newticket"
         android:icon="@drawable/ajouterticket"
-        />
+        /> -->
 
     <item  android:id="@+id/itemGoHome"
         android:title="@string/retourAccueil"

@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <!-- Basic Info -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/basicinfo"
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/color_card_profile"
@@ -84,11 +84,11 @@
                         android:textSize="10sp"/>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 
         <!-- Actors -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
@@ -162,11 +162,11 @@
                         android:textSize="10sp"/>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 
         <!-- Category -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
@@ -220,10 +220,10 @@
                         android:textSize="10sp"/>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <!-- Dates -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
@@ -331,10 +331,10 @@
                         android:textSize="10sp"/>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <!-- Temps de résolution / Retard -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
@@ -388,10 +388,10 @@
                         android:textSize="10sp"/>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <!-- Status & SLA -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
@@ -463,10 +463,10 @@
                         android:textSize="10sp"/>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <!-- Lieu -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
@@ -520,10 +520,10 @@
                         android:textSize="10sp"/>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <!-- Description -->
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             app:cardBackgroundColor="@color/color_card_profile"
             android:layout_height="wrap_content"
@@ -577,7 +577,7 @@
                         android:textSize="10sp"/>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 
     </LinearLayout>

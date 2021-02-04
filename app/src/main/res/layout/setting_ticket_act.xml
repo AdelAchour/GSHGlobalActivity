@@ -28,7 +28,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/ticketCard"
                 android:layout_width="0dp"
                 android:layout_weight="100"
@@ -76,7 +76,7 @@
                     </LinearLayout>
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
@@ -89,7 +89,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/rendementCard"
                 android:layout_width="0dp"
                 android:layout_weight="100"
@@ -137,7 +137,7 @@
                     </LinearLayout>
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 

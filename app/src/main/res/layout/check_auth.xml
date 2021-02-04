@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ITs.activity.CheckAuth"
-    android:layout_margin="20dp">
+    android:layout_margin="20dp"
+    tools:context=".ITs.activity.CheckAuth">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,18 +16,25 @@
             android:id="@+id/no_connection_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/status"
-            android:textColor="@color/grey_status"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
             android:shadowColor="@color/text_shadow"
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="2"
+            android:text="@string/status"
+            android:textAlignment="center"
+            android:textColor="@color/grey_status"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textAlignment="center"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="200dp"
-            android:visibility="visible"/>
+            android:layout_marginTop="60dp" />
 
     </LinearLayout>
 
@@ -35,20 +42,20 @@
         android:id="@+id/retry_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/goto_login"
         android:background="@drawable/shape_button"
         android:text="@string/retry"
-        android:textColor="@color/white"
-        android:layout_above="@+id/goto_login"/>
+        android:textColor="@color/white" />
 
     <Button
-        android:layout_marginTop="20dp"
         android:id="@+id/goto_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp"
         android:background="@drawable/shape_button"
         android:text="@string/gotologin"
-        android:textColor="@color/white"
-        android:layout_alignParentBottom="true"/>
+        android:textColor="@color/white" />
 
 
 </RelativeLayout>
